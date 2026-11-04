@@ -6,6 +6,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * Material 3 colour scheme mapped entirely onto Airmail tokens, so no default Material colour
@@ -92,3 +93,10 @@ object StampTheme {
     val spacing: AirmailSpacing
         @Composable @ReadOnlyComposable get() = LocalAirmailSpacing.current
 }
+
+/**
+ * Standard component preview on the light Paper background (CLAUDE.md §7).
+ * The hex literal mirrors the Paper token; annotations can only take constants.
+ */
+@Preview(showBackground = true, backgroundColor = 0xFFF6F0E6)
+annotation class PaperPreview

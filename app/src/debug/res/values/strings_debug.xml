@@ -12,4 +12,25 @@
     <string name="debug_specimen_note_small">42 stamps · 15 days</string>
     <string name="debug_specimen_hero">Stamped!</string>
     <string name="debug_specimen_hero_sub">No. 129 in your Japan trip album</string>
+
+    <string name="debug_gallery_title">Component gallery</string>
+    <string name="debug_section_home">Home composition (vs design/home.png)</string>
+    <string name="debug_section_stamps">Stamp · shapes</string>
+    <string name="debug_section_edges">Stamp · edge styles</string>
+    <string name="debug_section_postmark">Postmark</string>
+    <string name="debug_section_stripe">Airmail stripe</string>
+    <string name="debug_section_grain">Paper grain (kraft · cobalt · sage)</string>
+    <string name="debug_section_notes">Hand notes</string>
+    <string name="debug_section_nav">Ink nav bar (tap me)</string>
+    <string name="debug_section_tokens">Theme tokens</string>
+
+    <string name="debug_sample_page">JAPAN TRIP · P.3</string>
+    <string name="debug_sample_denomination">26</string>
+    <string name="debug_sample_caption">NIPPON · KYOTO</string>
+    <string name="debug_sample_city">Kyoto</string>
+    <string name="debug_sample_date_short">03.11.26</string>
+    <string name="debug_sample_date_long">04 Nov \'26</string>
+    <string name="debug_sample_note_1">sunrise hike!!</string>
+    <string name="debug_sample_note_2">legs = dead, worth it</string>
+    <string name="debug_sample_note_3">matcha #3</string>
 </resources>

@@ -53,13 +53,14 @@ val LocalAirmailShapes = staticCompositionLocalOf { AirmailShapeSet }
 object Elevation {
     val Low: Dp = 2.dp
     val Card: Dp = 6.dp
+    val Stamp: Dp = 8.dp
     val Raised: Dp = 12.dp
     val Floating: Dp = 20.dp
 }
 
 /** Spot/ambient strength of tinted shadows — soft, never harsh. */
-private const val SpotAlpha = 0.28f
-private const val AmbientAlpha = 0.14f
+private const val SpotAlpha = 0.36f
+private const val AmbientAlpha = 0.18f
 
 /**
  * Soft shadow tinted with [tint] (warm brown on paper, navy on blue) instead of pure black.

@@ -34,6 +34,9 @@ private const val HighAlphaOnDark = 1f
 private const val MediumAlphaOnDark = 0.80f
 private const val LowAlphaOnDark = 0.56f
 
+/** Handwritten notes use Ink between 72 % and 100 %. */
+private const val HandInkSoftAlpha = 0.72f
+
 /** Postmark ink is AirmailRed at ~85 % on light surfaces. */
 private const val PostmarkAlpha = 0.85f
 
@@ -72,6 +75,10 @@ data class AirmailColors(
     val textOnDarkMedium: Color,
     val textOnDarkLow: Color,
 
+    // Handwriting (HandNote)
+    val handInk: Color,
+    val handInkSoft: Color,
+
     // Lines
     val outline: Color,
     val outlineOnDark: Color,
@@ -107,6 +114,9 @@ internal val AirmailPalette = AirmailColors(
     textOnDarkHigh = PaperWhite.copy(alpha = HighAlphaOnDark),
     textOnDarkMedium = PaperWhite.copy(alpha = MediumAlphaOnDark),
     textOnDarkLow = PaperWhite.copy(alpha = LowAlphaOnDark),
+
+    handInk = Ink,
+    handInkSoft = Ink.copy(alpha = HandInkSoftAlpha),
 
     outline = Ink.copy(alpha = OutlineAlphaOnLight),
     outlineOnDark = PaperWhite.copy(alpha = OutlineAlphaOnDark),

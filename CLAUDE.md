@@ -204,3 +204,4 @@ adb logcat -s AndroidRuntime:E
 
 ## Decisions log
 - 2026-11-04: Android first, Kotlin + Compose + CameraX. Airmail design direction approved. Rewarded ads only.
+- 2026-11-04: Light-only theme (no dark mode). The app is a paper album; Camera (Ink) and Stamped! (Cobalt) are drawn dark explicitly with textOnDark* tokens.
