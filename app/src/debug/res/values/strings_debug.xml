@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug-only sample copy for the theme specimen / component gallery. Not shipped in release. -->
+<resources>
+    <string name="debug_specimen_title">Your stamp album</string>
+    <string name="debug_specimen_card_title">Today\'s stamp is waiting</string>
+    <string name="debug_specimen_album">Japan trip</string>
+    <string name="debug_specimen_overline">WED · 04 NOV</string>
+    <string name="debug_specimen_body">Keep one moment from Wednesday.</string>
+    <string name="debug_specimen_label">12sp label · 64%</string>
+    <string name="debug_specimen_button">Stamp it</string>
+    <string name="debug_specimen_note">sunrise hike!!</string>
+    <string name="debug_specimen_note_small">42 stamps · 15 days</string>
+    <string name="debug_specimen_hero">Stamped!</string>
+    <string name="debug_specimen_hero_sub">No. 129 in your Japan trip album</string>
+</resources>
