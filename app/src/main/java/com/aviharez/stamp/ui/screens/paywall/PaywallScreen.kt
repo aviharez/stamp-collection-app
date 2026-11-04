@@ -29,6 +29,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.unit.max
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
@@ -50,6 +56,7 @@ import com.aviharez.stamp.data.billing.ProPlan
 import com.aviharez.stamp.data.billing.ProRules
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
+import com.aviharez.stamp.ui.components.FitText
 import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.AdChip
@@ -308,13 +315,13 @@ private fun PerkCell(perk: Perk, highlighted: Boolean) {
                 }
             }
         }
-        Text(
+        FitText(
             label,
-            style = StampTheme.type.label,
+            StampTheme.type.label,
+            Modifier.padding(top = s.xs),
             color = if (perk.available) c.textHigh else c.textLow,
+            maxLines = 3,
             textAlign = TextAlign.Center,
-            maxLines = 2,
-            modifier = Modifier.padding(top = s.xs),
         )
     }
 }
@@ -334,7 +341,15 @@ private fun PlanStamp(
     val content = if (selected) c.textOnDarkHigh else c.textHigh
     val priceText = price ?: stringResource(R.string.paywall_price_missing)
     val selectedText = stringResource(R.string.paywall_selected_cd)
-    val description = stringResource(R.string.paywall_plan_cd, name, priceText, per)
+    val description = if (price != null) {
+        stringResource(R.string.paywall_plan_cd, name, price, per)
+    } else {
+        stringResource(R.string.paywall_plan_loading_cd, name)
+    }
+    // The tag sits half over the stamp's top edge; at large font sizes it grows, so make room for it.
+    val density = LocalDensity.current
+    var tagHalf by remember { mutableStateOf(0.dp) }
+    val clearance = max(s.s, tagHalf)
     Box(
         Modifier
             .selectable(selected = selected, role = Role.RadioButton, onClick = onClick)
@@ -343,20 +358,21 @@ private fun PlanStamp(
         Stamp(
             StampShape.Portrait,
             Modifier
-                .padding(top = s.s)
+                .padding(top = clearance)
                 .width(PlanStampWidth)
                 .graphicsLayer { val sc = if (selected) LiftScale else 1f; scaleX = sc; scaleY = sc },
             tilt = if (selected) ActiveTilt else RestTilt,
             elevation = if (selected) Elevation.Raised else Elevation.Low,
         ) {
             Column(
-                Modifier.fillMaxSize().background(if (selected) c.airmailRed else c.paperWhite).padding(s.s),
+                Modifier.fillMaxSize().background(if (selected) c.airmailRed else c.paperWhite)
+                    .padding(start = s.s, end = s.s, bottom = s.s, top = clearance),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(name.uppercase(), style = StampTheme.type.overline, color = content)
+                FitText(name.uppercase(), StampTheme.type.overline, color = content)
                 Column {
-                    Text(priceText, style = StampTheme.type.cardTitle, color = content, maxLines = 1)
-                    HandNote(per, style = StampTheme.type.noteSmall, color = content)
+                    FitText(priceText, StampTheme.type.cardTitle, color = content)
+                    FitText(per, StampTheme.type.noteSmall, color = content)
                 }
             }
         }
@@ -367,6 +383,7 @@ private fun PlanStamp(
                 color = c.textOnDarkHigh,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
+                    .onSizeChanged { tagHalf = with(density) { (it.height / 2).toDp() } }
                     .rotate(ActiveTilt / 2f)
                     .background(c.ink, StampTheme.shapes.pill)
                     .padding(horizontal = s.xs, vertical = s.xxs / 2),

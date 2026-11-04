@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.aviharez.stamp.R
 import com.aviharez.stamp.domain.model.StampShape
+import com.aviharez.stamp.ui.components.FitText
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
 import kotlin.math.abs
@@ -286,12 +287,11 @@ fun ShapePicker(
                         drawRect(outline, topLeft = topLeft, size = Size(iw, ih), style = Stroke(stroke, pathEffect = dash))
                     }
                 }
-                Text(
+                FitText(
                     stringResource(shape.label),
-                    style = StampTheme.type.label,
+                    StampTheme.type.label,
+                    Modifier.padding(top = StampTheme.spacing.xxs),
                     color = if (isSelected) c.ink else c.textOnDarkMedium,
-                    maxLines = 1,
-                    modifier = Modifier.padding(top = StampTheme.spacing.xxs),
                 )
             }
         }

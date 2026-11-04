@@ -1,6 +1,8 @@
 package com.aviharez.stamp.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -24,7 +26,7 @@ import com.aviharez.stamp.ui.theme.StampTheme
 @Composable
 fun PlaceholderScreen(
     title: String,
-    milestone: Int,
+    comingSoon: Boolean,
     contentPadding: PaddingValues,
     modifier: Modifier = Modifier,
     extra: @Composable ColumnScope.() -> Unit = {},
@@ -34,17 +36,16 @@ fun PlaceholderScreen(
         modifier
             .fillMaxSize()
             .background(StampTheme.colors.paper)
+            .verticalScroll(rememberScrollState())
             .statusBarsPadding()
             .padding(contentPadding)
             .padding(horizontal = s.screen, vertical = s.l),
         verticalArrangement = Arrangement.spacedBy(s.m),
     ) {
         Text(title, style = StampTheme.type.screenTitle)
-        HandNote(
-            stringResource(R.string.placeholder_note, milestone),
-            rotation = Tilt.note(milestone.toLong()),
-            strength = InkStrength.Soft,
-        )
+        if (comingSoon) {
+            HandNote(stringResource(R.string.placeholder_note), rotation = Tilt.note(NoteSeed), strength = InkStrength.Soft)
+        }
         extra()
     }
 }
@@ -52,5 +53,7 @@ fun PlaceholderScreen(
 @PaperPreview
 @Composable
 private fun PlaceholderScreenPreview() {
-    StampAppTheme { PlaceholderScreen("Calendar", 2, PaddingValues()) }
+    StampAppTheme { PlaceholderScreen("Map", comingSoon = true, PaddingValues()) }
 }
+
+private const val NoteSeed = 5L

@@ -72,12 +72,10 @@ fun AlbumCover(
         }
         Box(Modifier.matchParentSize().padding(start = spineWidth), content = content)
         if (name != null) {
-            Text(
+            FitText(
                 name,
-                style = StampTheme.type.albumName,
+                StampTheme.type.albumName,
                 color = c.textHigh,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(start = spineWidth + StampTheme.spacing.s, end = StampTheme.spacing.s, bottom = StampTheme.spacing.m)

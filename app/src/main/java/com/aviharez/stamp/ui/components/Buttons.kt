@@ -112,7 +112,7 @@ fun PillButton(
         if (leadingIcon != null) {
             Icon(painterResource(leadingIcon), null, tint = colors.content, modifier = Modifier.size(IconSize))
         }
-        Text(text, style = StampTheme.type.button, color = colors.content, maxLines = 1)
+        FitText(text, StampTheme.type.button, Modifier.weight(1f, fill = false), color = colors.content)
         if (trailingIcon != null) {
             Icon(painterResource(trailingIcon), null, tint = trailingIconTint ?: colors.content, modifier = Modifier.size(IconSize))
         }

@@ -53,6 +53,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aviharez.stamp.R
 import com.aviharez.stamp.domain.model.Stamp
+import com.aviharez.stamp.ui.components.FitText
 import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
@@ -205,13 +206,13 @@ fun StampDetailContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
-                Text(
+                FitText(
                     subtitle.uppercase(locale),
-                    style = StampTheme.type.overline,
+                    StampTheme.type.overline,
+                    Modifier.weight(1f, fill = false),
                     color = c.textMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false),
+                    maxLines = 2,
+                    textAlign = TextAlign.Center,
                 )
                 Icon(painterResource(R.drawable.ic_chevron_down), null, tint = c.textMedium, modifier = Modifier.size(s.m))
             }

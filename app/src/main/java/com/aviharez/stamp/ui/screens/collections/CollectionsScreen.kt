@@ -50,6 +50,7 @@ import com.aviharez.stamp.domain.model.AlbumSummary
 import com.aviharez.stamp.domain.model.CoverStamp
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
+import com.aviharez.stamp.ui.components.TitleWithNote
 import com.aviharez.stamp.ui.components.AlbumCover
 import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.HandNote
@@ -146,13 +147,9 @@ fun CollectionsContent(
                     )
                     Text(stringResource(R.string.collections_overline).uppercase(locale), style = StampTheme.type.overline)
                 }
-                Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(s.s)) {
-                    Text(
-                        stringResource(R.string.collections_title),
-                        style = StampTheme.type.screenTitle,
-                        modifier = Modifier.weight(1f, fill = false),
-                    )
-                    if (state.loaded && state.albums.isNotEmpty()) {
+                TitleWithNote(
+                    note = if (state.loaded && state.albums.isNotEmpty()) {
+                        {
                         HandNote(
                             stringResource(
                                 R.string.collections_stats,
@@ -161,10 +158,14 @@ fun CollectionsContent(
                             ),
                             style = StampTheme.type.noteSmall,
                             rotation = Tilt.note(StatsSeed),
-                            maxLines = 1,
                             modifier = Modifier.padding(bottom = s.xxs),
                         )
-                    }
+                        }
+                    } else {
+                        null
+                    },
+                ) {
+                    Text(stringResource(R.string.collections_title), style = StampTheme.type.screenTitle)
                 }
                 Row(
                     Modifier
@@ -247,7 +248,7 @@ private fun CollectionCover(summary: AlbumSummary, today: LocalDate, onClick: ()
                 }
             }
         }
-        HandNote(note, style = StampTheme.type.noteSmall, strength = InkStrength.Soft, maxLines = 1)
+        HandNote(note, style = StampTheme.type.noteSmall, strength = InkStrength.Soft, maxLines = 2)
     }
 }
 

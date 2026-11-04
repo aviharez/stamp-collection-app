@@ -50,6 +50,7 @@ import com.aviharez.stamp.domain.model.AlbumCategory
 import com.aviharez.stamp.domain.model.AlbumCoverColor
 import com.aviharez.stamp.domain.model.AlbumPages
 import com.aviharez.stamp.domain.model.Stamp
+import com.aviharez.stamp.ui.components.TitleWithNote
 import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.HandNote
@@ -173,18 +174,9 @@ fun AlbumPageContent(
                 }
             }
 
-            Row(
+            TitleWithNote(
                 Modifier.padding(horizontal = s.screen),
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(s.s),
-            ) {
-                Text(
-                    state.album?.name.orEmpty(),
-                    style = StampTheme.type.screenTitle,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f, fill = false),
-                )
+                note = {
                 HandNote(
                     stringResource(
                         R.string.album_stats,
@@ -193,8 +185,15 @@ fun AlbumPageContent(
                     ),
                     style = StampTheme.type.noteLarge,
                     rotation = Tilt.note(state.album?.id ?: 0L),
-                    maxLines = 1,
                     modifier = Modifier.padding(bottom = s.xxs),
+                )
+                },
+            ) {
+                Text(
+                    state.album?.name.orEmpty(),
+                    style = StampTheme.type.screenTitle,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
 

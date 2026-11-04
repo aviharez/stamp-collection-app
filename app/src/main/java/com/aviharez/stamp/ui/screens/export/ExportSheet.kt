@@ -10,6 +10,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -165,7 +167,8 @@ internal fun WatermarkRow(ad: AdOffer, onGetPro: () -> Unit, onWatchAd: () -> Un
             style = StampTheme.type.noteSmall,
             strength = InkStrength.Soft,
         )
-        Row(horizontalArrangement = Arrangement.spacedBy(s.xs), verticalAlignment = Alignment.CenterVertically) {
+        // Side by side; at large font sizes the ad chip moves under instead of being squeezed.
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(s.xs), itemVerticalAlignment = Alignment.CenterVertically) {
             PaperChip(stringResource(R.string.export_remove_with_pro), selected = true, onClick = onGetPro)
             AdChip(stringResource(R.string.export_remove_once), loading = ad == AdOffer.Loading, onClick = onWatchAd)
         }
@@ -214,12 +217,14 @@ private fun ExportPreview(preview: ImageBitmap?, checkered: Boolean) {
 @Composable
 private fun OptionRow(label: String, chips: @Composable () -> Unit) {
     val s = StampTheme.spacing
-    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(s.xs)) {
+    // Label column on one line with its chips; at large font sizes the chips wrap under the label.
+    FlowRow(itemVerticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(s.xs)) {
         Text(
             label.uppercase(),
             style = StampTheme.type.overline,
             color = StampTheme.colors.textMedium,
-            modifier = Modifier.width(LabelWidth),
+            maxLines = 1,
+            modifier = Modifier.widthIn(min = LabelWidth),
         )
         chips()
     }

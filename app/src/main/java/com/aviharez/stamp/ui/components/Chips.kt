@@ -87,9 +87,10 @@ fun AdChip(text: String, loading: Boolean, onClick: () -> Unit, modifier: Modifi
                 tint = if (loading) c.textLow else c.textHigh,
                 modifier = Modifier.size(AdIconSize),
             )
-            Text(
+            FitText(
                 if (loading) stringResource(R.string.ad_loading) else text,
-                style = StampTheme.type.chip,
+                StampTheme.type.chip,
+                Modifier.weight(1f, fill = false),
                 color = if (loading) c.textMedium else c.textHigh,
             )
         }

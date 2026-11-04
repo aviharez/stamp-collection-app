@@ -17,8 +17,8 @@
     <string name="pattern_postmark_day" translatable="false">dd MMM</string>
     <string name="pattern_postmark_year" translatable="false">yyyy</string>
     <string name="pattern_postmark_date" translatable="false">dd MMM yy</string>
-    <!-- Shown on placeholder screens until the real screen lands: milestone number -->
-    <string name="placeholder_note">coming in milestone %1$d…</string>
+    <!-- Shown on a tab whose screen isn't built yet (Map) -->
+    <string name="placeholder_note">coming soon…</string>
 
     <!-- Postmark: city, date -->
     <string name="postmark_description">Postmark: %1$s, %2$s</string>
@@ -252,6 +252,8 @@
     <string name="paywall_best_value">Best value</string>
     <string name="paywall_price_missing">–</string>
     <string name="paywall_plan_cd">%1$s, %2$s %3$s</string>
+    <!-- Read by screen readers while the price hasn't arrived from Google Play -->
+    <string name="paywall_plan_loading_cd">%1$s, price loading</string>
     <string name="paywall_selected_cd">Selected</string>
     <string name="paywall_buy_lifetime">Get Pro for life</string>
     <string name="paywall_buy_yearly">Start yearly Pro</string>

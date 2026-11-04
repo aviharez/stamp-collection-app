@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import com.aviharez.stamp.R
 import com.aviharez.stamp.domain.model.StampShape
+import com.aviharez.stamp.ui.components.FitText
 import com.aviharez.stamp.ui.components.AirmailStripe
 import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.HandNote
@@ -163,13 +164,16 @@ private fun Steps(modifier: Modifier = Modifier) {
     val steps = listOf(R.string.welcome_step_1, R.string.welcome_step_2, R.string.welcome_step_3)
     Row(modifier, horizontalArrangement = Arrangement.spacedBy(s.xs)) {
         steps.forEachIndexed { i, step ->
-            Row(Modifier.weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(s.xs)) {
+            // Read as one item: "1, tap below".
+            Row(Modifier.weight(1f).semantics(mergeDescendants = true) {}, verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(s.xs)) {
                 Stamp(StampShape.Square, Modifier.size(StepStampSize), shadowTint = StampTheme.colors.shadowNavy) {
-                    Text(
+                    // The stamp keeps its size, so at large font sizes the number shrinks to stay inside.
+                    FitText(
                         "${i + 1}",
-                        style = StampTheme.type.albumName,
+                        StampTheme.type.albumName,
+                        Modifier.align(Alignment.Center),
                         color = StampTheme.colors.airmailRed,
-                        modifier = Modifier.align(Alignment.Center),
+                        minScale = StepNumberMinScale,
                     )
                 }
                 HandNote(
@@ -184,6 +188,7 @@ private fun Steps(modifier: Modifier = Modifier) {
 }
 
 private val StepStampSize = 36.dp
+private const val StepNumberMinScale = 0.4f
 
 @PaperPreview
 @Composable

@@ -227,10 +227,10 @@ private fun StampNavigation(startOnWelcome: Boolean, onWelcomeDone: () -> Unit) 
                 )
             }
             composable<MapRoute> {
-                PlaceholderScreen(stringResource(R.string.nav_map), milestone = 5, contentPadding = inner)
+                PlaceholderScreen(stringResource(R.string.nav_map), comingSoon = true, contentPadding = inner)
             }
             composable<ProfileRoute> {
-                PlaceholderScreen(stringResource(R.string.nav_profile), milestone = 3, contentPadding = inner) {
+                PlaceholderScreen(stringResource(R.string.nav_profile), comingSoon = false, contentPadding = inner) {
                     ProEntry(onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) })
                     DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
                     BackupEntry()
