@@ -64,6 +64,10 @@ interface StampDao {
     @Query("SELECT DISTINCT day FROM stamps")
     fun observeDays(): Flow<List<String>>
 
+    /** Days that count for the streak: a stamp made on its own day. */
+    @Query("SELECT DISTINCT day FROM stamps WHERE day = created_day")
+    fun observeStreakDays(): Flow<List<String>>
+
     @Query("SELECT * FROM stamps WHERE day BETWEEN :from AND :to ORDER BY taken_at ASC")
     fun observeBetween(from: String, to: String): Flow<List<StampEntity>>
 

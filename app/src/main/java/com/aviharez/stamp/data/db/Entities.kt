@@ -42,6 +42,11 @@ data class StampEntity(
     @ColumnInfo(name = "taken_at") val takenAt: Long,
     /** ISO local date (yyyy-MM-dd) in the time zone at capture; sorts as text. */
     val day: String,
+    /**
+     * ISO local date the stamp was made in the app. Only stamps made on their own [day] count for
+     * the streak (an old photo imported later shows on the calendar but can't backfill a streak).
+     */
+    @ColumnInfo(name = "created_day", defaultValue = "") val createdDay: String,
     val city: String?,
     val country: String?,
     @ColumnInfo(name = "country_code") val countryCode: String?,

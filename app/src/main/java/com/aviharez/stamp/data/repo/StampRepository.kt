@@ -58,6 +58,7 @@ class StampRepository @Inject constructor(
                 originalPath = new.originalFile.path,
                 takenAt = takenAt.toEpochMilli(),
                 day = day.toString(),
+                createdDay = LocalDate.now(clock).toString(),
                 city = new.place.city,
                 country = new.place.country,
                 countryCode = new.place.countryCode,
@@ -89,8 +90,12 @@ class StampRepository @Inject constructor(
     fun observeDays(): Flow<Set<LocalDate>> =
         dao.observeDays().map { days -> days.mapTo(HashSet()) { LocalDate.parse(it) } }
 
+    /** First day anything was stamped (calendar starts there), null when there are no stamps. */
+    fun observeFirstDay(): Flow<LocalDate?> = observeDays().map { it.minOrNull() }
+
+    /** Only stamps made on their own day count (importing an old photo can't backfill a streak). */
     fun observeStreak(): Flow<Streak> =
-        observeDays().map { StreakCalculator.calculate(it, LocalDate.now(clock)) }
+        dao.observeStreakDays().map { days -> StreakCalculator.calculate(days.map(LocalDate::parse), LocalDate.now(clock)) }
 
     suspend fun setCaption(id: String, caption: String) =
         dao.setCaption(id, caption.trim().ifEmpty { null })

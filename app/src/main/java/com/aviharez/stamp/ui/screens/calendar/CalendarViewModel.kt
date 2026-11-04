@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.aviharez.stamp.data.repo.StampRepository
 import com.aviharez.stamp.domain.model.Stamp
 import com.aviharez.stamp.domain.usecase.Streak
-import com.aviharez.stamp.domain.usecase.StreakCalculator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -64,7 +63,12 @@ class CalendarViewModel @Inject constructor(
             }
         }
 
-    val state: StateFlow<CalendarUiState> = combine(page, pick, stamps.observeDays()) { page, pick, days ->
+    val state: StateFlow<CalendarUiState> = combine(
+        page,
+        pick,
+        stamps.observeStreak(),
+        stamps.observeFirstDay(),
+    ) { page, pick, streak, firstDay ->
         val today = LocalDate.now(clock)
         val selected = pick.day?.takeIf { pick.month == page.month }
             ?: CalendarMonth.defaultSelection(page.month, today, page.stampsByDay.keys)
@@ -73,8 +77,8 @@ class CalendarViewModel @Inject constructor(
             today = today,
             page = page,
             selected = selected,
-            streak = StreakCalculator.calculate(days, today),
-            firstMonth = days.minOrNull()?.let(YearMonth::from)?.coerceAtMost(YearMonth.from(today)) ?: YearMonth.from(today),
+            streak = streak,
+            firstMonth = firstDay?.let(YearMonth::from)?.coerceAtMost(YearMonth.from(today)) ?: YearMonth.from(today),
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), initialState())
 

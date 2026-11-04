@@ -73,7 +73,8 @@ fun StampApp() {
             ) {
                 StampNavBar(
                     selected = currentTab ?: lastTab,
-                    onSelect = { nav.navigateToTab(it) },
+                    // Re-tapping the current tab returns to its first screen (Collections → Home).
+                    onSelect = { if (it == currentTab) nav.popBackStack(it.root, inclusive = false) else nav.navigateToTab(it) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .navigationBarsPadding()
@@ -191,14 +192,17 @@ private inline fun <reified T : Any> NavHostController.hasInBackStack(): Boolean
 private fun NavDestination?.isAny(vararg routes: kotlin.reflect.KClass<*>): Boolean =
     this?.hierarchy?.any { dest -> routes.any { dest.hasRoute(it) } } == true
 
-private fun NavHostController.navigateToTab(tab: NavTab) {
-    val route: Any = when (tab) {
+/** First screen of each tab. */
+private val NavTab.root: Any
+    get() = when (this) {
         NavTab.Album -> HomeRoute
         NavTab.Calendar -> CalendarRoute
         NavTab.Map -> MapRoute
         NavTab.Profile -> ProfileRoute
     }
-    navigate(route) {
+
+private fun NavHostController.navigateToTab(tab: NavTab) {
+    navigate(tab.root) {
         popUpTo(graph.findStartDestination().id) { saveState = true }
         launchSingleTop = true
         restoreState = true

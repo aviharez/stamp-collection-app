@@ -27,6 +27,7 @@ object DataModule {
     fun database(@ApplicationContext context: Context): StampDatabase =
         Room.databaseBuilder<StampDatabase>(context, StampDatabase.NAME)
             .setDriver(AndroidSQLiteDriver())
+            .addMigrations(StampDatabase.Migration1To2)
             .build()
 
     @Provides fun albumDao(db: StampDatabase): AlbumDao = db.albumDao()
