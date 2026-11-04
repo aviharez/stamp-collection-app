@@ -17,3 +17,6 @@ local.properties
 # Local agent settings
 .claude/settings.local.json
 .kotlin
+
+# Design mockups stay local (not tracked)
+/design/

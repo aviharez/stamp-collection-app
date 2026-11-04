@@ -10,6 +10,7 @@ import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.compose.CameraXViewfinder
+import androidx.camera.viewfinder.core.ImplementationMode
 import androidx.camera.viewfinder.compose.MutableCoordinateTransformer
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -183,6 +184,17 @@ private fun CameraContent(
                 textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f).padding(horizontal = s.xs),
             )
+            if (state.lens == Lens.Front) {
+                CircleIconButton(
+                    icon = if (state.mirrorSelfie) R.drawable.ic_mirror_on else R.drawable.ic_mirror_off,
+                    contentDescription = stringResource(
+                        if (state.mirrorSelfie) R.string.camera_mirror_on else R.string.camera_mirror_off,
+                    ),
+                    onClick = viewModel::toggleMirrorSelfie,
+                    onDark = true,
+                    modifier = Modifier.rotate(iconRotation),
+                )
+            }
             if (state.hasFlash) {
                 CircleIconButton(
                     icon = state.flash.icon,
@@ -191,7 +203,7 @@ private fun CameraContent(
                     onDark = true,
                     modifier = Modifier.rotate(iconRotation),
                 )
-            } else {
+            } else if (state.lens != Lens.Front) {
                 Spacer(Modifier.size(s.touchTarget))
             }
         }
@@ -219,12 +231,22 @@ private fun CameraContent(
                 var focusPoint by remember { mutableStateOf<Offset?>(null) }
                 val zoomNow by rememberUpdatedState(state.zoomRatio)
                 val focusDescription = stringResource(R.string.camera_focus_cd)
+                // CameraX mirrors the front preview; with "mirror selfie" off we flip it back so the
+                // preview matches the saved stamp. The frame is centred, so the crop is unaffected.
+                val unmirror = state.lens == Lens.Front && !state.mirrorSelfie
+                val unmirrorNow by rememberUpdatedState(unmirror)
 
                 surfaceRequest?.let { request ->
                     CameraXViewfinder(
                         surfaceRequest = request,
                         coordinateTransformer = coordinateTransformer,
-                        modifier = Modifier.fillMaxSize(),
+                        // A SurfaceView ignores graphicsLayer transforms, so un-mirroring needs the
+                        // embedded (TextureView-style) viewfinder. Preview.setMirrorMode would be
+                        // simpler but is a no-op below API 33.
+                        implementationMode = if (unmirror) ImplementationMode.EMBEDDED else ImplementationMode.EXTERNAL,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer { scaleX = if (unmirror) -1f else 1f },
                     )
                 }
                 FrameOverlay(
@@ -237,7 +259,9 @@ private fun CameraContent(
                         .pointerInput(Unit) {
                             detectTapGestures { tap ->
                                 focusPoint = tap
-                                with(coordinateTransformer) { viewModel.focusAt(tap.transform()) }
+                                // Undo the visual flip before mapping into surface coordinates.
+                                val surfaceTap = if (unmirrorNow) tap.copy(x = size.width - tap.x) else tap
+                                with(coordinateTransformer) { viewModel.focusAt(surfaceTap.transform()) }
                             }
                         }
                         .pointerInput(Unit) {

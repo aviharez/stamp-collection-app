@@ -83,6 +83,8 @@ data class CameraUiState(
     val hasFlash: Boolean = false,
     val highResSupported: Boolean = false,
     val highResOn: Boolean = false,
+    /** Front camera only: true saves the selfie as the (mirrored) preview shows it. */
+    val mirrorSelfie: Boolean = true,
     val capturing: Boolean = false,
     val captured: CapturedStamp? = null,
     val problem: CameraProblem? = null,
@@ -223,6 +225,8 @@ class CameraViewModel @Inject constructor(
 
     fun toggleHighRes() = _state.update { it.copy(highResOn = !it.highResOn) }
 
+    fun toggleMirrorSelfie() = _state.update { it.copy(mirrorSelfie = !it.mirrorSelfie) }
+
     /** Tap-to-focus at [surfacePoint] (already transformed into SurfaceRequest coordinates). */
     fun focusAt(surfacePoint: Offset) {
         val request = _surfaceRequest.value ?: return
@@ -258,7 +262,7 @@ class CameraViewModel @Inject constructor(
             val original = storage.originalFile(id)
             try {
                 capture.targetRotation = displayRotation
-                capture.takePictureTo(original, mirror = snapshot.lens == Lens.Front)
+                capture.takePictureTo(original, mirror = snapshot.lens == Lens.Front && snapshot.mirrorSelfie)
                 val rendered = withContext(Dispatchers.Default) {
                     renderer.render(
                         original = original,

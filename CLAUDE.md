@@ -122,7 +122,7 @@ Max 4 sizes per screen. Values bigger than labels.
   on the edge so you see half-circles). Same path is reused for bitmap export. Slight random rotation (−6°..+6°) in
   album/collage contexts, 0° in editors.
 - **Postmark**: double circle (outer dashed optional) + city (bold, letter-spaced) + date, plus 3–4 wavy cancellation
-  lines to the right. AirmailRed at ~85% opacity on light, PaperWhite on camera preview. Random rotation −15..−8°.
+  lines to the right. AirmailRed at ~85% opacity on light and on the camera frame (as in design/camera.png). Random rotation −15..−8°.
 - **AirmailStripe**: repeating diagonal stripes Red / White / Cobalt (or Ink) / White, 45°. Used as envelope border,
   top edge of camera & celebration screens, cover detail.
 - **WashiTape**: semi-transparent striped strip, rotated, overlapping a stamp corner.
@@ -211,3 +211,5 @@ adb logcat -s AndroidRuntime:E
 - 2026-11-04: Light-only theme (no dark mode). The app is a paper album; Camera (Ink) and Stamped! (Cobalt) are drawn dark explicitly with textOnDark* tokens.
 - 2026-11-04: Default perforation is Classic (hole radius 3.5dp, pitch 12dp), measured from the mockups; Fine / Bold / Scallop are the other edge styles.
 - 2026-11-04: Nav bar changed from the Ink pill (InkNavBar) to the "stamp sheet" StampNavBar (concept E of 9): more tactile, labels always visible.
+- 2026-11-04: Camera postmark is AirmailRed (as in design/camera.png), not PaperWhite: white disappears where it overlaps the white stamp border, and red reads as real ink.
+- 2026-11-04: Front camera has a "mirror selfie" toggle (default on = saved as the preview shows it; off = true view, preview un-mirrored to match). Kept in memory for now; persisted with DataStore in milestone 2.

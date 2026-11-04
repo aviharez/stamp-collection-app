@@ -45,6 +45,8 @@
     <!-- Camera -->
     <string name="camera_shutter">Take stamp photo</string>
     <string name="camera_flip">Switch camera</string>
+    <string name="camera_mirror_on">Mirror selfie: on. Saves the selfie as shown in the preview</string>
+    <string name="camera_mirror_off">Mirror selfie: off. Saves the selfie as others see you</string>
     <string name="camera_flash_off">Flash off</string>
     <string name="camera_flash_auto">Flash auto</string>
     <string name="camera_flash_on">Flash on</string>
