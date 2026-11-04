@@ -37,6 +37,7 @@ import com.aviharez.stamp.ui.debug.DebugGalleryEntry
 import com.aviharez.stamp.ui.components.StampNavBar
 import com.aviharez.stamp.ui.screens.PlaceholderScreen
 import com.aviharez.stamp.ui.screens.album.AlbumPageScreen
+import com.aviharez.stamp.ui.screens.calendar.CalendarScreen
 import com.aviharez.stamp.ui.screens.camera.CameraScreen
 import com.aviharez.stamp.ui.screens.collections.CollectionsScreen
 import com.aviharez.stamp.ui.screens.home.HomeScreen
@@ -154,7 +155,11 @@ fun StampApp() {
                 )
             }
             composable<CalendarRoute> {
-                PlaceholderScreen(stringResource(R.string.nav_calendar), milestone = 2, contentPadding = inner)
+                CalendarScreen(
+                    contentPadding = inner,
+                    onStampIt = { nav.navigate(CameraRoute) },
+                    onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
+                )
             }
             composable<MapRoute> {
                 PlaceholderScreen(stringResource(R.string.nav_map), milestone = 5, contentPadding = inner)

@@ -175,4 +175,37 @@
 
     <!-- Data -->
     <string name="album_default_name">Everyday</string>
+
+    <!-- Calendar -->
+    <string name="pattern_month" translatable="false">LLLL</string>
+    <string name="pattern_day_title" translatable="false">EEE d MMM</string>
+    <string name="pattern_day_cd" translatable="false">EEEE d MMMM</string>
+    <!-- Overline above the month: %1$s = year -->
+    <string name="calendar_overline">Calendar · %1$s</string>
+    <string name="calendar_prev">Previous month</string>
+    <string name="calendar_next">Next month</string>
+    <plurals name="calendar_streak_unit">
+        <item quantity="one">day in a row</item>
+        <item quantity="other">days in a row</item>
+    </plurals>
+    <string name="calendar_streak_start">Stamp today to start a streak</string>
+    <!-- %1$d = best streak in days -->
+    <string name="calendar_streak_keep">best %1$d · stamp today to keep it going</string>
+    <string name="calendar_streak_tomorrow">come back tomorrow for day 2</string>
+    <string name="calendar_streak_best_now">your best yet!</string>
+    <string name="calendar_streak_best">best %1$d</string>
+    <!-- Selected day: %1$s = "Wed 4 Nov", %2$s = "2 stamps" -->
+    <string name="calendar_day_title">%1$s · %2$s</string>
+    <string name="calendar_empty_today">Nothing stamped today yet</string>
+    <string name="calendar_empty_day">nothing stamped this day</string>
+    <string name="calendar_pick_day">tap a stamped day to see it</string>
+    <!-- More stamps than fit in the row: %1$d -->
+    <string name="calendar_more">+%1$d</string>
+    <!-- Badge on a day with several stamps -->
+    <string name="calendar_count">×%1$d</string>
+    <!-- Spoken day cell: %1$s = "Wednesday 4 November", %2$s = "2 stamps" / "no stamps" -->
+    <string name="calendar_day_cd">%1$s, %2$s</string>
+    <string name="calendar_no_stamps">no stamps</string>
+    <!-- Spoken: %1$s = day description -->
+    <string name="calendar_today_cd">Today, %1$s</string>
 </resources>

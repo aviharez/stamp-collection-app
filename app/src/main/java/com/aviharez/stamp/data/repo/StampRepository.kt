@@ -82,6 +82,10 @@ class StampRepository @Inject constructor(
     fun observeRecent(limit: Int): Flow<List<Stamp>> =
         dao.observeRecent(limit).map { list -> list.map { it.toDomain() } }
 
+    /** Stamps whose calendar day is in [days], oldest first. */
+    fun observeBetween(days: ClosedRange<LocalDate>): Flow<List<Stamp>> =
+        dao.observeBetween(days.start.toString(), days.endInclusive.toString()).map { list -> list.map { it.toDomain() } }
+
     fun observeDays(): Flow<Set<LocalDate>> =
         dao.observeDays().map { days -> days.mapTo(HashSet()) { LocalDate.parse(it) } }
 

@@ -131,6 +131,7 @@ fun CircleIconButton(
     modifier: Modifier = Modifier,
     onDark: Boolean = false,
     size: Dp = StampTheme.spacing.touchTarget,
+    enabled: Boolean = true,
 ) {
     val c = StampTheme.colors
     val source = remember { MutableInteractionSource() }
@@ -138,11 +139,11 @@ fun CircleIconButton(
     val content = if (onDark) c.textOnDarkHigh else c.ink
     Box(
         modifier
-            .graphicsLayer { scaleX = scale; scaleY = scale }
+            .graphicsLayer { scaleX = scale; scaleY = scale; alpha = if (enabled) 1f else DisabledAlpha }
             .size(size)
             .clip(CircleShape)
             .background(if (onDark) c.plateOnDark else c.surface2)
-            .clickableWithRipple(source, true, content, onClick, contentDescription),
+            .clickableWithRipple(source, enabled, content, onClick, contentDescription),
         contentAlignment = Alignment.Center,
     ) {
         Icon(painterResource(icon), contentDescription = null, tint = content, modifier = Modifier.size(IconSize))
@@ -178,6 +179,7 @@ internal fun Modifier.clickableWithRipple(
     )
 
 private const val PressedScale = 0.96f
+private const val DisabledAlpha = 0.4f
 private val ButtonHeight = 52.dp
 private val BorderWidth = 1.5.dp
 private val IconSize = 20.dp
