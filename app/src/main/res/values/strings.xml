@@ -321,4 +321,9 @@
     <string name="welcome_make_stamp">Make my first stamp</string>
     <string name="welcome_postmark_city">HELLO</string>
     <string name="welcome_art_description">Three example stamps, one postmarked today</string>
+
+    <!-- Album page export -->
+    <string name="page_export_title">Share this page</string>
+    <string name="page_export_watermark_note">small “%1$s” mark at the foot of the page</string>
+    <string name="page_export_unlocked_note">watermark off for this album · thanks for watching</string>
 </resources>

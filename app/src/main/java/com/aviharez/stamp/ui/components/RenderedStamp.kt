@@ -54,8 +54,11 @@ fun RenderedStamp(
                 PreviewArt(kind, Modifier.matchParentSize())
             }
         } else {
+            val loads = LocalImageLoads.current
             AsyncImage(
                 model = file,
+                onSuccess = { loads?.finished(file.path) },
+                onError = { loads?.finished(file.path) },
                 contentDescription = contentDescription,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize(),

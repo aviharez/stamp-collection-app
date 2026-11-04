@@ -131,25 +131,30 @@ class StampExporter @Inject constructor(@ApplicationContext private val context:
     }
 
     /** Writes the full-resolution export to the share cache (replacing earlier ones). */
-    fun exportToCache(stamp: Stamp, options: ExportOptions): File {
-        val dir = File(context.cacheDir, ExportDir).apply { mkdirs() }
-        dir.listFiles()?.forEach { it.delete() }
-        val file = File(dir, fileName(stamp))
-        val bitmap = render(stamp, options)
-        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, PngQuality, it) }
-        bitmap.recycle()
-        return file
-    }
+    fun exportToCache(stamp: Stamp, options: ExportOptions): File = render(stamp, options).let { writeToCache(it, fileName(stamp)) }
 
     /**
      * Saves the full-resolution export into the shared Pictures/<app name> folder. Below Android 10
      * this needs WRITE_EXTERNAL_STORAGE (asked by the UI first).
      */
-    fun saveToPictures(stamp: Stamp, options: ExportOptions): Uri {
+    fun saveToPictures(stamp: Stamp, options: ExportOptions): Uri = saveToPictures(fileName(stamp)) { render(stamp, options) }
+
+    /** Any finished PNG (e.g. an album page) to the share cache; recycles [bitmap]. */
+    fun writeToCache(bitmap: Bitmap, name: String): File {
+        val dir = File(context.cacheDir, ExportDir).apply { mkdirs() }
+        dir.listFiles()?.forEach { it.delete() }
+        val file = File(dir, name)
+        file.outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, PngQuality, it) }
+        bitmap.recycle()
+        return file
+    }
+
+    /** Any PNG made by [make] into Pictures/<app name> as [name]; the bitmap is recycled. */
+    fun saveToPictures(name: String, make: () -> Bitmap): Uri {
         val resolver = context.contentResolver
         val folder = "${Environment.DIRECTORY_PICTURES}/${context.getString(R.string.app_name)}"
         val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, fileName(stamp))
+            put(MediaStore.Images.Media.DISPLAY_NAME, name)
             put(MediaStore.Images.Media.MIME_TYPE, MimePng)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 put(MediaStore.Images.Media.RELATIVE_PATH, folder)
@@ -159,12 +164,12 @@ class StampExporter @Inject constructor(@ApplicationContext private val context:
                 val dir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), context.getString(R.string.app_name))
                 dir.mkdirs()
                 @Suppress("DEPRECATION")
-                put(MediaStore.Images.Media.DATA, File(dir, fileName(stamp)).path)
+                put(MediaStore.Images.Media.DATA, File(dir, name).path)
             }
         }
         val uri = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values) ?: error("MediaStore insert failed")
         try {
-            val bitmap = render(stamp, options)
+            val bitmap = make()
             resolver.openOutputStream(uri)?.use { bitmap.compress(Bitmap.CompressFormat.PNG, PngQuality, it) }
                 ?: error("No output stream for $uri")
             bitmap.recycle()

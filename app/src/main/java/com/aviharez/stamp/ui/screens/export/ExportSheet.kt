@@ -73,28 +73,12 @@ fun ExportSheet(
     LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
             when (event) {
-                is ExportEvent.Share -> {
-                    val send = Intent(Intent.ACTION_SEND).apply {
-                        type = StampExporter.MimePng
-                        putExtra(Intent.EXTRA_STREAM, event.uri)
-                        clipData = ClipData.newRawUri(null, event.uri)
-                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                    }
-                    context.startActivity(Intent.createChooser(send, null))
-                }
+                is ExportEvent.Share -> context.sharePng(event.uri)
             }
         }
     }
 
-    // Android 8–9 need the storage permission to write into Pictures; later versions don't.
-    val askStorage = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (granted) viewModel.saveToPhotos()
-    }
-    val save = {
-        val needsPermission = Build.VERSION.SDK_INT < Build.VERSION_CODES.Q &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
-        if (needsPermission) askStorage.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE) else viewModel.saveToPhotos()
-    }
+    val save = rememberSaveToPhotos(viewModel::saveToPhotos)
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -163,36 +147,13 @@ fun ExportContent(
             Text(stringResource(R.string.export_failed), style = StampTheme.type.label, color = c.airmailRed)
         }
 
-        Row(Modifier.fillMaxWidth().padding(top = s.xs), horizontalArrangement = Arrangement.spacedBy(s.s)) {
-            PillButton(
-                text = stringResource(
-                    when (state.save) {
-                        SaveState.Saving -> R.string.export_saving
-                        SaveState.Saved -> R.string.export_saved
-                        else -> R.string.export_save
-                    },
-                ),
-                onClick = onSave,
-                enabled = state.save != SaveState.Saving && state.save != SaveState.Saved,
-                style = PillStyle.Outline,
-                leadingIcon = if (state.save == SaveState.Saved) R.drawable.ic_check else R.drawable.ic_download,
-                modifier = Modifier.weight(1f),
-            )
-            PillButton(
-                text = stringResource(R.string.export_share),
-                onClick = onShare,
-                enabled = !state.sharing,
-                style = PillStyle.Red,
-                leadingIcon = R.drawable.ic_share,
-                modifier = Modifier.weight(1f),
-            )
-        }
+        SaveShareRow(state.save, state.sharing, onSave, onShare, Modifier.padding(top = s.xs))
     }
 }
 
 /** The watermark row: the two honest ways out side by side, Pro first, the ad as the quiet option. */
 @Composable
-private fun WatermarkRow(ad: AdOffer, onGetPro: () -> Unit, onWatchAd: () -> Unit) {
+internal fun WatermarkRow(ad: AdOffer, onGetPro: () -> Unit, onWatchAd: () -> Unit, note: String = stringResource(R.string.export_watermark_note, stringResource(R.string.app_name))) {
     val c = StampTheme.colors
     val s = StampTheme.spacing
     Column(
@@ -200,7 +161,7 @@ private fun WatermarkRow(ad: AdOffer, onGetPro: () -> Unit, onWatchAd: () -> Uni
         verticalArrangement = Arrangement.spacedBy(s.xs),
     ) {
         HandNote(
-            stringResource(R.string.export_watermark_note, stringResource(R.string.app_name)),
+            note,
             style = StampTheme.type.noteSmall,
             strength = InkStrength.Soft,
         )

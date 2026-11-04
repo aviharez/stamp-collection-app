@@ -21,7 +21,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -76,21 +78,41 @@ import java.time.Instant
 fun AlbumPageScreen(
     onBack: () -> Unit,
     onNextStamp: () -> Unit,
+    onGetPro: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AlbumPageViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var editing by rememberSaveable { mutableStateOf(false) }
+    /** Index of the page being shared, or -1. */
+    var sharingPage by rememberSaveable { mutableIntStateOf(-1) }
 
     AlbumPageContent(
         state = state,
         onBack = onBack,
         onEdit = { editing = true },
         onNextStamp = { viewModel.takeNextStamp(onNextStamp) },
+        onSharePage = { sharingPage = it },
         modifier = modifier,
     )
 
     val album = state.album
+    val page = state.pages.getOrNull(sharingPage)
+    if (album != null && page != null && page.isNotEmpty()) {
+        PageExportSheet(
+            content = PageExportContent(
+                albumName = album.name,
+                page = sharingPage + 1,
+                pageCount = state.pages.size,
+                stamps = page,
+                stampCount = state.stampCount,
+                dayCount = state.dayCount,
+            ),
+            onDismiss = { sharingPage = -1 },
+            onGetPro = onGetPro,
+        )
+    }
+
     if (editing && album != null) {
         AlbumFormSheet(
             onSubmit = viewModel::edit,
@@ -106,6 +128,7 @@ fun AlbumPageContent(
     onBack: () -> Unit,
     onEdit: () -> Unit,
     onNextStamp: () -> Unit,
+    onSharePage: (index: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val s = StampTheme.spacing
@@ -119,8 +142,10 @@ fun AlbumPageContent(
         verticalArrangement = Arrangement.spacedBy(s.m),
     ) {
         // Wait for the data, so the pager can open on the newest page.
+        var currentPage by remember { mutableIntStateOf(-1) }
         if (state.loaded) {
             val pagerState = rememberPagerState(initialPage = state.pages.lastIndex) { state.pages.size }
+            currentPage = pagerState.currentPage
 
             Box(Modifier.fillMaxWidth().padding(horizontal = s.screenFullBleed)) {
                 CircleIconButton(
@@ -188,11 +213,10 @@ fun AlbumPageContent(
             Spacer(Modifier.weight(1f))
         }
 
-        // Map (milestone 5) and page export (milestone 3) are shown but not live yet.
+        // Map arrives with milestone 5 (shown, not live yet). An empty page has nothing to share.
+        val sharable = state.pages.getOrNull(currentPage)?.isNotEmpty() == true
         Row(
-            Modifier
-                .padding(horizontal = s.screenFullBleed)
-                .alpha(DisabledAlpha),
+            Modifier.padding(horizontal = s.screenFullBleed),
             horizontalArrangement = Arrangement.spacedBy(s.s),
         ) {
             PillButton(
@@ -200,14 +224,15 @@ fun AlbumPageContent(
                 onClick = {},
                 enabled = false,
                 style = PillStyle.Outline,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f).alpha(DisabledAlpha),
             )
             PillButton(
                 stringResource(R.string.album_share_page),
-                onClick = {},
-                enabled = false,
+                onClick = { onSharePage(currentPage) },
+                enabled = sharable,
                 style = PillStyle.Ink,
-                modifier = Modifier.weight(2f),
+                leadingIcon = R.drawable.ic_share,
+                modifier = Modifier.weight(2f).alpha(if (sharable) 1f else DisabledAlpha),
             )
         }
     }
@@ -215,7 +240,7 @@ fun AlbumPageContent(
 
 /** One kraft page: a 3 × 3 grid of stamps with hand-written dates and one postmark. */
 @Composable
-private fun AlbumSheet(
+internal fun AlbumSheet(
     stamps: List<Stamp>,
     hasNextSlot: Boolean,
     onNextStamp: () -> Unit,
@@ -370,6 +395,7 @@ private fun AlbumPageScreenPreview() {
             onBack = {},
             onEdit = {},
             onNextStamp = {},
+            onSharePage = {},
         )
     }
 }

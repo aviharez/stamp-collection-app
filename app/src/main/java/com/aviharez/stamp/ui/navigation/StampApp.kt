@@ -149,6 +149,7 @@ private fun StampNavigation(startOnWelcome: Boolean, onWelcomeDone: () -> Unit) 
                 AlbumPageScreen(
                     onBack = { nav.popBackStack() },
                     onNextStamp = { nav.navigate(CameraRoute()) },
+                    onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
                 )
             }
             composable<CameraRoute>(
