@@ -97,7 +97,11 @@ fun StampApp() {
                 )
             }
             composable<CollectionsRoute> {
-                CollectionsScreen(contentPadding = inner, onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) })
+                CollectionsScreen(
+                    contentPadding = inner,
+                    onBack = { nav.popBackStack() },
+                    onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
+                )
             }
             composable<AlbumPageRoute> {
                 AlbumPageScreen(

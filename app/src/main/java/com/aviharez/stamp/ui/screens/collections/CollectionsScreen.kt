@@ -50,6 +50,7 @@ import com.aviharez.stamp.domain.model.CoverStamp
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.components.AlbumCover
+import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
 import com.aviharez.stamp.ui.components.PaperChip
@@ -72,6 +73,7 @@ import java.time.ZoneId
 @Composable
 fun CollectionsScreen(
     contentPadding: PaddingValues,
+    onBack: () -> Unit,
     onOpenAlbum: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CollectionsViewModel = hiltViewModel(),
@@ -83,6 +85,7 @@ fun CollectionsScreen(
         state = state,
         contentPadding = contentPadding,
         onFilter = viewModel::setFilter,
+        onBack = onBack,
         onOpenAlbum = onOpenAlbum,
         onNewAlbum = { creating = true },
         modifier = modifier,
@@ -98,6 +101,7 @@ fun CollectionsContent(
     state: CollectionsUiState,
     contentPadding: PaddingValues,
     onFilter: (AlbumCategory?) -> Unit,
+    onBack: () -> Unit,
     onOpenAlbum: (Long) -> Unit,
     onNewAlbum: () -> Unit,
     modifier: Modifier = Modifier,
@@ -118,7 +122,19 @@ fun CollectionsContent(
     ) {
         item(span = { GridItemSpan(maxLineSpan) }, contentType = "header") {
             Column(verticalArrangement = Arrangement.spacedBy(s.xs)) {
-                Text(stringResource(R.string.collections_overline).uppercase(locale), style = StampTheme.type.overline)
+                // Back to Home (Collections is opened from Home's "All albums").
+                Row(
+                    Modifier.padding(bottom = s.xs),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(s.s),
+                ) {
+                    CircleIconButton(
+                        icon = R.drawable.ic_back,
+                        contentDescription = stringResource(R.string.cd_back),
+                        onClick = onBack,
+                    )
+                    Text(stringResource(R.string.collections_overline).uppercase(locale), style = StampTheme.type.overline)
+                }
                 Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(s.s)) {
                     Text(
                         stringResource(R.string.collections_title),
@@ -291,6 +307,7 @@ private fun CollectionsScreenPreview() {
             ),
             contentPadding = PaddingValues(),
             onFilter = {},
+            onBack = {},
             onOpenAlbum = {},
             onNewAlbum = {},
         )
