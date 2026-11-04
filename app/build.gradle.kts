@@ -79,6 +79,9 @@ dependencies {
     implementation(libs.androidx.sqlite.framework)
     implementation(libs.androidx.datastore.preferences)
 
+    // Location (postmark)
+    implementation(libs.play.services.location)
+
     // Images
     implementation(libs.coil.compose)
     implementation(libs.androidx.exifinterface)

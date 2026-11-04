@@ -73,6 +73,7 @@ import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.Postmark
 import com.aviharez.stamp.ui.components.rememberDateText
+import com.aviharez.stamp.ui.components.rememberPostmarkLines
 import com.aviharez.stamp.ui.theme.StampTheme
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
@@ -139,6 +140,14 @@ private fun CameraContent(
     LaunchedEffect(state.lens, state.highResOn, lifecycleOwner) {
         viewModel.bindCamera(appContext, lifecycleOwner)
     }
+    val locationLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        viewModel.onLocationAnswered(granted)
+    }
+    // Back from system Settings with location newly allowed: fetch the place.
+    LifecycleResumeEffect(viewModel) {
+        viewModel.refreshPlace()
+        onPauseOrDispose { }
+    }
     val latestOnCaptured by rememberUpdatedState(onCaptured)
     LaunchedEffect(state.captured) {
         state.captured?.let {
@@ -177,8 +186,9 @@ private fun CameraContent(
                 onDark = true,
                 modifier = Modifier.rotate(iconRotation),
             )
+            val today = rememberDateText(R.string.pattern_short_date)
             Text(
-                rememberDateText(R.string.pattern_short_date),
+                state.place.city?.let { stringResource(R.string.camera_header_place, it, today) } ?: today,
                 style = StampTheme.type.albumName,
                 color = c.textOnDarkHigh,
                 textAlign = TextAlign.Center,
@@ -271,13 +281,14 @@ private fun CameraContent(
                         },
                 )
 
-                // Live postmark on the frame's lower-right corner (date-only until location, M2).
+                // Live postmark on the frame's lower-right corner: city · date, or date-only.
+                val postmark = rememberPostmarkLines(state.place)
                 // AirmailRed as in design/camera.png: PaperWhite vanishes where it crosses the paper.
                 val postmarkDiameter = PostmarkDiameter
                 val postmarkPx = with(density) { postmarkDiameter.toPx() }
                 Postmark(
-                    city = rememberDateText(R.string.pattern_postmark_day),
-                    date = rememberDateText(R.string.pattern_postmark_year),
+                    city = postmark.top,
+                    date = postmark.bottom,
                     color = c.postmarkOnLight,
                     diameter = postmarkDiameter,
                     showWaves = false,
@@ -302,7 +313,13 @@ private fun CameraContent(
                     )
                 }
 
-                ZoomChips(
+                if (state.askLocation) {
+                    LocationAsk(
+                        onAllow = { locationLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION) },
+                        onNotNow = { viewModel.onLocationAnswered(granted = false) },
+                        modifier = Modifier.align(Alignment.BottomCenter).padding(s.s),
+                    )
+                } else ZoomChips(
                     zoomRatio = state.zoomRatio,
                     stops = zoomStops(state.minZoom, state.maxZoom),
                     onZoom = viewModel::setZoom,

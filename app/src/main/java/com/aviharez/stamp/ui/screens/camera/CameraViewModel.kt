@@ -30,6 +30,7 @@ import com.aviharez.stamp.data.image.CropSpec
 import com.aviharez.stamp.data.image.NormRect
 import com.aviharez.stamp.data.image.StampRenderer
 import com.aviharez.stamp.data.image.StampStorage
+import com.aviharez.stamp.data.location.PlaceProvider
 import com.aviharez.stamp.data.repo.NewStamp
 import com.aviharez.stamp.data.repo.StampRepository
 import com.aviharez.stamp.data.settings.SettingsRepository
@@ -45,6 +46,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.async
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -89,6 +93,10 @@ data class CameraUiState(
     val highResOn: Boolean = false,
     /** Front camera only: true saves the selfie as the (mirrored) preview shows it. */
     val mirrorSelfie: Boolean = true,
+    /** Postmark place; [Place.Unknown] → date-only. */
+    val place: Place = Place.Unknown,
+    /** Show the one-time "put your city on the postmark?" card. */
+    val askLocation: Boolean = false,
     val capturing: Boolean = false,
     /** Id of the stamp just saved; the screen navigates to Stamped! with it. */
     val captured: String? = null,
@@ -101,6 +109,7 @@ class CameraViewModel @Inject constructor(
     private val renderer: StampRenderer,
     private val stamps: StampRepository,
     private val settings: SettingsRepository,
+    private val places: PlaceProvider,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CameraUiState())
@@ -110,6 +119,34 @@ class CameraViewModel @Inject constructor(
         viewModelScope.launch {
             settings.mirrorSelfie.collect { on -> _state.update { it.copy(mirrorSelfie = on) } }
         }
+        viewModelScope.launch {
+            if (places.hasPermission()) refreshPlace()
+            else if (!settings.locationAsked()) _state.update { it.copy(askLocation = true) }
+        }
+    }
+
+    private var placeJob: Deferred<Place>? = null
+
+    /** Looks up the postmark place in the background (cheap when cached). */
+    fun refreshPlace() {
+        if (!places.hasPermission() || placeJob?.isActive == true) return
+        placeJob = viewModelScope.async {
+            places.current().also { place -> _state.update { it.copy(place = place) } }
+        }
+    }
+
+    /** Result of the location ask (system dialog answered, or "Not now"). */
+    fun onLocationAnswered(granted: Boolean) {
+        _state.update { it.copy(askLocation = false) }
+        viewModelScope.launch { settings.setLocationAsked() }
+        if (granted) refreshPlace()
+    }
+
+    /** Place for a capture: the known one, or a short wait for a lookup still in flight. */
+    private suspend fun placeForCapture(): Place {
+        val known = _state.value.place
+        if (known.hasName) return known
+        return placeJob?.let { withTimeoutOrNull(PlaceWaitMillis) { it.await() } } ?: known
     }
 
     private val _surfaceRequest = MutableStateFlow<SurfaceRequest?>(null)
@@ -301,7 +338,7 @@ class CameraViewModel @Inject constructor(
                         perforation = snapshot.perforation,
                         imageFile = rendered.file,
                         originalFile = original,
-                        place = Place.Unknown,
+                        place = placeForCapture(),
                         source = StampSource.Camera,
                     ),
                 )
@@ -342,6 +379,8 @@ class CameraViewModel @Inject constructor(
     private companion object {
         const val TAG = "CameraViewModel"
         const val HighResMinPixels = 40_000_000L
+        /** How long a capture waits for a place lookup still running before going date-only. */
+        const val PlaceWaitMillis = 1_500L
         val FourByThree: AspectRatioStrategy = AspectRatioStrategy.RATIO_4_3_FALLBACK_AUTO_STRATEGY
 
         fun captureResolution(highRes: Boolean): ResolutionSelector = ResolutionSelector.Builder()

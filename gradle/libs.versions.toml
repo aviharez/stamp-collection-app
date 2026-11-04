@@ -15,6 +15,7 @@ exifinterface = "1.4.2"
 room3 = "3.0.3"
 sqlite = "2.7.1"
 datastore = "1.3.0"
+playServicesLocation = "21.4.0"
 kotlinxSerialization = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -63,6 +64,9 @@ androidx-room3-compiler = { group = "androidx.room3", name = "room3-compiler", v
 # AndroidSQLiteDriver (platform SQLite; avoids shipping the bundled native driver)
 androidx-sqlite-framework = { group = "androidx.sqlite", name = "sqlite-framework", version.ref = "sqlite" }
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
+# Postmark city/country: fused coarse location (fast, battery-cheap) — CLAUDE.md §2
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 # Tests
 junit = { group = "junit", name = "junit", version.ref = "junit" }

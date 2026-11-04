@@ -31,8 +31,16 @@ class SettingsRepository @Inject constructor(private val store: DataStore<Prefer
         store.edit { it[LastAlbumId] = id }
     }
 
+    /** The one-time postmark location ask has been answered (either way). */
+    suspend fun locationAsked(): Boolean = store.data.first()[LocationAsked] ?: false
+
+    suspend fun setLocationAsked() {
+        store.edit { it[LocationAsked] = true }
+    }
+
     private companion object {
         val MirrorSelfie = booleanPreferencesKey("mirror_selfie")
         val LastAlbumId = longPreferencesKey("last_album_id")
+        val LocationAsked = booleanPreferencesKey("location_asked")
     }
 }

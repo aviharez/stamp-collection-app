@@ -216,3 +216,4 @@ adb logcat -s AndroidRuntime:E
 - 2026-11-04: Room 3 (androidx.room3) with the platform AndroidSQLiteDriver (no bundled native SQLite). Schemas exported to app/schemas.
 - 2026-11-04: Every capture is saved immediately into the last-used album (first ever → auto-created "Everyday" album). "Retake" deletes it; leaving Stamped! keeps it.
 - 2026-11-04: A stamp's calendar day is fixed at capture in the time zone then. Streak: today not stamped yet doesn't break it; a whole missed day does. Computed from stamp days (no separate cache needed yet).
+- 2026-11-04: Postmark place = coarse fused location (play-services-location; LocationManager last-known fallback) + platform Geocoder, cached 10 min. Asked once on the camera with an in-app card ("Not now" = never asked there again; date-only). Postmark reads "CITY / dd MMM yy · CC"; header "City · d MMM". Note for the store privacy form: Geocoder sends coordinates to Google's geocoding service.
