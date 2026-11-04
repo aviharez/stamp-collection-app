@@ -44,6 +44,11 @@ class ProStatus @Inject constructor(private val store: DataStore<Preferences>) {
         store.edit { it[BonusAlbums] = (it[BonusAlbums] ?: 0) + 1 }
     }
 
+    /** From a backup: earned slots are kept, never reduced. */
+    suspend fun restoreBonusAlbums(count: Int) {
+        store.edit { it[BonusAlbums] = maxOf(it[BonusAlbums] ?: 0, count.coerceIn(0, MaxRestoredBonus)) }
+    }
+
     /** Written by billing only. */
     suspend fun setPurchased(pro: Boolean) {
         store.edit { it[IsPro] = pro }
@@ -58,5 +63,7 @@ class ProStatus @Inject constructor(private val store: DataStore<Preferences>) {
         val IsPro = booleanPreferencesKey("is_pro")
         val DebugPro = booleanPreferencesKey("debug_pro")
         val BonusAlbums = intPreferencesKey("bonus_albums")
+        /** A backup file is user-editable; cap what it can grant. */
+        const val MaxRestoredBonus = 50
     }
 }

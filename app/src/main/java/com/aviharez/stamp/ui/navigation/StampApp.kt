@@ -39,6 +39,7 @@ import com.aviharez.stamp.ui.debug.DebugProSwitch
 import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
 import com.aviharez.stamp.ui.screens.settings.AdPrivacyEntry
+import com.aviharez.stamp.ui.screens.settings.BackupEntry
 import com.aviharez.stamp.ui.screens.settings.ProEntry
 import com.aviharez.stamp.ui.components.StampNavBar
 import com.aviharez.stamp.ui.screens.PlaceholderScreen
@@ -183,6 +184,7 @@ fun StampApp() {
                 PlaceholderScreen(stringResource(R.string.nav_profile), milestone = 3, contentPadding = inner) {
                     ProEntry(onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) })
                     DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
+                    BackupEntry()
                     AdPrivacyEntry()
                     DebugProSwitch()
                 }

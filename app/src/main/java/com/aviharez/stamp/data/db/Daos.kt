@@ -37,6 +37,9 @@ interface AlbumDao {
     @Query("SELECT COUNT(*) FROM albums")
     suspend fun count(): Int
 
+    @Query("SELECT * FROM albums ORDER BY created_at ASC")
+    suspend fun all(): List<AlbumEntity>
+
     @Insert
     suspend fun insert(album: AlbumEntity): Long
 
@@ -51,6 +54,12 @@ interface StampDao {
 
     @Query("SELECT * FROM stamps WHERE id = :id")
     suspend fun get(id: String): StampEntity?
+
+    @Query("SELECT * FROM stamps ORDER BY taken_at ASC")
+    suspend fun all(): List<StampEntity>
+
+    @Query("SELECT id FROM stamps")
+    suspend fun ids(): List<String>
 
     @Query("SELECT * FROM stamps WHERE id = :id")
     fun observe(id: String): Flow<StampEntity?>

@@ -277,4 +277,36 @@
     <string name="paywall_ad_album_note">just need one more album?</string>
     <string name="paywall_ad_album">+1 album · short ad</string>
     <string name="profile_ad_privacy">Ad privacy choices</string>
+
+    <!-- Backup / restore (Profile). One file the user keeps; restore merges, never deletes. -->
+    <string name="backup_create">Back up to a file</string>
+    <string name="backup_restore">Restore from a file</string>
+    <string name="backup_never">no backup yet · your stamps live only on this phone</string>
+    <string name="backup_last">last backup · %1$s</string>
+    <string name="backup_writing">backing up…</string>
+    <string name="backup_writing_progress">backing up… %1$d of %2$d</string>
+    <string name="backup_reading">reading the backup…</string>
+    <string name="backup_restoring_progress">restoring… %1$d of %2$d</string>
+    <plurals name="backup_done">
+        <item quantity="one">backed up %1$d stamp · keep the file somewhere safe</item>
+        <item quantity="other">backed up %1$d stamps · keep the file somewhere safe</item>
+    </plurals>
+    <plurals name="backup_restored_stamps">
+        <item quantity="one">%1$d stamp back</item>
+        <item quantity="other">%1$d stamps back</item>
+    </plurals>
+    <plurals name="backup_restored_albums">
+        <item quantity="one">%1$d new album</item>
+        <item quantity="other">%1$d new albums</item>
+    </plurals>
+    <plurals name="backup_already_here">
+        <item quantity="one">%1$d already here</item>
+        <item quantity="other">%1$d already here</item>
+    </plurals>
+    <string name="backup_restored_nothing">nothing new in that backup</string>
+    <string name="backup_separator" translatable="false">" · "</string>
+    <string name="backup_not_a_backup">That file isn’t a stamp backup.</string>
+    <string name="backup_newer">That backup is from a newer version of the app. Update the app, then try again.</string>
+    <string name="backup_failed">The backup couldn’t be written. Check there’s free space and try again.</string>
+    <string name="backup_restore_failed">The restore stopped part way. Try again: stamps already back are kept and won’t be doubled.</string>
 </resources>

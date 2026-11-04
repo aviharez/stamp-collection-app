@@ -38,9 +38,17 @@ class SettingsRepository @Inject constructor(private val store: DataStore<Prefer
         store.edit { it[LocationAsked] = true }
     }
 
+    /** When the last backup file was written (epoch millis), null = never. */
+    val lastBackupAt: Flow<Long?> = store.data.map { it[LastBackupAt] }.distinctUntilChanged()
+
+    suspend fun setLastBackupAt(millis: Long) {
+        store.edit { it[LastBackupAt] = millis }
+    }
+
     private companion object {
         val MirrorSelfie = booleanPreferencesKey("mirror_selfie")
         val LastAlbumId = longPreferencesKey("last_album_id")
         val LocationAsked = booleanPreferencesKey("location_asked")
+        val LastBackupAt = longPreferencesKey("last_backup_at")
     }
 }
