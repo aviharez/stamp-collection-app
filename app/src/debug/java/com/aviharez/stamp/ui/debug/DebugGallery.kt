@@ -38,6 +38,8 @@ import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
 import com.aviharez.stamp.ui.components.NavTab
+import com.aviharez.stamp.ui.components.PillButton
+import com.aviharez.stamp.ui.components.PillStyle
 import com.aviharez.stamp.ui.components.Postmark
 import com.aviharez.stamp.ui.components.PreviewArt
 import com.aviharez.stamp.ui.components.PreviewArtKind
@@ -47,8 +49,11 @@ import com.aviharez.stamp.ui.components.Tilt
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
 
-/** True in debug builds: the debug component gallery is available. */
-const val DEBUG_GALLERY_ENABLED = true
+/** Debug builds: button (on Profile) that opens the component gallery. */
+@Composable
+fun DebugGalleryEntry(onOpen: () -> Unit) {
+    PillButton(stringResource(R.string.debug_gallery_title), onClick = onOpen, style = PillStyle.Outline)
+}
 
 /** Debug-only gallery of theme tokens and signature components. */
 @Composable

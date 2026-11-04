@@ -1,12 +1,53 @@
 <resources>
     <string name="app_name">Stamp App</string>
 
-    <!-- Ink nav bar -->
+    <!-- Nav bar -->
     <string name="nav_album">Album</string>
     <string name="nav_calendar">Calendar</string>
     <string name="nav_map">Map</string>
     <string name="nav_profile">Profile</string>
 
+    <!-- Common -->
+    <string name="cd_back">Back</string>
+    <string name="cd_close">Close</string>
+    <!-- Date patterns (java.time). Kept here so they can be localised. -->
+    <string name="pattern_overline_date" translatable="false">EEE · dd MMM</string>
+    <string name="pattern_short_date" translatable="false">d MMM</string>
+    <string name="pattern_weekday" translatable="false">EEEE</string>
+    <!-- Shown on placeholder screens until the real screen lands: milestone number -->
+    <string name="placeholder_note">coming in milestone %1$d…</string>
+
     <!-- Postmark: city, date -->
     <string name="postmark_description">Postmark: %1$s, %2$s</string>
+
+    <!-- Home -->
+    <string name="home_title">Your stamp album</string>
+    <string name="home_all_albums">All albums</string>
+    <string name="home_empty_page">your stamps get stuck here</string>
+    <string name="home_today_title">Today\'s stamp is waiting</string>
+    <!-- %1$s = weekday name, e.g. "Wednesday" -->
+    <string name="home_today_body">Keep one moment from %1$s.</string>
+    <string name="home_stamp_it">Stamp it</string>
+
+    <!-- Collections -->
+    <string name="collections_overline">My albums</string>
+    <string name="collections_title">Collections</string>
+    <!-- Placeholder album names until Room data exists: %1$d = album number -->
+    <string name="album_placeholder_name">Album no. %1$d</string>
+
+    <!-- Album page -->
+    <string name="album_next_stamp">next stamp…</string>
+    <string name="album_map">Map</string>
+    <string name="album_share_page">Share this page</string>
+
+    <!-- Camera -->
+    <string name="camera_shutter">Take stamp photo</string>
+    <string name="camera_preview_placeholder">camera preview lands in step 5</string>
+
+    <!-- Stamped! -->
+    <string name="stamped_title">Stamped!</string>
+    <string name="stamped_retake">Retake</string>
+    <string name="stamped_share">Share</string>
+    <string name="stamped_stick">Stick in album</string>
+    <string name="stamped_subtitle_placeholder">Your newest stamp</string>
 </resources>

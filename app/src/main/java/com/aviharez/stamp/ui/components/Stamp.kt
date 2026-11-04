@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
@@ -42,6 +43,7 @@ import com.aviharez.stamp.ui.theme.tintedShadow
  *
  * Give it a width (or height) via [modifier]; the aspect ratio comes from [shape].
  * Use [tilt] (see [Tilt.stamp]) in album/collage contexts and 0° in editors.
+ * [shadowTint]: warm brown on paper (default), StampTheme.colors.shadowNavy on cobalt / ink.
  *
  * @param denomination small italic value in the top corner of the picture, e.g. "26".
  * @param caption letter-spaced line at the bottom of the picture, e.g. "NIPPON · KYOTO".
@@ -53,6 +55,7 @@ fun Stamp(
     perforation: PerforationStyle = PerforationStyle.Classic,
     tilt: Float = 0f,
     elevation: Dp = Elevation.Stamp,
+    shadowTint: Color = StampTheme.colors.shadowWarm,
     denomination: String? = null,
     caption: String? = null,
     contentDescription: String? = null,
@@ -89,7 +92,7 @@ fun Stamp(
                 Modifier
                     .matchParentSize()
                     .padding(perforation.holeRadiusDp.dp)
-                    .tintedShadow(elevation, shadowShape, colors.shadowWarm)
+                    .tintedShadow(elevation, shadowShape, shadowTint)
                     // An empty layer is skipped by the renderer (and its shadow with it), so it
                     // gets a fill. Inset by one hole radius, the paper on top hides it fully.
                     .background(colors.paperWhite, shadowShape),

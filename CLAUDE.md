@@ -42,6 +42,7 @@ app/src/main/java/<package>/
   ui/theme/        Color.kt, Type.kt, Shape.kt, Spacing.kt, Theme.kt
   ui/components/   Stamp.kt, PerforatedShape.kt, Postmark.kt, AirmailStripe.kt, WashiTape.kt,
                    PaperGrain.kt, HandNote.kt, AlbumCover.kt, StampNavBar.kt, buttons
+  ui/navigation/   Routes.kt (type-safe routes), StampApp.kt (NavHost + StampNavBar + system bars)
   ui/screens/      home/, camera/, stamped/, album/, collections/, calendar/, paywall/, settings/
   data/            db/ (Room), repo/, location/, image/ (stamp rendering + export)
   domain/          models, use cases (CreateStamp, ExportStamp, StreakCalculator)
