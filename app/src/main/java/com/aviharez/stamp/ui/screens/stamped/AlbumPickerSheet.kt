@@ -56,11 +56,13 @@ fun AlbumPickerSheet(
     onDismiss: () -> Unit,
     canCreate: Boolean = true,
     onNeedPro: () -> Unit = {},
+    /** Open straight on the new-album form (after "+1 album" was earned). */
+    startCreating: Boolean = false,
 ) {
     val c = StampTheme.colors
     val s = StampTheme.spacing
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var creating by rememberSaveable { mutableStateOf(false) }
+    var creating by rememberSaveable { mutableStateOf(startCreating) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,

@@ -7,6 +7,10 @@ plugins {
     alias(libs.plugins.room3)
 }
 
+/** Google's public test IDs (AdMob docs). */
+val AdMobTestAppId = "ca-app-pub-3940256099942544~3347511713"
+val AdMobTestRewardedId = "ca-app-pub-3940256099942544/5224354917"
+
 android {
     namespace = "com.aviharez.stamp"
     compileSdk {
@@ -24,7 +28,16 @@ android {
     }
 
     buildTypes {
+        // Debug always uses Google's test ads (never tap your own real ads). Release reads the real
+        // IDs from gradle properties (admobAppId / admobRewardedId, e.g. ~/.gradle/gradle.properties)
+        // and falls back to the test IDs until the AdMob account exists.
+        debug {
+            manifestPlaceholders["admobAppId"] = AdMobTestAppId
+            resValue("string", "admob_rewarded_unit", AdMobTestRewardedId)
+        }
         release {
+            manifestPlaceholders["admobAppId"] = providers.gradleProperty("admobAppId").getOrElse(AdMobTestAppId)
+            resValue("string", "admob_rewarded_unit", providers.gradleProperty("admobRewardedId").getOrElse(AdMobTestRewardedId))
             optimization {
                 enable = false
             }
@@ -36,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        resValues = true
     }
 }
 
@@ -84,6 +98,11 @@ dependencies {
 
     // Billing (Pro: lifetime + yearly)
     implementation(libs.android.billing)
+
+    // Ads (rewarded only, opt-in) + consent
+    implementation(libs.play.services.ads)
+    implementation(libs.ump)
+
     // Images
     implementation(libs.coil.compose)
     implementation(libs.androidx.exifinterface)

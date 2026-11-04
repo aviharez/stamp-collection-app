@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
@@ -15,10 +16,14 @@ import javax.inject.Singleton
 object ProRules {
     /** Free users can keep this many albums (more with Pro). CLAUDE.md §4. */
     const val FreeAlbumLimit = 3
+
+    /** Free users get [FreeAlbumLimit] albums, plus one per watched "+1 album" ad. */
+    fun canCreateAlbum(isPro: Boolean, albumCount: Int, bonusAlbums: Int): Boolean =
+        isPro || albumCount < FreeAlbumLimit + bonusAlbums
 }
 
 /**
- * Whether the user has Pro (no watermark, unlimited albums, …). Cached in DataStore so it is
+ * Whether the user has Pro (no watermark, unlimited albums, …), and the album slots earned with ads. Cached in DataStore so it is
  * known offline and at start-up; [BillingRepository] is the source of truth and writes it.
  * Debug builds can also switch Pro on by hand (Profile), kept apart so billing never clears it.
  */
@@ -31,6 +36,13 @@ class ProStatus @Inject constructor(private val store: DataStore<Preferences>) {
     val debugPro: Flow<Boolean> = store.data.map { it[DebugPro] ?: false }.distinctUntilChanged()
 
     suspend fun isProNow(): Boolean = isPro.first()
+
+    /** Extra album slots earned with rewarded ads (kept forever, even if albums are removed). */
+    val bonusAlbums: Flow<Int> = store.data.map { it[BonusAlbums] ?: 0 }.distinctUntilChanged()
+
+    suspend fun addBonusAlbum() {
+        store.edit { it[BonusAlbums] = (it[BonusAlbums] ?: 0) + 1 }
+    }
 
     /** Written by billing only. */
     suspend fun setPurchased(pro: Boolean) {
@@ -45,5 +57,6 @@ class ProStatus @Inject constructor(private val store: DataStore<Preferences>) {
     private companion object {
         val IsPro = booleanPreferencesKey("is_pro")
         val DebugPro = booleanPreferencesKey("debug_pro")
+        val BonusAlbums = intPreferencesKey("bonus_albums")
     }
 }

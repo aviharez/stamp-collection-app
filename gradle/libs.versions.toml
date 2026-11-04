@@ -18,6 +18,8 @@ datastore = "1.3.0"
 playServicesLocation = "21.4.0"
 kotlinxSerialization = "1.12.0"
 billing = "9.1.0"
+playServicesAds = "25.5.0"
+ump = "4.0.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
@@ -71,6 +73,11 @@ play-services-location = { group = "com.google.android.gms", name = "play-servic
 
 # Pro purchases (lifetime + yearly) — CLAUDE.md §2/§4
 android-billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
+
+# Optional rewarded ads (remove watermark once, +1 album) — CLAUDE.md §4
+play-services-ads = { group = "com.google.android.gms", name = "play-services-ads", version.ref = "playServicesAds" }
+# Ad consent form (GDPR/US states), required before requesting ads; also pulled in by play-services-ads
+ump = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "ump" }
 
 # Tests
 junit = { group = "junit", name = "junit", version.ref = "junit" }

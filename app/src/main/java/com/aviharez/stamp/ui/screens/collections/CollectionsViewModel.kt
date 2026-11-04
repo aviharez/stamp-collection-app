@@ -29,9 +29,10 @@ data class CollectionsUiState(
     val filter: AlbumCategory? = null,
     val today: LocalDate = LocalDate.MIN,
     val isPro: Boolean = false,
+    val bonusAlbums: Int = 0,
 ) {
-    /** Free tier keeps [ProRules.FreeAlbumLimit] albums; a new one beyond that needs Pro. */
-    val canCreateAlbum: Boolean get() = isPro || albums.size < ProRules.FreeAlbumLimit
+    /** Free tier keeps [ProRules.FreeAlbumLimit] (+ ad bonus) albums; a new one beyond that needs Pro. */
+    val canCreateAlbum: Boolean get() = ProRules.canCreateAlbum(isPro, albums.size, bonusAlbums)
 
     val shown: List<AlbumSummary> get() = if (filter == null) albums else albums.filter { it.album.category == filter }
     val stampCount: Int get() = albums.sumOf { it.stampCount }
@@ -51,13 +52,19 @@ class CollectionsViewModel @Inject constructor(
 
     private val filter = MutableStateFlow<AlbumCategory?>(null)
 
-    val state: StateFlow<CollectionsUiState> = combine(albums.observeSummaries(), filter, proStatus.isPro) { list, f, pro ->
+    val state: StateFlow<CollectionsUiState> = combine(
+        albums.observeSummaries(),
+        filter,
+        proStatus.isPro,
+        proStatus.bonusAlbums,
+    ) { list, f, pro, bonus ->
         CollectionsUiState(
             loaded = true,
             albums = list.sortedByDescending { it.latest?.takenAt ?: it.album.createdAt },
             filter = f,
             today = LocalDate.now(clock),
             isPro = pro,
+            bonusAlbums = bonus,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CollectionsUiState())
 

@@ -102,12 +102,23 @@ fun StampedScreen(
     onStickInAlbum: (albumId: Long) -> Unit,
     onOpenPaywall: (PaywallReason) -> Unit,
     modifier: Modifier = Modifier,
+    /** True once after "+1 album" was earned on the paywall: reopen the picker on its new-album form. */
+    openNewAlbum: Boolean = false,
+    onNewAlbumOpened: () -> Unit = {},
     viewModel: StampedViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val caption by viewModel.caption.collectAsStateWithLifecycle()
     var picking by rememberSaveable { mutableStateOf(false) }
     var exporting by rememberSaveable { mutableStateOf(false) }
+    var pickerOnForm by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(openNewAlbum) {
+        if (openNewAlbum) {
+            pickerOnForm = true
+            picking = true
+            onNewAlbumOpened()
+        }
+    }
     val stamp = state.stamp
     val fromGallery = stamp?.source == StampSource.Gallery
     // An imported stamp is "retaken" by picking another photo; this one goes only once one is picked.
@@ -150,7 +161,11 @@ fun StampedScreen(
                 picking = false
                 onOpenPaywall(PaywallReason.Albums)
             },
-            onDismiss = { picking = false },
+            startCreating = pickerOnForm,
+            onDismiss = {
+                picking = false
+                pickerOnForm = false
+            },
         )
     }
 }

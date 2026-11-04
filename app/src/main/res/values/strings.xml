@@ -268,4 +268,13 @@
     <string name="export_remove_with_pro">Remove with Pro</string>
     <string name="profile_get_pro">Get Pro</string>
     <string name="profile_is_pro">You have Pro. Thank you!</string>
+
+    <!-- Rewarded ads (always optional, started by the user) -->
+    <string name="ad_loading">Loading ad…</string>
+    <string name="ad_unavailable">No ad available right now. Try again later.</string>
+    <string name="export_remove_once">Once · short ad</string>
+    <string name="export_unlocked_note">watermark off for this stamp · thanks for watching</string>
+    <string name="paywall_ad_album_note">just need one more album?</string>
+    <string name="paywall_ad_album">+1 album · short ad</string>
+    <string name="profile_ad_privacy">Ad privacy choices</string>
 </resources>

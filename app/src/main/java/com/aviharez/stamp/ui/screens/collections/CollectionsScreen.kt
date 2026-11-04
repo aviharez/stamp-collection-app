@@ -23,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,10 +78,19 @@ fun CollectionsScreen(
     onOpenAlbum: (Long) -> Unit,
     onNeedPro: () -> Unit,
     modifier: Modifier = Modifier,
+    /** True once after "+1 album" was earned on the paywall: open the new-album form right away. */
+    openNewAlbum: Boolean = false,
+    onNewAlbumOpened: () -> Unit = {},
     viewModel: CollectionsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var creating by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(openNewAlbum) {
+        if (openNewAlbum) {
+            creating = true
+            onNewAlbumOpened()
+        }
+    }
 
     CollectionsContent(
         state = state,

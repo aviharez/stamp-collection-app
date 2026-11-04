@@ -43,6 +43,11 @@
             </intent-filter>
         </activity>
 
+        <!-- AdMob app ID (test ID in debug; see app/build.gradle.kts). Rewarded ads only. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
+
         <!-- Shares exported stamp PNGs with other apps (read-only, per-share grant). -->
         <provider
             android:name="androidx.core.content.FileProvider"

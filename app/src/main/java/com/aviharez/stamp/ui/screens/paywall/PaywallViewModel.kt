@@ -5,7 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.aviharez.stamp.data.ads.AdOffer
+import com.aviharez.stamp.data.ads.AdResult
+import com.aviharez.stamp.data.ads.RewardedAds
 import com.aviharez.stamp.data.billing.BillingRepository
+import com.aviharez.stamp.data.billing.ProStatus
 import com.aviharez.stamp.data.billing.OffersState
 import com.aviharez.stamp.data.billing.ProPlan
 import com.aviharez.stamp.data.billing.PurchaseOutcome
@@ -28,12 +32,17 @@ enum class PaywallReason { Profile, Albums, Watermark }
 
 enum class PaywallMessage { Pending, Failed, NothingToRestore, RestoreFailed }
 
+/** Why the paywall closes by itself. */
+enum class PaywallExit { ProOn, BonusAlbum }
+
 data class PaywallUiState(
     val reason: PaywallReason = PaywallReason.Profile,
     val offers: OffersState = OffersState.Loading,
     val selected: ProPlan = ProPlan.Lifetime,
     val busy: Boolean = false,
     val message: PaywallMessage? = null,
+    /** "+1 album · short ad" (only offered when the album limit opened the paywall). */
+    val ad: AdOffer = AdOffer.Idle,
 ) {
     val selectedOffer get() = (offers as? OffersState.Ready)?.offers?.get(selected)
 }
@@ -42,6 +51,8 @@ data class PaywallUiState(
 class PaywallViewModel @Inject constructor(
     savedState: SavedStateHandle,
     private val billing: BillingRepository,
+    private val ads: RewardedAds,
+    private val proStatus: ProStatus,
 ) : ViewModel() {
 
     private val reason = runCatching { PaywallReason.valueOf(savedState.toRoute<PaywallRoute>().reason) }
@@ -51,12 +62,13 @@ class PaywallViewModel @Inject constructor(
     val state: StateFlow<PaywallUiState> = combine(local, billing.offers) { l, offers -> l.copy(offers = offers) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PaywallUiState(reason = reason))
 
-    private val _close = Channel<Unit>(Channel.CONFLATED)
-    /** Pro is now on (bought or restored): leave the paywall. */
-    val close: Flow<Unit> = _close.receiveAsFlow()
+    private val _close = Channel<PaywallExit>(Channel.CONFLATED)
+    /** Pro is now on (bought or restored), or an album was earned: leave the paywall. */
+    val close: Flow<PaywallExit> = _close.receiveAsFlow()
 
     init {
         loadOffers()
+        if (reason == PaywallReason.Albums) ads.preload()
         viewModelScope.launch {
             billing.outcomes.collect { outcome ->
                 local.update {
@@ -69,7 +81,7 @@ class PaywallViewModel @Inject constructor(
                         },
                     )
                 }
-                if (outcome == PurchaseOutcome.Purchased) _close.send(Unit)
+                if (outcome == PurchaseOutcome.Purchased) _close.send(PaywallExit.ProOn)
             }
         }
     }
@@ -106,7 +118,18 @@ class PaywallViewModel @Inject constructor(
                     },
                 )
             }
-            if (owned == true) _close.send(Unit)
+            if (owned == true) _close.send(PaywallExit.ProOn)
+        }
+    }
+
+    fun watchAdForAlbum(activity: Activity) {
+        if (local.value.ad == AdOffer.Loading || local.value.busy) return
+        local.update { it.copy(ad = AdOffer.Loading, message = null) }
+        viewModelScope.launch {
+            val result = ads.show(activity)
+            if (result == AdResult.Rewarded) proStatus.addBonusAlbum()
+            local.update { it.copy(ad = if (result == AdResult.Unavailable) AdOffer.Unavailable else AdOffer.Idle) }
+            if (result == AdResult.Rewarded) _close.send(PaywallExit.BonusAlbum)
         }
     }
 }

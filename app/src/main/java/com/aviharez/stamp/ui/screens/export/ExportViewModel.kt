@@ -1,5 +1,6 @@
 package com.aviharez.stamp.ui.screens.export
 
+import android.app.Activity
 import android.content.Context
 import android.net.Uri
 import androidx.compose.ui.graphics.ImageBitmap
@@ -7,6 +8,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aviharez.stamp.data.ads.AdOffer
+import com.aviharez.stamp.data.ads.AdResult
+import com.aviharez.stamp.data.ads.RewardedAds
 import com.aviharez.stamp.data.billing.ProStatus
 import com.aviharez.stamp.data.image.ExportBackground
 import com.aviharez.stamp.data.image.ExportOptions
@@ -50,7 +54,12 @@ data class ExportUiState(
     val sharing: Boolean = false,
     val save: SaveState = SaveState.Idle,
     val failed: Boolean = false,
-)
+    val ad: AdOffer = AdOffer.Idle,
+    /** A rewarded ad was watched: this stamp exports without the watermark while the screen is open. */
+    val adUnlocked: Boolean = false,
+) {
+    val watermark: Boolean get() = !isPro && !adUnlocked
+}
 
 sealed interface ExportEvent {
     data class Share(val uri: Uri) : ExportEvent
@@ -63,30 +72,53 @@ class ExportViewModel @Inject constructor(
     private val stamps: StampRepository,
     private val exporter: StampExporter,
     proStatus: ProStatus,
+    private val ads: RewardedAds,
 ) : ViewModel() {
 
     private val stampId = MutableStateFlow<String?>(null)
     private val stamp: Flow<Stamp> = stampId.filterNotNull().flatMapLatest { stamps.observe(it) }.filterNotNull()
     private val choice = MutableStateFlow(ExportChoice())
-    private val isPro = proStatus.isPro
     private val work = MutableStateFlow(ExportUiState())
+    private val adUnlocked = MutableStateFlow(false)
+    /** No watermark when Pro, or after a watched rewarded ad. */
+    private val clean: Flow<Boolean> = combine(proStatus.isPro, adUnlocked) { pro, ad -> pro || ad }
+    private val isPro = proStatus.isPro
 
-    private val preview: Flow<ImageBitmap?> = combine(stamp, choice, isPro) { s, c, pro -> Triple(s, c, pro) }
-        .mapLatest { (s, c, pro) ->
+    private val preview: Flow<ImageBitmap?> = combine(stamp, choice, clean) { s, c, cl -> Triple(s, c, cl) }
+        .mapLatest { (s, c, cl) ->
             withContext(Dispatchers.Default) {
-                runCatching { exporter.render(s, c.toOptions(pro), PreviewLongPx).asImageBitmap() }.getOrNull()
+                runCatching { exporter.render(s, c.toOptions(cl), PreviewLongPx).asImageBitmap() }.getOrNull()
             }
         }
 
-    val state: StateFlow<ExportUiState> = combine(work, choice, isPro, preview) { w, c, pro, p ->
-        w.copy(choice = c, isPro = pro, preview = p)
+    val state: StateFlow<ExportUiState> = combine(work, choice, isPro, adUnlocked, preview) { w, c, pro, ad, p ->
+        w.copy(choice = c, isPro = pro, adUnlocked = ad, preview = p)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ExportUiState())
 
     private val _events = Channel<ExportEvent>(Channel.BUFFERED)
     val events: Flow<ExportEvent> = _events.receiveAsFlow()
 
     fun bind(id: String) {
+        if (stampId.value != id) adUnlocked.value = false
         stampId.value = id
+    }
+
+    /** Free user is looking at the watermark row: get an ad ready in case they want it. */
+    fun preloadAd() = ads.preload()
+
+    fun watchAd(activity: Activity) {
+        if (work.value.ad == AdOffer.Loading) return
+        work.update { it.copy(ad = AdOffer.Loading) }
+        viewModelScope.launch {
+            val result = ads.show(activity)
+            if (result == AdResult.Rewarded) adUnlocked.value = true
+            work.update {
+                it.copy(
+                    ad = if (result == AdResult.Unavailable) AdOffer.Unavailable else AdOffer.Idle,
+                    save = if (result == AdResult.Rewarded) SaveState.Idle else it.save,
+                )
+            }
+        }
     }
 
     fun setBackground(background: ExportBackground) {
@@ -104,7 +136,7 @@ class ExportViewModel @Inject constructor(
         work.update { it.copy(sharing = true, failed = false) }
         viewModelScope.launch {
             val result = runCatching {
-                val options = choice.value.toOptions(isPro.first())
+                val options = choice.value.toOptions(clean.first())
                 val s = stamp.first()
                 val file = withContext(Dispatchers.IO) { exporter.exportToCache(s, options) }
                 FileProvider.getUriForFile(context, "${context.packageName}$AuthoritySuffix", file)
@@ -119,7 +151,7 @@ class ExportViewModel @Inject constructor(
         work.update { it.copy(save = SaveState.Saving, failed = false) }
         viewModelScope.launch {
             val result = runCatching {
-                val options = choice.value.toOptions(isPro.first())
+                val options = choice.value.toOptions(clean.first())
                 val s = stamp.first()
                 withContext(Dispatchers.IO) { exporter.saveToPictures(s, options) }
             }
@@ -127,7 +159,7 @@ class ExportViewModel @Inject constructor(
         }
     }
 
-    private fun ExportChoice.toOptions(pro: Boolean) = ExportOptions(background, postmark, watermark = !pro)
+    private fun ExportChoice.toOptions(clean: Boolean) = ExportOptions(background, postmark, watermark = !clean)
 
     private companion object {
         /** Matches the FileProvider authority in AndroidManifest.xml. */

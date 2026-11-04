@@ -44,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aviharez.stamp.R
+import com.aviharez.stamp.data.ads.AdOffer
 import com.aviharez.stamp.data.billing.OffersState
 import com.aviharez.stamp.data.billing.ProPlan
 import com.aviharez.stamp.data.billing.ProRules
@@ -51,6 +52,7 @@ import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.GrainedSurface
+import com.aviharez.stamp.ui.components.AdChip
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
 import com.aviharez.stamp.ui.components.PillButton
@@ -81,11 +83,14 @@ private fun PaywallReason.perk(): Perk? = when (this) {
 @Composable
 fun PaywallScreen(
     onClose: () -> Unit,
+    onAlbumUnlocked: () -> Unit,
     viewModel: PaywallViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val activity = LocalActivity.current
-    LaunchedEffect(viewModel) { viewModel.close.collect { onClose() } }
+    LaunchedEffect(viewModel) {
+        viewModel.close.collect { if (it == PaywallExit.BonusAlbum) onAlbumUnlocked() else onClose() }
+    }
     PaywallContent(
         state = state,
         onClose = onClose,
@@ -93,6 +98,7 @@ fun PaywallScreen(
         onSelect = viewModel::select,
         onBuy = { activity?.let(viewModel::buy) },
         onRetry = viewModel::loadOffers,
+        onWatchAd = { activity?.let(viewModel::watchAdForAlbum) },
     )
 }
 
@@ -104,6 +110,7 @@ fun PaywallContent(
     onSelect: (ProPlan) -> Unit,
     onBuy: () -> Unit,
     onRetry: () -> Unit,
+    onWatchAd: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val c = StampTheme.colors
@@ -195,6 +202,9 @@ fun PaywallContent(
                 modifier = Modifier.fillMaxWidth().padding(top = s.xs),
             )
         }
+        if (state.reason == PaywallReason.Albums) {
+            AlbumAdRow(state.ad, onWatchAd, Modifier.padding(top = s.m))
+        }
         HandNote(
             stringResource(R.string.paywall_free_note),
             style = StampTheme.type.noteSmall,
@@ -203,6 +213,30 @@ fun PaywallContent(
             textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth().padding(top = s.m),
         )
+    }
+}
+
+/** The quiet alternative to Pro at the album limit, same row pattern as the share sheet's. */
+@Composable
+private fun AlbumAdRow(ad: AdOffer, onWatchAd: () -> Unit, modifier: Modifier = Modifier) {
+    val c = StampTheme.colors
+    val s = StampTheme.spacing
+    Column(
+        modifier.fillMaxWidth().dashedOutline(c.outline).padding(horizontal = s.m, vertical = s.s),
+        verticalArrangement = Arrangement.spacedBy(s.xs),
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(s.xs)) {
+            HandNote(
+                stringResource(R.string.paywall_ad_album_note),
+                style = StampTheme.type.noteSmall,
+                strength = InkStrength.Soft,
+                modifier = Modifier.weight(1f),
+            )
+            AdChip(stringResource(R.string.paywall_ad_album), loading = ad == AdOffer.Loading, onClick = onWatchAd)
+        }
+        if (ad == AdOffer.Unavailable) {
+            Text(stringResource(R.string.ad_unavailable), style = StampTheme.type.label, color = c.textMedium)
+        }
     }
 }
 
@@ -390,6 +424,7 @@ private fun PaywallPreview() {
             onSelect = {},
             onBuy = {},
             onRetry = {},
+            onWatchAd = {},
         )
     }
 }

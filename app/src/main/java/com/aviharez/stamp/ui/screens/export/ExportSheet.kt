@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -40,8 +41,10 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aviharez.stamp.R
+import com.aviharez.stamp.data.ads.AdOffer
 import com.aviharez.stamp.data.image.ExportBackground
 import com.aviharez.stamp.data.image.StampExporter
+import com.aviharez.stamp.ui.components.AdChip
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
 import com.aviharez.stamp.ui.components.PaperChip
@@ -64,7 +67,9 @@ fun ExportSheet(
     LaunchedEffect(stampId) { viewModel.bind(stampId) }
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val activity = LocalActivity.current
 
+    LaunchedEffect(state.watermark) { if (state.watermark) viewModel.preloadAd() }
     LaunchedEffect(viewModel) {
         viewModel.events.collect { event ->
             when (event) {
@@ -104,6 +109,7 @@ fun ExportSheet(
             onSave = save,
             onShare = viewModel::share,
             onGetPro = onGetPro,
+            onWatchAd = { activity?.let(viewModel::watchAd) },
             modifier = Modifier.navigationBarsPadding(),
         )
     }
@@ -117,6 +123,7 @@ fun ExportContent(
     onSave: () -> Unit,
     onShare: () -> Unit,
     onGetPro: () -> Unit,
+    onWatchAd: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val c = StampTheme.colors
@@ -129,21 +136,10 @@ fun ExportContent(
 
         ExportPreview(state.preview, checkered = state.choice.background == ExportBackground.Transparent)
 
-        if (state.isPro) {
-            HandNote(stringResource(R.string.export_pro_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
-        } else {
-            // The watermark row: the honest ways out sit side by side (rewarded ad joins with AdMob).
-            Column(
-                Modifier.fillMaxWidth().dashedOutline(c.outline).padding(horizontal = s.m, vertical = s.s),
-                verticalArrangement = Arrangement.spacedBy(s.xs),
-            ) {
-                HandNote(
-                    stringResource(R.string.export_watermark_note, stringResource(R.string.app_name)),
-                    style = StampTheme.type.noteSmall,
-                    strength = InkStrength.Soft,
-                )
-                PaperChip(stringResource(R.string.export_remove_with_pro), selected = true, onClick = onGetPro)
-            }
+        when {
+            state.isPro -> HandNote(stringResource(R.string.export_pro_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
+            state.adUnlocked -> HandNote(stringResource(R.string.export_unlocked_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
+            else -> WatermarkRow(state.ad, onGetPro, onWatchAd)
         }
 
         OptionRow(stringResource(R.string.export_background)) {
@@ -190,6 +186,30 @@ fun ExportContent(
                 leadingIcon = R.drawable.ic_share,
                 modifier = Modifier.weight(1f),
             )
+        }
+    }
+}
+
+/** The watermark row: the two honest ways out side by side, Pro first, the ad as the quiet option. */
+@Composable
+private fun WatermarkRow(ad: AdOffer, onGetPro: () -> Unit, onWatchAd: () -> Unit) {
+    val c = StampTheme.colors
+    val s = StampTheme.spacing
+    Column(
+        Modifier.fillMaxWidth().dashedOutline(c.outline).padding(horizontal = s.m, vertical = s.s),
+        verticalArrangement = Arrangement.spacedBy(s.xs),
+    ) {
+        HandNote(
+            stringResource(R.string.export_watermark_note, stringResource(R.string.app_name)),
+            style = StampTheme.type.noteSmall,
+            strength = InkStrength.Soft,
+        )
+        Row(horizontalArrangement = Arrangement.spacedBy(s.xs), verticalAlignment = Alignment.CenterVertically) {
+            PaperChip(stringResource(R.string.export_remove_with_pro), selected = true, onClick = onGetPro)
+            AdChip(stringResource(R.string.export_remove_once), loading = ad == AdOffer.Loading, onClick = onWatchAd)
+        }
+        if (ad == AdOffer.Unavailable) {
+            Text(stringResource(R.string.ad_unavailable), style = StampTheme.type.label, color = c.textMedium)
         }
     }
 }
@@ -252,7 +272,7 @@ private val LabelWidth = 104.dp
 @Composable
 private fun ExportContentPreview() {
     StampAppTheme {
-        ExportContent(ExportUiState(), onBackground = {}, onPostmark = {}, onSave = {}, onShare = {}, onGetPro = {})
+        ExportContent(ExportUiState(), onBackground = {}, onPostmark = {}, onSave = {}, onShare = {}, onGetPro = {}, onWatchAd = {})
     }
 }
 
@@ -267,6 +287,7 @@ private fun ExportContentProPreview() {
             onSave = {},
             onShare = {},
             onGetPro = {},
+            onWatchAd = {},
         )
     }
 }

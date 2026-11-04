@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Outline icon, 24dp, 1.8 stroke: "play" in a rounded box (rewarded ad). Tinted at runtime. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:pathData="M6,4.5h12a2.5,2.5 0,0 1,2.5 2.5v10a2.5,2.5 0,0 1,-2.5 2.5h-12a2.5,2.5 0,0 1,-2.5 -2.5v-10a2.5,2.5 0,0 1,2.5 -2.5z"
+        android:strokeWidth="1.8"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M10.25,9.1v5.8l4.9,-2.9z"
+        android:strokeWidth="1.8"
+        android:strokeColor="#FFFFFFFF"
+        android:fillColor="#FFFFFFFF"
+        android:strokeLineJoin="round" />
+</vector>

@@ -27,4 +27,9 @@ class AlbumLimitTest {
     @Test fun proHasNoLimit() {
         assertTrue(CollectionsUiState(albums = albums(ProRules.FreeAlbumLimit + 5), isPro = true).canCreateAlbum)
     }
+
+    @Test fun eachAdBonusAddsOneAlbum() {
+        assertTrue(CollectionsUiState(albums = albums(ProRules.FreeAlbumLimit), bonusAlbums = 1).canCreateAlbum)
+        assertFalse(CollectionsUiState(albums = albums(ProRules.FreeAlbumLimit + 1), bonusAlbums = 1).canCreateAlbum)
+    }
 }

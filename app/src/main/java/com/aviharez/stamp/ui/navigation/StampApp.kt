@@ -1,5 +1,6 @@
 package com.aviharez.stamp.ui.navigation
 
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -37,6 +38,7 @@ import com.aviharez.stamp.ui.debug.DebugGalleryEntry
 import com.aviharez.stamp.ui.debug.DebugProSwitch
 import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
+import com.aviharez.stamp.ui.screens.settings.AdPrivacyEntry
 import com.aviharez.stamp.ui.screens.settings.ProEntry
 import com.aviharez.stamp.ui.components.StampNavBar
 import com.aviharez.stamp.ui.screens.PlaceholderScreen
@@ -102,12 +104,15 @@ fun StampApp() {
                     onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
                 )
             }
-            composable<CollectionsRoute> {
+            composable<CollectionsRoute> { entry ->
+                val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
                 CollectionsScreen(
                     contentPadding = inner,
                     onBack = { nav.popBackStack() },
                     onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
                     onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Albums.name)) },
+                    openNewAlbum = openNewAlbum,
+                    onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
                 )
             }
             composable<AlbumPageRoute> {
@@ -146,8 +151,11 @@ fun StampApp() {
                     },
                 )
             }
-            composable<StampedRoute> {
+            composable<StampedRoute> { entry ->
+                val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
                 StampedScreen(
+                    openNewAlbum = openNewAlbum,
+                    onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
                     onRetake = {
                         nav.navigate(CameraRoute) { popUpTo<StampedRoute> { inclusive = true } }
                     },
@@ -175,6 +183,7 @@ fun StampApp() {
                 PlaceholderScreen(stringResource(R.string.nav_profile), milestone = 3, contentPadding = inner) {
                     ProEntry(onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) })
                     DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
+                    AdPrivacyEntry()
                     DebugProSwitch()
                 }
             }
@@ -182,7 +191,14 @@ fun StampApp() {
                 enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },
                 popExitTransition = { if (reduceMotion) ExitTransition.None else slideOutVertically(tween(ScreenMillis)) { it / 6 } + fadeOut(tween(ScreenMillis)) },
             ) {
-                PaywallScreen(onClose = { nav.popBackStack() })
+                PaywallScreen(
+                    onClose = { nav.popBackStack() },
+                    onAlbumUnlocked = {
+                        // Back where "New album" was tapped, straight onto the form.
+                        nav.previousBackStackEntry?.savedStateHandle?.set(AlbumEarnedKey, true)
+                        nav.popBackStack()
+                    },
+                )
             }
             composable<DebugGalleryRoute> { DebugGallery() }
         }
@@ -222,3 +238,6 @@ private fun NavHostController.navigateToTab(tab: NavTab) {
         restoreState = true
     }
 }
+
+/** Paywall → caller: an album slot was earned with a rewarded ad; open the new-album form. */
+private const val AlbumEarnedKey = "album_earned"

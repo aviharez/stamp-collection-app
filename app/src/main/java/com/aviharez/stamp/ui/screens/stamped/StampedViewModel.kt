@@ -38,9 +38,10 @@ data class StampedUiState(
     val streak: Streak = Streak.None,
     val albums: List<AlbumSummary> = emptyList(),
     val isPro: Boolean = false,
+    val bonusAlbums: Int = 0,
 ) {
-    /** Free tier keeps [ProRules.FreeAlbumLimit] albums; a new one beyond that needs Pro. */
-    val canCreateAlbum: Boolean get() = isPro || albums.size < ProRules.FreeAlbumLimit
+    /** Free tier keeps [ProRules.FreeAlbumLimit] (+ ad bonus) albums; a new one beyond that needs Pro. */
+    val canCreateAlbum: Boolean get() = ProRules.canCreateAlbum(isPro, albums.size, bonusAlbums)
 
     val album: AlbumSummary? get() = albums.firstOrNull { it.album.id == stamp?.albumId }
 }
@@ -65,9 +66,9 @@ class StampedViewModel @Inject constructor(
         stamp.filterNotNull().flatMapLatest { stamps.observeNumberInAlbum(stampId) },
         stamps.observeStreak(),
         albums.observeSummaries(),
-        proStatus.isPro,
-    ) { stamp, number, streak, albumList, pro ->
-        StampedUiState(stamp, number, streak, albumList, pro)
+        combine(proStatus.isPro, proStatus.bonusAlbums, ::Pair),
+    ) { stamp, number, streak, albumList, (pro, bonus) ->
+        StampedUiState(stamp, number, streak, albumList, pro, bonus)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StampedUiState())
 
     /** The "write on the back" text; the field owns it, saves are debounced. */
