@@ -75,6 +75,7 @@ fun CollectionsScreen(
     contentPadding: PaddingValues,
     onBack: () -> Unit,
     onOpenAlbum: (Long) -> Unit,
+    onNeedPro: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CollectionsViewModel = hiltViewModel(),
 ) {
@@ -87,7 +88,7 @@ fun CollectionsScreen(
         onFilter = viewModel::setFilter,
         onBack = onBack,
         onOpenAlbum = onOpenAlbum,
-        onNewAlbum = { creating = true },
+        onNewAlbum = { if (state.canCreateAlbum) creating = true else onNeedPro() },
         modifier = modifier,
     )
 

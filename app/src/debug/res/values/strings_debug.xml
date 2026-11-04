@@ -33,4 +33,5 @@
     <string name="debug_sample_note_1">sunrise hike!!</string>
     <string name="debug_sample_note_2">legs = dead, worth it</string>
     <string name="debug_sample_note_3">matcha #3</string>
+    <string name="debug_pro_switch">Debug: pretend Pro</string>
 </resources>

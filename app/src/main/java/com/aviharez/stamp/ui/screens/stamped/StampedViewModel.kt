@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.aviharez.stamp.data.billing.ProRules
+import com.aviharez.stamp.data.billing.ProStatus
 import com.aviharez.stamp.data.repo.AlbumRepository
 import com.aviharez.stamp.data.repo.StampRepository
 import com.aviharez.stamp.di.AppScope
@@ -35,7 +37,11 @@ data class StampedUiState(
     val numberInAlbum: Int = 0,
     val streak: Streak = Streak.None,
     val albums: List<AlbumSummary> = emptyList(),
+    val isPro: Boolean = false,
 ) {
+    /** Free tier keeps [ProRules.FreeAlbumLimit] albums; a new one beyond that needs Pro. */
+    val canCreateAlbum: Boolean get() = isPro || albums.size < ProRules.FreeAlbumLimit
+
     val album: AlbumSummary? get() = albums.firstOrNull { it.album.id == stamp?.albumId }
 }
 
@@ -45,6 +51,7 @@ class StampedViewModel @Inject constructor(
     savedState: SavedStateHandle,
     private val stamps: StampRepository,
     private val albums: AlbumRepository,
+    proStatus: ProStatus,
     @param:AppScope private val appScope: CoroutineScope,
 ) : ViewModel() {
 
@@ -58,8 +65,9 @@ class StampedViewModel @Inject constructor(
         stamp.filterNotNull().flatMapLatest { stamps.observeNumberInAlbum(stampId) },
         stamps.observeStreak(),
         albums.observeSummaries(),
-    ) { stamp, number, streak, albumList ->
-        StampedUiState(stamp, number, streak, albumList)
+        proStatus.isPro,
+    ) { stamp, number, streak, albumList, pro ->
+        StampedUiState(stamp, number, streak, albumList, pro)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StampedUiState())
 
     /** The "write on the back" text; the field owns it, saves are debounced. */

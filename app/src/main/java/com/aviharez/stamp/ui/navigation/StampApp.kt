@@ -34,6 +34,10 @@ import com.aviharez.stamp.R
 import com.aviharez.stamp.ui.components.NavTab
 import com.aviharez.stamp.ui.debug.DebugGallery
 import com.aviharez.stamp.ui.debug.DebugGalleryEntry
+import com.aviharez.stamp.ui.debug.DebugProSwitch
+import com.aviharez.stamp.ui.screens.paywall.PaywallReason
+import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
+import com.aviharez.stamp.ui.screens.settings.ProEntry
 import com.aviharez.stamp.ui.components.StampNavBar
 import com.aviharez.stamp.ui.screens.PlaceholderScreen
 import com.aviharez.stamp.ui.screens.album.AlbumPageScreen
@@ -103,6 +107,7 @@ fun StampApp() {
                     contentPadding = inner,
                     onBack = { nav.popBackStack() },
                     onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
+                    onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Albums.name)) },
                 )
             }
             composable<AlbumPageRoute> {
@@ -149,6 +154,7 @@ fun StampApp() {
                     onPickAnother = { uri ->
                         nav.navigate(ImportRoute(uri.toString())) { popUpTo<StampedRoute> { inclusive = true } }
                     },
+                    onOpenPaywall = { reason -> nav.navigate(PaywallRoute(reason.name)) },
                     onStickInAlbum = { albumId ->
                         // Open the album the stamp went into; back from there returns Home.
                         nav.navigate(AlbumPageRoute(albumId)) { popUpTo<HomeRoute> { inclusive = false } }
@@ -167,8 +173,16 @@ fun StampApp() {
             }
             composable<ProfileRoute> {
                 PlaceholderScreen(stringResource(R.string.nav_profile), milestone = 3, contentPadding = inner) {
+                    ProEntry(onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) })
                     DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
+                    DebugProSwitch()
                 }
+            }
+            composable<PaywallRoute>(
+                enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },
+                popExitTransition = { if (reduceMotion) ExitTransition.None else slideOutVertically(tween(ScreenMillis)) { it / 6 } + fadeOut(tween(ScreenMillis)) },
+            ) {
+                PaywallScreen(onClose = { nav.popBackStack() })
             }
             composable<DebugGalleryRoute> { DebugGallery() }
         }

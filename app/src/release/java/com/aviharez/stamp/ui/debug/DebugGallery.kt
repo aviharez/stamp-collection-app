@@ -11,3 +11,6 @@ fun DebugGallery(modifier: Modifier = Modifier) = Unit
 @Composable
 @Suppress("UNUSED_PARAMETER")
 fun DebugGalleryEntry(onOpen: () -> Unit) = Unit
+
+@Composable
+fun DebugProSwitch() = Unit

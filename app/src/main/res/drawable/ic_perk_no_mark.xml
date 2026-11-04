@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Outline icon, 24dp, 1.8 stroke. Tinted at runtime; the stroke colour here is a placeholder. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:pathData="M4,12.6V5.5A1.5,1.5 0,0 1,5.5 4h7.1l7.4,7.4a1.5,1.5 0,0 1,0 2.1l-6.5,6.5a1.5,1.5 0,0 1,-2.1 0z" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M8.5,8.5h0.01" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M3.5,20.5l17,-17" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>

@@ -91,6 +91,7 @@ import android.net.Uri
 import com.aviharez.stamp.domain.model.StampSource
 import com.aviharez.stamp.ui.screens.importer.rememberPhotoPicker
 import com.aviharez.stamp.ui.screens.export.ExportSheet
+import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import java.time.LocalDate
 
 /** "Stamped!" for the stamp in the current [com.aviharez.stamp.ui.navigation.StampedRoute]. */
@@ -99,6 +100,7 @@ fun StampedScreen(
     onRetake: () -> Unit,
     onPickAnother: (Uri) -> Unit,
     onStickInAlbum: (albumId: Long) -> Unit,
+    onOpenPaywall: (PaywallReason) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: StampedViewModel = hiltViewModel(),
 ) {
@@ -130,7 +132,11 @@ fun StampedScreen(
     )
 
     if (exporting && stamp != null) {
-        ExportSheet(stampId = stamp.id, onDismiss = { exporting = false })
+        ExportSheet(
+            stampId = stamp.id,
+            onDismiss = { exporting = false },
+            onGetPro = { onOpenPaywall(PaywallReason.Watermark) },
+        )
     }
 
     if (picking) {
@@ -139,6 +145,11 @@ fun StampedScreen(
             selectedId = stamp?.albumId,
             onPick = viewModel::moveToAlbum,
             onCreate = viewModel::createAlbumAndMove,
+            canCreate = state.canCreateAlbum,
+            onNeedPro = {
+                picking = false
+                onOpenPaywall(PaywallReason.Albums)
+            },
             onDismiss = { picking = false },
         )
     }

@@ -45,6 +45,7 @@ import com.aviharez.stamp.data.image.StampExporter
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
 import com.aviharez.stamp.ui.components.PaperChip
+import com.aviharez.stamp.ui.components.dashedOutline
 import com.aviharez.stamp.ui.components.PillButton
 import com.aviharez.stamp.ui.components.PillStyle
 import com.aviharez.stamp.ui.theme.PaperPreview
@@ -57,6 +58,7 @@ import com.aviharez.stamp.ui.theme.StampTheme
 fun ExportSheet(
     stampId: String,
     onDismiss: () -> Unit,
+    onGetPro: () -> Unit,
     viewModel: ExportViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(stampId) { viewModel.bind(stampId) }
@@ -101,6 +103,7 @@ fun ExportSheet(
             onPostmark = viewModel::setPostmark,
             onSave = save,
             onShare = viewModel::share,
+            onGetPro = onGetPro,
             modifier = Modifier.navigationBarsPadding(),
         )
     }
@@ -113,6 +116,7 @@ fun ExportContent(
     onPostmark: (Boolean) -> Unit,
     onSave: () -> Unit,
     onShare: () -> Unit,
+    onGetPro: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val c = StampTheme.colors
@@ -125,12 +129,22 @@ fun ExportContent(
 
         ExportPreview(state.preview, checkered = state.choice.background == ExportBackground.Transparent)
 
-        HandNote(
-            text = if (state.isPro) stringResource(R.string.export_pro_note)
-            else stringResource(R.string.export_watermark_note, stringResource(R.string.app_name)),
-            style = StampTheme.type.noteSmall,
-            strength = InkStrength.Soft,
-        )
+        if (state.isPro) {
+            HandNote(stringResource(R.string.export_pro_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
+        } else {
+            // The watermark row: the honest ways out sit side by side (rewarded ad joins with AdMob).
+            Column(
+                Modifier.fillMaxWidth().dashedOutline(c.outline).padding(horizontal = s.m, vertical = s.s),
+                verticalArrangement = Arrangement.spacedBy(s.xs),
+            ) {
+                HandNote(
+                    stringResource(R.string.export_watermark_note, stringResource(R.string.app_name)),
+                    style = StampTheme.type.noteSmall,
+                    strength = InkStrength.Soft,
+                )
+                PaperChip(stringResource(R.string.export_remove_with_pro), selected = true, onClick = onGetPro)
+            }
+        }
 
         OptionRow(stringResource(R.string.export_background)) {
             PaperChip(
@@ -238,7 +252,7 @@ private val LabelWidth = 104.dp
 @Composable
 private fun ExportContentPreview() {
     StampAppTheme {
-        ExportContent(ExportUiState(), onBackground = {}, onPostmark = {}, onSave = {}, onShare = {})
+        ExportContent(ExportUiState(), onBackground = {}, onPostmark = {}, onSave = {}, onShare = {}, onGetPro = {})
     }
 }
 
@@ -252,6 +266,7 @@ private fun ExportContentProPreview() {
             onPostmark = {},
             onSave = {},
             onShare = {},
+            onGetPro = {},
         )
     }
 }

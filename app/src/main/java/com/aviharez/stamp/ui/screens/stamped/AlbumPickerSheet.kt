@@ -54,6 +54,8 @@ fun AlbumPickerSheet(
     onPick: (Long) -> Unit,
     onCreate: (String, AlbumCategory, AlbumCoverColor) -> Unit,
     onDismiss: () -> Unit,
+    canCreate: Boolean = true,
+    onNeedPro: () -> Unit = {},
 ) {
     val c = StampTheme.colors
     val s = StampTheme.spacing
@@ -92,7 +94,7 @@ fun AlbumPickerSheet(
                             })
                         }
                     }
-                    NewAlbumRow(onClick = { creating = true })
+                    NewAlbumRow(onClick = { if (canCreate) creating = true else onNeedPro() })
                 }
             }
         }

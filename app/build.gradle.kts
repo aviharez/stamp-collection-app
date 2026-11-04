@@ -82,6 +82,8 @@ dependencies {
     // Location (postmark)
     implementation(libs.play.services.location)
 
+    // Billing (Pro: lifetime + yearly)
+    implementation(libs.android.billing)
     // Images
     implementation(libs.coil.compose)
     implementation(libs.androidx.exifinterface)

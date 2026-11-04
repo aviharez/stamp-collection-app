@@ -2,6 +2,8 @@ package com.aviharez.stamp.ui.screens.collections
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aviharez.stamp.data.billing.ProRules
+import com.aviharez.stamp.data.billing.ProStatus
 import com.aviharez.stamp.data.repo.AlbumRepository
 import com.aviharez.stamp.di.AppScope
 import com.aviharez.stamp.domain.model.AlbumCategory
@@ -26,7 +28,11 @@ data class CollectionsUiState(
     /** null = "All". */
     val filter: AlbumCategory? = null,
     val today: LocalDate = LocalDate.MIN,
+    val isPro: Boolean = false,
 ) {
+    /** Free tier keeps [ProRules.FreeAlbumLimit] albums; a new one beyond that needs Pro. */
+    val canCreateAlbum: Boolean get() = isPro || albums.size < ProRules.FreeAlbumLimit
+
     val shown: List<AlbumSummary> get() = if (filter == null) albums else albums.filter { it.album.category == filter }
     val stampCount: Int get() = albums.sumOf { it.stampCount }
 
@@ -39,17 +45,19 @@ data class CollectionsUiState(
 class CollectionsViewModel @Inject constructor(
     private val albums: AlbumRepository,
     private val clock: Clock,
+    proStatus: ProStatus,
     @param:AppScope private val appScope: CoroutineScope,
 ) : ViewModel() {
 
     private val filter = MutableStateFlow<AlbumCategory?>(null)
 
-    val state: StateFlow<CollectionsUiState> = combine(albums.observeSummaries(), filter) { list, f ->
+    val state: StateFlow<CollectionsUiState> = combine(albums.observeSummaries(), filter, proStatus.isPro) { list, f, pro ->
         CollectionsUiState(
             loaded = true,
             albums = list.sortedByDescending { it.latest?.takenAt ?: it.album.createdAt },
             filter = f,
             today = LocalDate.now(clock),
+            isPro = pro,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CollectionsUiState())
 

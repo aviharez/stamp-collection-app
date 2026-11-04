@@ -22,6 +22,9 @@ import kotlinx.serialization.Serializable
 /** "Stamped!" celebration for a just-saved stamp. Full screen, cobalt. */
 @Serializable data class StampedRoute(val stampId: String)
 
+/** Pro paywall, opened only by the user asking for something Pro covers. [reason] = PaywallReason name. */
+@Serializable data class PaywallRoute(val reason: String)
+
 @Serializable data object CalendarRoute
 
 @Serializable data object MapRoute

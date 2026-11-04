@@ -217,7 +217,7 @@
     <string name="export_postmark">Postmark</string>
     <string name="export_on">On</string>
     <string name="export_off">Off</string>
-    <string name="export_watermark_note">small “%1$s” mark in the corner · Pro removes it</string>
+    <string name="export_watermark_note">small “%1$s” mark in the corner</string>
     <string name="export_pro_note">full resolution · no watermark</string>
     <string name="export_save">Save</string>
     <string name="export_saving">Saving…</string>
@@ -225,4 +225,47 @@
     <string name="export_share">Share</string>
     <string name="export_failed">Couldn’t make the image. Try again.</string>
     <string name="export_preview_cd">Preview of the image you’ll share</string>
+
+    <!-- Paywall (Pro) -->
+    <string name="paywall_close">Close</string>
+    <string name="paywall_restore">Restore</string>
+    <string name="paywall_overline">Pro · the full set</string>
+    <plurals name="paywall_overline_albums">
+        <item quantity="one">Free album: %1$d of %1$d used</item>
+        <item quantity="other">Free albums: %1$d of %1$d used</item>
+    </plurals>
+    <string name="paywall_overline_watermark">Pro · no watermark</string>
+    <string name="paywall_title">Complete your collection</string>
+    <string name="paywall_perk_albums">Unlimited albums</string>
+    <string name="paywall_perk_no_mark">No watermark on exports</string>
+    <string name="paywall_perk_edges">Every edge style &amp; filter</string>
+    <string name="paywall_perk_scrapbook">Scrapbook pages &amp; stickers</string>
+    <string name="paywall_perk_widget">Home-screen widget</string>
+    <string name="paywall_soon">soon</string>
+    <string name="paywall_soon_note">dashed ones are on their way · Pro includes them</string>
+    <string name="paywall_perk_soon_cd">%1$s, coming soon</string>
+    <string name="paywall_plan_lifetime">Lifetime</string>
+    <string name="paywall_plan_yearly">Yearly</string>
+    <string name="paywall_per_lifetime">once</string>
+    <string name="paywall_per_yearly">a year</string>
+    <string name="paywall_best_value">Best value</string>
+    <string name="paywall_price_missing">–</string>
+    <string name="paywall_plan_cd">%1$s, %2$s %3$s</string>
+    <string name="paywall_selected_cd">Selected</string>
+    <string name="paywall_buy_lifetime">Get Pro for life</string>
+    <string name="paywall_buy_yearly">Start yearly Pro</string>
+    <string name="paywall_yearly_terms">Renews every year · cancel anytime in Google Play</string>
+    <string name="paywall_free_note">your own photos stay free, always</string>
+    <string name="paywall_loading">Asking Google Play for prices…</string>
+    <string name="paywall_unavailable">Google Play isn’t reachable right now. Check your connection and try again.</string>
+    <string name="paywall_retry">Try again</string>
+    <string name="paywall_pending">Payment pending. Pro turns on as soon as Google Play confirms it.</string>
+    <string name="paywall_failed">The purchase didn’t go through. You haven’t been charged.</string>
+    <string name="paywall_nothing_to_restore">No Pro purchase found on this Google account.</string>
+    <string name="paywall_restore_failed">Couldn’t reach Google Play to restore. Try again later.</string>
+
+    <!-- Pro entry points -->
+    <string name="export_remove_with_pro">Remove with Pro</string>
+    <string name="profile_get_pro">Get Pro</string>
+    <string name="profile_is_pro">You have Pro. Thank you!</string>
 </resources>

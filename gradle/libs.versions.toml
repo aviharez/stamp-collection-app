@@ -17,6 +17,7 @@ sqlite = "2.7.1"
 datastore = "1.3.0"
 playServicesLocation = "21.4.0"
 kotlinxSerialization = "1.12.0"
+billing = "9.1.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
@@ -67,6 +68,9 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 
 # Postmark city/country: fused coarse location (fast, battery-cheap) — CLAUDE.md §2
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+
+# Pro purchases (lifetime + yearly) — CLAUDE.md §2/§4
+android-billing = { group = "com.android.billingclient", name = "billing", version.ref = "billing" }
 
 # Tests
 junit = { group = "junit", name = "junit", version.ref = "junit" }
