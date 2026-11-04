@@ -38,6 +38,13 @@ class SettingsRepository @Inject constructor(private val store: DataStore<Prefer
         store.edit { it[LocationAsked] = true }
     }
 
+    /** The first-run welcome has been answered (or skipped because stamps already exist). */
+    suspend fun onboarded(): Boolean = store.data.first()[Onboarded] ?: false
+
+    suspend fun setOnboarded() {
+        store.edit { it[Onboarded] = true }
+    }
+
     /** When the last backup file was written (epoch millis), null = never. */
     val lastBackupAt: Flow<Long?> = store.data.map { it[LastBackupAt] }.distinctUntilChanged()
 
@@ -50,5 +57,6 @@ class SettingsRepository @Inject constructor(private val store: DataStore<Prefer
         val LastAlbumId = longPreferencesKey("last_album_id")
         val LocationAsked = booleanPreferencesKey("location_asked")
         val LastBackupAt = longPreferencesKey("last_backup_at")
+        val Onboarded = booleanPreferencesKey("onboarded")
     }
 }

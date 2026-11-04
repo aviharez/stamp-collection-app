@@ -4,6 +4,9 @@ import kotlinx.serialization.Serializable
 
 // Type-safe Navigation Compose routes.
 
+/** First run only: what the app does + the way to a first stamp. Full screen, cobalt. */
+@Serializable data object WelcomeRoute
+
 /** Album tab: home page of the stamp album. */
 @Serializable data object HomeRoute
 
@@ -13,8 +16,11 @@ import kotlinx.serialization.Serializable
 /** One album's page (collection detail). Full screen, no nav bar. */
 @Serializable data class AlbumPageRoute(val albumId: Long)
 
-/** Camera. Full screen, dark. */
-@Serializable data object CameraRoute
+/**
+ * Camera. Full screen, dark. [fromWelcome]: the welcome already explained it, so ask for the camera
+ * permission straight away instead of showing the in-app pre-prompt first.
+ */
+@Serializable data class CameraRoute(val fromWelcome: Boolean = false)
 
 /** Gallery import: frame a picked photo ([uri] from the system photo picker). Full screen, dark. */
 @Serializable data class ImportRoute(val uri: String)

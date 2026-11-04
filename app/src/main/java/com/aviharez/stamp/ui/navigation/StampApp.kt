@@ -31,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.aviharez.stamp.R
 import com.aviharez.stamp.ui.components.NavTab
 import com.aviharez.stamp.ui.debug.DebugGallery
@@ -50,13 +51,28 @@ import com.aviharez.stamp.ui.screens.collections.CollectionsScreen
 import com.aviharez.stamp.ui.screens.home.HomeScreen
 import com.aviharez.stamp.ui.screens.importer.ImportScreen
 import com.aviharez.stamp.ui.screens.stamped.StampedScreen
+import com.aviharez.stamp.ui.screens.welcome.FirstRunViewModel
+import com.aviharez.stamp.ui.screens.welcome.WelcomeScreen
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.aviharez.stamp.ui.theme.StampTheme
 import com.aviharez.stamp.ui.theme.SystemBarsFor
 import com.aviharez.stamp.ui.theme.rememberReduceMotion
 
 /** App root: nav host, the StampNavBar on tab screens, and system-bar styling per screen. */
 @Composable
-fun StampApp() {
+fun StampApp(firstRun: FirstRunViewModel = hiltViewModel()) {
+    // Wait the few ms it takes to know whether this is a fresh install, so Home never flashes first.
+    val showWelcome by firstRun.showWelcome.collectAsStateWithLifecycle()
+    when (showWelcome) {
+        null -> Box(Modifier.fillMaxSize().background(StampTheme.colors.paper))
+        else -> StampNavigation(startOnWelcome = showWelcome == true, onWelcomeDone = firstRun::done)
+    }
+}
+
+@Composable
+private fun StampNavigation(startOnWelcome: Boolean, onWelcomeDone: () -> Unit) {
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
     val destination = entry?.destination
@@ -67,7 +83,7 @@ fun StampApp() {
     var lastTab by remember { mutableStateOf(NavTab.Album) }
     if (currentTab != null && currentTab != lastTab) lastTab = currentTab
 
-    SystemBarsFor(darkBackground = destination.isAny(CameraRoute::class, ImportRoute::class, StampedRoute::class))
+    SystemBarsFor(darkBackground = destination.isAny(WelcomeRoute::class, CameraRoute::class, ImportRoute::class, StampedRoute::class))
 
     Scaffold(
         containerColor = StampTheme.colors.paper,
@@ -92,15 +108,28 @@ fun StampApp() {
     ) { inner ->
         NavHost(
             navController = nav,
-            startDestination = HomeRoute,
+            startDestination = if (startOnWelcome) WelcomeRoute else HomeRoute,
             modifier = Modifier.fillMaxSize(),
             enterTransition = { if (reduceMotion) EnterTransition.None else fadeIn(tween(ScreenMillis)) },
             exitTransition = { if (reduceMotion) ExitTransition.None else fadeOut(tween(ScreenMillis)) },
         ) {
+            composable<WelcomeRoute> {
+                // Each choice swaps the welcome for Home underneath, so back from the camera lands Home.
+                fun leaveTo(next: Any?) {
+                    onWelcomeDone()
+                    nav.navigate(HomeRoute) { popUpTo<WelcomeRoute> { inclusive = true } }
+                    next?.let { nav.navigate(it) }
+                }
+                WelcomeScreen(
+                    onMakeStamp = { leaveTo(CameraRoute(fromWelcome = true)) },
+                    onPicked = { uri -> leaveTo(ImportRoute(uri.toString())) },
+                    onSkip = { leaveTo(null) },
+                )
+            }
             composable<HomeRoute> {
                 HomeScreen(
                     contentPadding = inner,
-                    onStampIt = { nav.navigate(CameraRoute) },
+                    onStampIt = { nav.navigate(CameraRoute()) },
                     onOpenCollections = { nav.navigate(CollectionsRoute) },
                     onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
                 )
@@ -119,14 +148,15 @@ fun StampApp() {
             composable<AlbumPageRoute> {
                 AlbumPageScreen(
                     onBack = { nav.popBackStack() },
-                    onNextStamp = { nav.navigate(CameraRoute) },
+                    onNextStamp = { nav.navigate(CameraRoute()) },
                 )
             }
             composable<CameraRoute>(
                 enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },
                 popExitTransition = { if (reduceMotion) ExitTransition.None else slideOutVertically(tween(ScreenMillis)) { it / 6 } + fadeOut(tween(ScreenMillis)) },
-            ) {
+            ) { entry ->
                 CameraScreen(
+                    askRightAway = entry.toRoute<CameraRoute>().fromWelcome,
                     onClose = { nav.popBackStack() },
                     onCaptured = { stampId ->
                         // Replace the camera with the celebration; back from Stamped! returns Home.
@@ -158,7 +188,7 @@ fun StampApp() {
                     openNewAlbum = openNewAlbum,
                     onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
                     onRetake = {
-                        nav.navigate(CameraRoute) { popUpTo<StampedRoute> { inclusive = true } }
+                        nav.navigate(CameraRoute()) { popUpTo<StampedRoute> { inclusive = true } }
                     },
                     onPickAnother = { uri ->
                         nav.navigate(ImportRoute(uri.toString())) { popUpTo<StampedRoute> { inclusive = true } }
@@ -173,7 +203,7 @@ fun StampApp() {
             composable<CalendarRoute> {
                 CalendarScreen(
                     contentPadding = inner,
-                    onStampIt = { nav.navigate(CameraRoute) },
+                    onStampIt = { nav.navigate(CameraRoute()) },
                     onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
                 )
             }

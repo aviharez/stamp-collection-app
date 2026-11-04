@@ -10,7 +10,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import com.aviharez.stamp.ui.theme.StampTheme
 
-/** Flat stand-in illustrations for @Preview and the debug gallery (real stamps hold photos). */
+/** Flat illustrations: @Preview / debug-gallery stand-ins and the welcome screen's example stamps (real stamps hold photos). */
 enum class PreviewArtKind { Sunset, Sea, Night }
 
 @Composable

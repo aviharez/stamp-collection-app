@@ -58,6 +58,9 @@ interface StampDao {
     @Query("SELECT * FROM stamps ORDER BY taken_at ASC")
     suspend fun all(): List<StampEntity>
 
+    @Query("SELECT COUNT(*) FROM stamps")
+    suspend fun count(): Int
+
     @Query("SELECT id FROM stamps")
     suspend fun ids(): List<String>
 

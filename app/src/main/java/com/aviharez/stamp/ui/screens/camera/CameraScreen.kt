@@ -87,6 +87,7 @@ fun CameraScreen(
     onCaptured: (stampId: String) -> Unit,
     onImport: (Uri) -> Unit,
     modifier: Modifier = Modifier,
+    askRightAway: Boolean = false,
 ) {
     LockPortrait()
     val pickPhoto = rememberPhotoPicker(onImport)
@@ -99,6 +100,10 @@ fun CameraScreen(
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
         granted = result
         askedOnce = true
+    }
+    // From the welcome: it already explained the camera, so go straight to the system dialog (once).
+    LaunchedEffect(Unit) {
+        if (askRightAway && !granted && !askedOnce) launcher.launch(Manifest.permission.CAMERA)
     }
     // Back from Settings: pick up a newly granted permission.
     LifecycleResumeEffect(Unit) {
