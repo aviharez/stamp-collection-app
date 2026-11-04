@@ -22,9 +22,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.StampApp">
+        <!-- Portrait only until a landscape/tablet layout exists (milestone 4). Android 16+
+             ignores this on large screens, so that layout is still needed before tablets. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:theme="@style/Theme.StampApp"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
