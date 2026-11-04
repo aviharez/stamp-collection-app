@@ -244,7 +244,7 @@ fun ImportContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                GalleryStampButton(
+                if (!state.reframing) GalleryStampButton(
                     onClick = onPickAnother,
                     contentDescription = stringResource(R.string.import_pick_another),
                     enabled = !state.saving,

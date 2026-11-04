@@ -73,6 +73,8 @@ class StampRepository @Inject constructor(
         return new.id
     }
 
+    suspend fun get(id: String): Stamp? = dao.get(id)?.toDomain()
+
     fun observe(id: String): Flow<Stamp?> = dao.observe(id).map { it?.toDomain() }
 
     fun observeNumberInAlbum(id: String): Flow<Int> = dao.observeNumberInAlbum(id)
@@ -106,6 +108,13 @@ class StampRepository @Inject constructor(
     suspend fun moveToAlbum(id: String, albumId: Long) {
         dao.moveToAlbum(id, albumId)
         settings.setLastAlbumId(albumId)
+    }
+
+    /** A re-framed picture (new crop / turn / shape); the old PNG is deleted. Date, place and words stay. */
+    suspend fun replaceImage(id: String, shape: StampShape, image: File) {
+        val old = dao.get(id) ?: return
+        dao.setImage(id, shape.name, image.path)
+        if (old.imagePath != image.path) withContext(Dispatchers.IO) { File(old.imagePath).delete() }
     }
 
     /** Removes the stamp and both of its image files (e.g. "Retake"). */

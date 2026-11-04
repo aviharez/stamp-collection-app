@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.time.Clock
 import java.time.LocalDate
 import javax.inject.Inject
@@ -51,6 +52,8 @@ data class ImportUiState(
     val saving: Boolean = false,
     /** Id of the saved stamp; the screen navigates to Stamped! with it. */
     val saved: String? = null,
+    /** Framing an existing stamp again: no "another photo", and saving replaces its picture. */
+    val reframing: Boolean = false,
 )
 
 @HiltViewModel
@@ -65,20 +68,53 @@ class ImportViewModel @Inject constructor(
     @param:AppScope private val appScope: CoroutineScope,
 ) : ViewModel() {
 
-    private val uri = savedState.toRoute<ImportRoute>().uri.toUri()
+    private val route = savedState.toRoute<ImportRoute>()
+    private val reframeId = route.reframeId
 
-    private val _state = MutableStateFlow(ImportUiState(day = LocalDate.now(clock)))
+    private val _state = MutableStateFlow(ImportUiState(day = LocalDate.now(clock), reframing = reframeId != null))
     val state: StateFlow<ImportUiState> = _state.asStateFlow()
 
     private var photo: ImportedPhoto? = null
     private var kept = false
 
     init {
-        viewModelScope.launch { load() }
+        viewModelScope.launch { if (reframeId != null) loadStamp(reframeId) else load() }
+    }
+
+    /** Re-frame: the stamp's own original, its shape, day and place. The original is never deleted. */
+    private suspend fun loadStamp(id: String) {
+        kept = true
+        val stamp = stamps.get(id)
+        val original = stamp?.originalPath?.let(::File)?.takeIf { it.isFile }
+        val preview = original?.let { withContext(Dispatchers.Default) { importer.decodePreview(it) } }
+        if (stamp == null || original == null || preview == null) {
+            _state.update { it.copy(loading = false, failed = true) }
+            return
+        }
+        photo = ImportedPhoto(
+            id = id,
+            original = original,
+            width = preview.width,
+            height = preview.height,
+            takenAt = stamp.takenAt,
+            localTakenAt = null,
+            latitude = null,
+            longitude = null,
+        )
+        _state.update {
+            it.copy(
+                loading = false,
+                photo = preview.asImageBitmap(),
+                shape = stamp.shape,
+                perforation = stamp.perforation,
+                day = stamp.day,
+                place = stamp.place,
+            )
+        }
     }
 
     private suspend fun load() {
-        val imported = importer.import(uri)
+        val imported = importer.import(route.uri.toUri())
         val preview = imported?.let { withContext(Dispatchers.Default) { importer.decodePreview(it.original) } }
         if (imported == null || preview == null) {
             imported?.original?.delete()
@@ -139,8 +175,13 @@ class ImportViewModel @Inject constructor(
                         shape = snapshot.shape,
                         perforation = snapshot.perforation,
                         frameShortDp = frameShortDp,
-                        output = storage.renderedFile(picked.id),
+                        output = storage.renderedFile(picked.id, version = reframeId?.let { clock.millis() }),
                     )
+                }
+                if (reframeId != null) {
+                    stamps.replaceImage(reframeId, rendered.shape, rendered.file)
+                    _state.update { it.copy(saving = false, saved = reframeId) }
+                    return@launch
                 }
                 val now = clock.instant()
                 val id = stamps.add(

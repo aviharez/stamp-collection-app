@@ -79,6 +79,7 @@ fun AlbumPageScreen(
     onBack: () -> Unit,
     onNextStamp: () -> Unit,
     onGetPro: () -> Unit,
+    onOpenStamp: (stampId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: AlbumPageViewModel = hiltViewModel(),
 ) {
@@ -93,6 +94,7 @@ fun AlbumPageScreen(
         onEdit = { editing = true },
         onNextStamp = { viewModel.takeNextStamp(onNextStamp) },
         onSharePage = { sharingPage = it },
+        onOpenStamp = onOpenStamp,
         modifier = modifier,
     )
 
@@ -129,6 +131,7 @@ fun AlbumPageContent(
     onEdit: () -> Unit,
     onNextStamp: () -> Unit,
     onSharePage: (index: Int) -> Unit,
+    onOpenStamp: (stampId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val s = StampTheme.spacing
@@ -206,6 +209,7 @@ fun AlbumPageContent(
                     stamps = state.pages[index],
                     hasNextSlot = index == state.pages.lastIndex,
                     onNextStamp = onNextStamp,
+                    onOpenStamp = onOpenStamp,
                     modifier = Modifier.fillMaxSize(),
                 )
             }
@@ -245,6 +249,8 @@ internal fun AlbumSheet(
     hasNextSlot: Boolean,
     onNextStamp: () -> Unit,
     modifier: Modifier = Modifier,
+    /** Null = stamps aren't tappable (the exported picture). */
+    onOpenStamp: ((String) -> Unit)? = null,
 ) {
     val c = StampTheme.colors
     val s = StampTheme.spacing
@@ -264,7 +270,7 @@ internal fun AlbumSheet(
                             val i = row * Columns + col
                             val cell = Modifier.weight(1f).fillMaxSize()
                             when {
-                                i < stamps.size -> StampCell(stamps[i], cell)
+                                i < stamps.size -> StampCell(stamps[i], onOpenStamp, cell)
                                 i == stamps.size && hasNextSlot -> NextStampCell(onNextStamp, cell)
                                 else -> Spacer(cell)
                             }
@@ -278,8 +284,17 @@ internal fun AlbumSheet(
 }
 
 @Composable
-private fun StampCell(stamp: Stamp, modifier: Modifier) {
-    Column(modifier.padding(horizontal = StampTheme.spacing.xxs), horizontalAlignment = Alignment.CenterHorizontally) {
+private fun StampCell(stamp: Stamp, onOpen: ((String) -> Unit)?, modifier: Modifier) {
+    val open = stringResource(R.string.album_open_stamp)
+    val tappable = if (onOpen != null) {
+        Modifier.clickable(role = Role.Button, onClickLabel = open) { onOpen(stamp.id) }
+    } else {
+        Modifier
+    }
+    Column(
+        modifier.then(tappable).padding(horizontal = StampTheme.spacing.xxs),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         PageStamp(
             stamp,
             Modifier
@@ -396,6 +411,7 @@ private fun AlbumPageScreenPreview() {
             onEdit = {},
             onNextStamp = {},
             onSharePage = {},
+            onOpenStamp = {},
         )
     }
 }

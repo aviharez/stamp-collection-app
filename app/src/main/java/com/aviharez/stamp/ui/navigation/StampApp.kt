@@ -52,6 +52,7 @@ import com.aviharez.stamp.ui.screens.home.HomeScreen
 import com.aviharez.stamp.ui.screens.importer.ImportScreen
 import com.aviharez.stamp.ui.screens.stamped.StampedScreen
 import com.aviharez.stamp.ui.screens.welcome.FirstRunViewModel
+import com.aviharez.stamp.ui.screens.detail.StampDetailScreen
 import com.aviharez.stamp.ui.screens.welcome.WelcomeScreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -150,6 +151,17 @@ private fun StampNavigation(startOnWelcome: Boolean, onWelcomeDone: () -> Unit) 
                     onBack = { nav.popBackStack() },
                     onNextStamp = { nav.navigate(CameraRoute()) },
                     onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
+                    onOpenStamp = { nav.navigate(StampDetailRoute(it)) },
+                )
+            }
+            composable<StampDetailRoute> { entry ->
+                val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
+                StampDetailScreen(
+                    onClose = { nav.popBackStack() },
+                    onReframe = { nav.navigate(ImportRoute(reframeId = it)) },
+                    onOpenPaywall = { reason -> nav.navigate(PaywallRoute(reason.name)) },
+                    openNewAlbum = openNewAlbum,
+                    onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
                 )
             }
             composable<CameraRoute>(
@@ -168,10 +180,16 @@ private fun StampNavigation(startOnWelcome: Boolean, onWelcomeDone: () -> Unit) 
             }
             composable<ImportRoute>(
                 enterTransition = { if (reduceMotion) EnterTransition.None else fadeIn(tween(ScreenMillis)) },
-            ) {
+            ) { entry ->
+                val reframing = entry.toRoute<ImportRoute>().reframeId != null
                 ImportScreen(
                     onClose = { nav.popBackStack() },
                     onSaved = { stampId ->
+                        // Re-framed: back to the stamp, which now shows the new picture.
+                        if (reframing) {
+                            nav.popBackStack()
+                            return@ImportScreen
+                        }
                         // Like a capture: Stamped! replaces the camera (if import started there) and this screen.
                         val fromCamera = nav.hasInBackStack<CameraRoute>()
                         nav.navigate(StampedRoute(stampId)) {

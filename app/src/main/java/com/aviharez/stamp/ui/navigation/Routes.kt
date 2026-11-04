@@ -22,8 +22,14 @@ import kotlinx.serialization.Serializable
  */
 @Serializable data class CameraRoute(val fromWelcome: Boolean = false)
 
-/** Gallery import: frame a picked photo ([uri] from the system photo picker). Full screen, dark. */
-@Serializable data class ImportRoute(val uri: String)
+/**
+ * Gallery import: frame a picked photo ([uri] from the system photo picker). Full screen, dark.
+ * With [reframeId] instead: frame an existing stamp's original again (crop, turn, shape).
+ */
+@Serializable data class ImportRoute(val uri: String = "", val reframeId: String? = null)
+
+/** One stamp, big: title, words on the back, share, re-frame, move, delete. */
+@Serializable data class StampDetailRoute(val stampId: String)
 
 /** "Stamped!" celebration for a just-saved stamp. Full screen, cobalt. */
 @Serializable data class StampedRoute(val stampId: String)

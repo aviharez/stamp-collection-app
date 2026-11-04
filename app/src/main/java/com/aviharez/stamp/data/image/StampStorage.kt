@@ -22,6 +22,10 @@ class StampStorage @Inject constructor(@ApplicationContext context: Context) {
     /** Full-quality source: the camera JPEG (with EXIF), or a copy of an imported photo. */
     fun originalFile(id: String, extension: String = "jpg"): File = File(originals.also { it.mkdirs() }, "$id.$extension")
 
-    /** Rendered stamp: PNG, perforated, transparent outside the paper. */
-    fun renderedFile(id: String): File = File(rendered.also { it.mkdirs() }, "$id.png")
+    /**
+     * Rendered stamp: PNG, perforated, transparent outside the paper. A re-framed stamp gets a new
+     * [version] in its name, so image caches never show the old picture.
+     */
+    fun renderedFile(id: String, version: Long? = null): File =
+        File(rendered.also { it.mkdirs() }, if (version == null) "$id.png" else "$id-$version.png")
 }

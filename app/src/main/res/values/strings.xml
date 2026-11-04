@@ -180,6 +180,7 @@
     <string name="pattern_month" translatable="false">LLLL</string>
     <string name="pattern_day_title" translatable="false">EEE d MMM</string>
     <string name="pattern_day_cd" translatable="false">EEEE d MMMM</string>
+    <string name="pattern_detail_date" translatable="false">EEE d MMM yyyy</string>
     <!-- Overline above the month: %1$s = year -->
     <string name="calendar_overline">Calendar · %1$s</string>
     <string name="calendar_prev">Previous month</string>
@@ -326,4 +327,19 @@
     <string name="page_export_title">Share this page</string>
     <string name="page_export_watermark_note">small “%1$s” mark at the foot of the page</string>
     <string name="page_export_unlocked_note">watermark off for this album · thanks for watching</string>
+
+    <!-- Stamp detail -->
+    <string name="album_open_stamp">Open stamp</string>
+    <string name="detail_number">No. %1$d in %2$s</string>
+    <string name="detail_more_cd">More for this stamp</string>
+    <string name="detail_title_hint">Give it a title</string>
+    <string name="detail_title_label">Stamp title</string>
+    <string name="detail_when_where">%1$s · %2$s</string>
+    <string name="detail_reframe">Reframe</string>
+    <string name="detail_move">Move to another album</string>
+    <string name="detail_delete">Delete stamp</string>
+    <string name="detail_delete_title">Delete this stamp?</string>
+    <string name="detail_delete_note">the stamp and its photo leave the app for good (a photo you picked from your gallery stays there)</string>
+    <string name="detail_keep">Keep it</string>
+    <string name="detail_delete_confirm">Delete</string>
 </resources>
