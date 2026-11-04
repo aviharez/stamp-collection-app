@@ -18,9 +18,10 @@ import kotlinx.serialization.Serializable
 
 /**
  * "Stamped!" celebration after capture. Full screen, cobalt.
- * @param stampPath absolute path of the rendered stamp in app-private storage (null in previews).
+ * @param stampPath absolute path of the rendered stamp PNG in app-private storage.
+ * @param shape [com.aviharez.stamp.domain.model.StampShape] name the stamp ended up as.
  */
-@Serializable data class StampedRoute(val stampPath: String? = null)
+@Serializable data class StampedRoute(val stampPath: String, val shape: String)
 
 @Serializable data object CalendarRoute
 

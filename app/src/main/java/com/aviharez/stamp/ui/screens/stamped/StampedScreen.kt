@@ -16,17 +16,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.aviharez.stamp.R
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.components.AirmailStripe
 import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.PillButton
 import com.aviharez.stamp.ui.components.PillStyle
+import com.aviharez.stamp.ui.components.RenderedStamp
 import com.aviharez.stamp.ui.components.Stamp
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
@@ -39,6 +38,7 @@ import java.io.File
 @Composable
 fun StampedScreen(
     stampPath: String?,
+    shape: StampShape,
     onRetake: () -> Unit,
     onStickInAlbum: () -> Unit,
     modifier: Modifier = Modifier,
@@ -64,20 +64,17 @@ fun StampedScreen(
                     modifier = Modifier.align(Alignment.Start),
                 )
                 Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                    Stamp(
-                        shape = StampShape.Portrait,
-                        modifier = Modifier.width(StampWidth),
-                        tilt = StampTilt,
-                        shadowTint = c.shadowNavy,
-                    ) {
-                        if (stampPath != null) {
-                            AsyncImage(
-                                model = File(stampPath),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        } else {
+                    if (stampPath != null) {
+                        RenderedStamp(
+                            file = File(stampPath),
+                            shape = shape,
+                            contentDescription = stringResource(R.string.stamped_stamp_cd),
+                            tilt = StampTilt,
+                            shadowTint = c.shadowNavy,
+                            modifier = Modifier.stampSize(shape),
+                        )
+                    } else {
+                        Stamp(shape = shape, modifier = Modifier.stampSize(shape), tilt = StampTilt, shadowTint = c.shadowNavy) {
                             GrainedSurface(c.kraft, Modifier.fillMaxSize())
                         }
                     }
@@ -110,11 +107,15 @@ fun StampedScreen(
     }
 }
 
-private val StampWidth = 220.dp
+private val StampLongSide = 280.dp
+
+/** Same long side for every shape so landscape stamps are not oversized. */
+private fun Modifier.stampSize(shape: StampShape): Modifier =
+    if (shape.aspectRatio >= 1f) width(StampLongSide) else height(StampLongSide)
 private const val StampTilt = -4f
 
 @Preview(heightDp = 800)
 @Composable
 private fun StampedScreenPreview() {
-    StampAppTheme { StampedScreen(null, {}, {}) }
+    StampAppTheme { StampedScreen(null, StampShape.Portrait, {}, {}) }
 }

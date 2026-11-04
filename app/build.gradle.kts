@@ -70,6 +70,7 @@ dependencies {
 
     // Images
     implementation(libs.coil.compose)
+    implementation(libs.androidx.exifinterface)
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

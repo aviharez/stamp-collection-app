@@ -11,6 +11,7 @@ composeBom = "2026.09.00"
 navigation = "2.10.2"
 camerax = "1.6.2"
 coil = "3.6.3"
+exifinterface = "1.4.2"
 kotlinxSerialization = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -49,6 +50,8 @@ androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycl
 androidx-camera-compose = { group = "androidx.camera", name = "camera-compose", version.ref = "camerax" }
 
 # Images
+# EXIF orientation (incl. mirrored front-camera values) on every API level — CLAUDE.md §6
+androidx-exifinterface = { group = "androidx.exifinterface", name = "exifinterface", version.ref = "exifinterface" }
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 
 # Tests

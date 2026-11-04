@@ -14,6 +14,8 @@
     <string name="pattern_overline_date" translatable="false">EEE · dd MMM</string>
     <string name="pattern_short_date" translatable="false">d MMM</string>
     <string name="pattern_weekday" translatable="false">EEEE</string>
+    <string name="pattern_postmark_day" translatable="false">dd MMM</string>
+    <string name="pattern_postmark_year" translatable="false">yyyy</string>
     <!-- Shown on placeholder screens until the real screen lands: milestone number -->
     <string name="placeholder_note">coming in milestone %1$d…</string>
 
@@ -42,7 +44,30 @@
 
     <!-- Camera -->
     <string name="camera_shutter">Take stamp photo</string>
-    <string name="camera_preview_placeholder">camera preview lands in step 5</string>
+    <string name="camera_flip">Switch camera</string>
+    <string name="camera_flash_off">Flash off</string>
+    <string name="camera_flash_auto">Flash auto</string>
+    <string name="camera_flash_on">Flash on</string>
+    <string name="camera_exposure">Exposure</string>
+    <!-- Zoom chip accessibility label: %1$s = zoom factor, e.g. "0.5" -->
+    <string name="camera_zoom_cd">%1$s times zoom</string>
+    <string name="camera_high_res">50MP</string>
+    <string name="camera_high_res_cd">50 megapixel mode</string>
+    <string name="camera_focus_cd">Camera preview. Tap to focus, pinch to zoom.</string>
+    <string name="camera_unavailable">The camera isn\'t available right now.</string>
+    <string name="camera_capture_failed">That one didn\'t stick — try again.</string>
+    <string name="shape_portrait">Portrait</string>
+    <string name="shape_landscape">Landscape</string>
+    <string name="shape_square">Square</string>
+    <string name="shape_circle">Circle</string>
+
+    <!-- Camera permission pre-prompt -->
+    <string name="camera_permission_title">Let\'s make your first stamp</string>
+    <string name="camera_permission_body">The camera turns a moment into a stamp. Your photos stay on your phone.</string>
+    <string name="camera_permission_denied_body">Camera access is off. You can turn it on in Settings whenever you like.</string>
+    <string name="camera_permission_allow">Allow camera</string>
+    <string name="camera_permission_settings">Open settings</string>
+    <string name="camera_permission_not_now">Not now</string>
 
     <!-- Stamped! -->
     <string name="stamped_title">Stamped!</string>
@@ -50,4 +75,5 @@
     <string name="stamped_share">Share</string>
     <string name="stamped_stick">Stick in album</string>
     <string name="stamped_subtitle_placeholder">Your newest stamp</string>
+    <string name="stamped_stamp_cd">Your new stamp</string>
 </resources>

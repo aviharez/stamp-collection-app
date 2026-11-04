@@ -51,7 +51,7 @@ class PerforatedShape(
                 stampShape = stampShape,
                 holeRadius = style.holeRadiusDp.dp.toPx(),
                 pitch = style.pitchDp.dp.toPx(),
-                cornerRadius = CornerRadiusDp.dp.toPx(),
+                cornerRadius = PerforationCornerDp.dp.toPx(),
             )
         }
         return Outline.Generic(path)
@@ -61,11 +61,10 @@ class PerforatedShape(
         other is PerforatedShape && other.stampShape == stampShape && other.style == style
 
     override fun hashCode(): Int = 31 * stampShape.hashCode() + style.hashCode()
-
-    private companion object {
-        const val CornerRadiusDp = 1.5f
-    }
 }
+
+/** Corner radius of the stamp paper, in dp at on-screen size. */
+const val PerforationCornerDp = 1.5f
 
 /**
  * Builds the perforated outline in pixels. Shared by [PerforatedShape] (screen) and the

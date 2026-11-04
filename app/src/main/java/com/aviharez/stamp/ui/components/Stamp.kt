@@ -65,7 +65,7 @@ fun Stamp(
     val pictureShape = if (shape == StampShape.Circle) CircleShape else RectangleShape
     val shadowShape = pictureShape
     // Paper margin around the picture: a hole's diameter plus a little white.
-    val margin = (perforation.holeRadiusDp * 2f + PaperMarginExtraDp).dp
+    val margin = perforation.paperMarginDp.dp
     val colors = StampTheme.colors
     val type = StampTheme.type
 
@@ -138,7 +138,6 @@ fun Stamp(
     }
 }
 
-private const val PaperMarginExtraDp = 2f
 private val CaptionMinSize = 6.sp
 private val CaptionStep = 0.5.sp
 

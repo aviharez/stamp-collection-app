@@ -6,6 +6,14 @@ enum class StampShape(val aspectRatio: Float) {
     Landscape(4f / 3f),
     Square(1f),
     Circle(1f),
+    ;
+
+    /** Shape after turning the stamp a quarter turn (photo taken with the phone sideways). */
+    fun quarterTurned(): StampShape = when (this) {
+        Portrait -> Landscape
+        Landscape -> Portrait
+        else -> this
+    }
 }
 
 /**
@@ -21,4 +29,12 @@ enum class PerforationStyle(val holeRadiusDp: Float, val pitchDp: Float) {
     Fine(holeRadiusDp = 2.5f, pitchDp = 8f),
     Bold(holeRadiusDp = 4.5f, pitchDp = 16f),
     Scallop(holeRadiusDp = 4.5f, pitchDp = 10.5f),
+    ;
+
+    /** White paper between the perforated edge and the picture: a hole's diameter + a little. */
+    val paperMarginDp: Float get() = holeRadiusDp * 2f + PAPER_MARGIN_EXTRA_DP
+
+    private companion object {
+        const val PAPER_MARGIN_EXTRA_DP = 2f
+    }
 }
