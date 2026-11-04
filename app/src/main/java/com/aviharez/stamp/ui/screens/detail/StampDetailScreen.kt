@@ -115,6 +115,7 @@ fun StampDetailScreen(
         title = title,
         caption = caption,
         canReframe = state.canReframe,
+        canShare = state.canShare,
         onBack = onClose,
         onMore = { more = true },
         onChangeAlbum = { picking = true },
@@ -180,6 +181,7 @@ fun StampDetailContent(
     onReframe: () -> Unit,
     onShare: () -> Unit,
     modifier: Modifier = Modifier,
+    canShare: Boolean = true,
 ) {
     val s = StampTheme.spacing
     val c = StampTheme.colors
@@ -246,13 +248,15 @@ fun StampDetailContent(
                     modifier = Modifier.weight(1f),
                 )
             }
-            PillButton(
-                stringResource(R.string.stamped_share),
-                onClick = onShare,
-                style = PillStyle.Red,
-                leadingIcon = R.drawable.ic_share,
-                modifier = Modifier.weight(1f),
-            )
+            if (canShare) {
+                PillButton(
+                    stringResource(R.string.stamped_share),
+                    onClick = onShare,
+                    style = PillStyle.Red,
+                    leadingIcon = R.drawable.ic_share,
+                    modifier = Modifier.weight(1f),
+                )
+            }
         }
     }
 }

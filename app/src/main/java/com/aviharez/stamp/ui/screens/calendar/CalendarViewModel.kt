@@ -1,5 +1,6 @@
 package com.aviharez.stamp.ui.screens.calendar
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aviharez.stamp.data.repo.StampRepository
@@ -14,7 +15,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import java.time.Clock
 import java.time.LocalDate
 import java.time.YearMonth
@@ -51,9 +51,23 @@ private data class Pick(val month: YearMonth, val day: LocalDate? = null)
 class CalendarViewModel @Inject constructor(
     stamps: StampRepository,
     private val clock: Clock,
+    private val savedState: SavedStateHandle,
 ) : ViewModel() {
 
-    private val pick = MutableStateFlow(Pick(YearMonth.now(clock)))
+    // The month being looked at survives Android closing the app in the background.
+    private val pick = MutableStateFlow(
+        Pick(
+            month = savedState.get<String>(KeyMonth)?.let(YearMonth::parse)?.takeIf { it <= YearMonth.now(clock) }
+                ?: YearMonth.now(clock),
+            day = savedState.get<String>(KeyDay)?.let(LocalDate::parse),
+        ),
+    )
+
+    private fun setPick(next: Pick) {
+        pick.value = next
+        savedState[KeyMonth] = next.month.toString()
+        savedState[KeyDay] = next.day?.toString()
+    }
 
     private val page = pick
         .map { it.month }
@@ -89,17 +103,20 @@ class CalendarViewModel @Inject constructor(
 
     fun previousMonth() {
         val s = state.value
-        if (s.canGoBack) pick.value = Pick(s.month.minusMonths(1))
+        if (s.canGoBack) setPick(Pick(s.month.minusMonths(1)))
     }
 
     fun nextMonth() {
         val s = state.value
-        if (s.canGoForward) pick.value = Pick(s.month.plusMonths(1))
+        if (s.canGoForward) setPick(Pick(s.month.plusMonths(1)))
     }
 
     /** Selects [day]; a spill-over day from a neighbouring month opens that month. Future days are ignored. */
     fun select(day: LocalDate) {
         if (day.isAfter(LocalDate.now(clock))) return
-        pick.update { Pick(YearMonth.from(day), day) }
+        setPick(Pick(YearMonth.from(day), day))
     }
 }
+
+private const val KeyMonth = "calendar.month"
+private const val KeyDay = "calendar.day"

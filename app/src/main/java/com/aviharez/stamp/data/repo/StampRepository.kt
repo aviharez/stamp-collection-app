@@ -2,6 +2,7 @@ package com.aviharez.stamp.data.repo
 
 import com.aviharez.stamp.data.db.StampDao
 import com.aviharez.stamp.data.db.StampEntity
+import com.aviharez.stamp.data.image.StampStorage
 import com.aviharez.stamp.data.settings.SettingsRepository
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.Place
@@ -42,6 +43,7 @@ class StampRepository @Inject constructor(
     private val albums: AlbumRepository,
     private val settings: SettingsRepository,
     private val clock: Clock,
+    private val storage: StampStorage,
 ) {
     /** Saves a new stamp into the last-used album (or the default one). Returns the stamp id. */
     suspend fun add(new: NewStamp): String {
@@ -115,6 +117,12 @@ class StampRepository @Inject constructor(
         val old = dao.get(id) ?: return
         dao.setImage(id, shape.name, image.path)
         if (old.imagePath != image.path) withContext(Dispatchers.IO) { File(old.imagePath).delete() }
+    }
+
+    /** Deletes image files that no stamp uses any more (see [StampStorage.sweep]). */
+    suspend fun sweepOrphanFiles() {
+        val inUse = dao.all().flatMapTo(HashSet()) { listOf(it.imagePath, it.originalPath) }
+        withContext(Dispatchers.IO) { storage.sweep(inUse) }
     }
 
     /** Removes the stamp and both of its image files (e.g. "Retake"). */

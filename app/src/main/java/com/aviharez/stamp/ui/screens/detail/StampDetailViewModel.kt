@@ -42,6 +42,8 @@ data class StampDetailUiState(
     val bonusAlbums: Int = 0,
     /** The full-quality original is still there, so the stamp can be framed again. */
     val canReframe: Boolean = false,
+    /** The rendered picture is there to export (a stamp whose PNG is gone can't be shared). */
+    val canShare: Boolean = false,
 ) {
     val album: AlbumSummary? get() = albums.firstOrNull { it.album.id == stamp?.albumId }
     val canCreateAlbum: Boolean get() = ProRules.canCreateAlbum(isPro, albums.size, bonusAlbums)
@@ -74,6 +76,7 @@ class StampDetailViewModel @Inject constructor(
             isPro = pro,
             bonusAlbums = bonus,
             canReframe = stamp != null && File(stamp.originalPath).isFile,
+            canShare = stamp != null && File(stamp.imagePath).isFile,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), StampDetailUiState())
 

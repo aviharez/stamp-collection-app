@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.core.content.FileProvider
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aviharez.stamp.data.ads.AdOffer
@@ -73,13 +74,22 @@ class ExportViewModel @Inject constructor(
     private val exporter: StampExporter,
     proStatus: ProStatus,
     private val ads: RewardedAds,
+    private val savedState: SavedStateHandle,
 ) : ViewModel() {
 
     private val stampId = MutableStateFlow<String?>(null)
     private val stamp: Flow<Stamp> = stampId.filterNotNull().flatMapLatest { stamps.observe(it) }.filterNotNull()
-    private val choice = MutableStateFlow(ExportChoice())
+    // Choices and a watched ad survive Android closing the app in the background (e.g. while sharing).
+    private val choice = MutableStateFlow(
+        ExportChoice(
+            background = savedState.get<String>(KeyBackground)?.let(ExportBackground::valueOf) ?: ExportBackground.Transparent,
+            postmark = savedState[KeyPostmark] ?: true,
+        ),
+    )
     private val work = MutableStateFlow(ExportUiState())
-    private val adUnlocked = MutableStateFlow(false)
+    /** The stamp a rewarded ad was watched for (only that one exports without the watermark). */
+    private val unlockedFor = savedState.getMutableStateFlow<String?>(KeyUnlockedFor, null)
+    private val adUnlocked: Flow<Boolean> = combine(unlockedFor, stampId) { unlocked, id -> unlocked != null && unlocked == id }
     /** No watermark when Pro, or after a watched rewarded ad. */
     private val clean: Flow<Boolean> = combine(proStatus.isPro, adUnlocked) { pro, ad -> pro || ad }
     private val isPro = proStatus.isPro
@@ -99,7 +109,6 @@ class ExportViewModel @Inject constructor(
     val events: Flow<ExportEvent> = _events.receiveAsFlow()
 
     fun bind(id: String) {
-        if (stampId.value != id) adUnlocked.value = false
         stampId.value = id
     }
 
@@ -111,7 +120,7 @@ class ExportViewModel @Inject constructor(
         work.update { it.copy(ad = AdOffer.Loading) }
         viewModelScope.launch {
             val result = ads.show(activity)
-            if (result == AdResult.Rewarded) adUnlocked.value = true
+            if (result == AdResult.Rewarded) unlockedFor.value = stampId.value
             work.update {
                 it.copy(
                     ad = if (result == AdResult.Unavailable) AdOffer.Unavailable else AdOffer.Idle,
@@ -123,11 +132,13 @@ class ExportViewModel @Inject constructor(
 
     fun setBackground(background: ExportBackground) {
         choice.update { it.copy(background = background) }
+        savedState[KeyBackground] = background.name
         work.update { it.copy(save = SaveState.Idle) }
     }
 
     fun setPostmark(on: Boolean) {
         choice.update { it.copy(postmark = on) }
+        savedState[KeyPostmark] = on
         work.update { it.copy(save = SaveState.Idle) }
     }
 
@@ -167,3 +178,7 @@ class ExportViewModel @Inject constructor(
         const val PreviewLongPx = 900
     }
 }
+
+private const val KeyBackground = "export.background"
+private const val KeyPostmark = "export.postmark"
+private const val KeyUnlockedFor = "export.adUnlockedFor"

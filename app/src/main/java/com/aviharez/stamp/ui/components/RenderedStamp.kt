@@ -6,16 +6,24 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.aviharez.stamp.R
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.theme.Elevation
@@ -55,14 +63,31 @@ fun RenderedStamp(
             }
         } else {
             val loads = LocalImageLoads.current
+            // The PNG is gone (should never happen; a backup skips such stamps): a faded photo mark
+            // on the paper instead of a blank card that looks like a bug.
+            var missing by remember(file) { mutableStateOf(false) }
             AsyncImage(
                 model = file,
                 onSuccess = { loads?.finished(file.path) },
-                onError = { loads?.finished(file.path) },
+                onError = {
+                    missing = true
+                    loads?.finished(file.path)
+                },
                 contentDescription = contentDescription,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier.fillMaxSize(),
             )
+            if (missing) {
+                Icon(
+                    painterResource(R.drawable.ic_gallery),
+                    contentDescription = null,
+                    tint = StampTheme.colors.textMedium.copy(alpha = MissingAlpha),
+                    modifier = Modifier.align(Alignment.Center).fillMaxSize(MissingIconFraction),
+                )
+            }
         }
     }
 }
+
+private const val MissingAlpha = 0.5f
+private const val MissingIconFraction = 0.3f

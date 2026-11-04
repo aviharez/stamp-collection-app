@@ -97,13 +97,14 @@
     <string name="camera_focus_cd">Camera preview. Tap to focus, pinch to zoom.</string>
     <string name="camera_unavailable">The camera isn\'t available right now.</string>
     <string name="camera_capture_failed">That one didn\'t stick — try again.</string>
+    <string name="storage_full">Your phone is full. Free up some space, then try again.</string>
     <string name="shape_portrait">Portrait</string>
     <string name="shape_landscape">Landscape</string>
     <string name="shape_square">Square</string>
     <string name="shape_circle">Circle</string>
 
     <!-- Camera permission pre-prompt -->
-    <string name="camera_permission_title">Let\'s make your first stamp</string>
+    <string name="camera_permission_title">Let\'s make a stamp</string>
     <string name="camera_permission_body">The camera turns a moment into a stamp. Your photos stay on your phone.</string>
     <string name="camera_permission_denied_body">Camera access is off. You can turn it on in Settings whenever you like.</string>
     <string name="camera_permission_allow">Allow camera</string>

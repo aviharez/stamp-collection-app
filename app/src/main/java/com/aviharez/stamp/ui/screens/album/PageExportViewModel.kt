@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.content.FileProvider
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aviharez.stamp.data.ads.AdOffer
@@ -48,8 +49,10 @@ class PageExportViewModel @Inject constructor(
     private val exporter: StampExporter,
     proStatus: ProStatus,
     private val ads: RewardedAds,
+    private val savedState: SavedStateHandle,
 ) : ViewModel() {
-    private val work = MutableStateFlow(PageExportUiState())
+    // A watched ad stays watched when Android closes the app in the background (e.g. while sharing).
+    private val work = MutableStateFlow(PageExportUiState(adUnlocked = savedState[KeyUnlocked] ?: false))
 
     val state: StateFlow<PageExportUiState> = combine(work, proStatus.isPro) { w, pro -> w.copy(isPro = pro) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), PageExportUiState())
@@ -67,6 +70,7 @@ class PageExportViewModel @Inject constructor(
         work.update { it.copy(ad = AdOffer.Loading) }
         viewModelScope.launch {
             val result = ads.show(activity)
+            if (result == AdResult.Rewarded) savedState[KeyUnlocked] = true
             work.update {
                 it.copy(
                     adUnlocked = it.adUnlocked || result == AdResult.Rewarded,
@@ -107,3 +111,5 @@ class PageExportViewModel @Inject constructor(
         const val AuthoritySuffix = ".exports"
     }
 }
+
+private const val KeyUnlocked = "pageExport.adUnlocked"

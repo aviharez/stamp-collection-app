@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -201,6 +202,7 @@ fun ImportContent(
                 )
 
                 val note = when {
+                    state.storageFull -> stringResource(R.string.storage_full)
                     state.failed -> stringResource(R.string.import_failed)
                     state.loading -> stringResource(R.string.import_loading)
                     state.saving -> stringResource(R.string.import_saving)
@@ -284,7 +286,7 @@ private fun PhotoUnderFrame(
         Size(photo.height.toFloat(), photo.width.toFloat())
     }
     // A new turn or frame starts fitted again; a shape change keeps the zoom where it can.
-    val fitState = remember(photo, quarterTurns) { mutableStateOf(PhotoFit()) }
+    val fitState = rememberSaveable(photo, quarterTurns, saver = PhotoFit.StateSaver) { mutableStateOf(PhotoFit()) }
     val fit = fitState.value
     val window = geometry.window
     val clamped = remember(fit, window, turned) { fit.clamped(window, turned) }

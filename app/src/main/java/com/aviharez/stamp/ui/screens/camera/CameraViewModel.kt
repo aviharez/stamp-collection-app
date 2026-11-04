@@ -24,6 +24,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.lifecycle.awaitInstance
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aviharez.stamp.data.image.CropSpec
@@ -40,7 +41,9 @@ import com.aviharez.stamp.domain.model.StampSource
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -77,7 +80,13 @@ data class ExposureUi(val index: Int, val min: Int, val max: Int, val stepEv: Fl
 
 /** A finished capture, ready for the Stamped! screen. */
 
-enum class CameraProblem { Unavailable, CaptureFailed }
+enum class CameraProblem {
+    Unavailable,
+    CaptureFailed,
+
+    /** Not enough free space for the photo and its stamp. */
+    StorageFull,
+}
 
 data class CameraUiState(
     val shape: StampShape = StampShape.Portrait,
@@ -108,6 +117,7 @@ data class CameraUiState(
 
 @HiltViewModel
 class CameraViewModel @Inject constructor(
+    private val savedState: SavedStateHandle,
     private val storage: StampStorage,
     private val renderer: StampRenderer,
     private val stamps: StampRepository,
@@ -115,7 +125,10 @@ class CameraViewModel @Inject constructor(
     private val places: PlaceProvider,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(CameraUiState())
+    // The chosen shape survives Android closing the app in the background.
+    private val _state = MutableStateFlow(
+        CameraUiState(shape = savedState.get<String>(KeyShape)?.let(StampShape::valueOf) ?: StampShape.Portrait),
+    )
     val state: StateFlow<CameraUiState> = _state.asStateFlow()
 
     init {
@@ -251,7 +264,10 @@ class CameraViewModel @Inject constructor(
         return sizes.any { it.width.toLong() * it.height >= HighResMinPixels }
     }
 
-    fun selectShape(shape: StampShape) = _state.update { it.copy(shape = shape) }
+    fun selectShape(shape: StampShape) {
+        savedState[KeyShape] = shape.name
+        _state.update { it.copy(shape = shape) }
+    }
 
     fun setZoom(ratio: Float) {
         val s = _state.value
@@ -318,8 +334,13 @@ class CameraViewModel @Inject constructor(
         _state.update { it.copy(capturing = true, problem = null) }
 
         viewModelScope.launch {
+            if (!storage.hasRoomForStamp()) {
+                _state.update { it.copy(capturing = false, problem = CameraProblem.StorageFull) }
+                return@launch
+            }
             val id = storage.newId()
             val original = storage.originalFile(id)
+            val output = storage.renderedFile(id)
             try {
                 capture.targetRotation = displayRotation
                 capture.takePictureTo(original, mirror = snapshot.lens == Lens.Front && snapshot.mirrorSelfie)
@@ -334,7 +355,7 @@ class CameraViewModel @Inject constructor(
                             frameShortDp = frameShortDp,
                             deviceRotation = deviceRotation,
                         ),
-                        output = storage.renderedFile(id),
+                        output = output,
                     )
                 }
                 val stampId = stamps.add(
@@ -349,12 +370,16 @@ class CameraViewModel @Inject constructor(
                     ),
                 )
                 _state.update { it.copy(capturing = false, captured = stampId) }
-            } catch (e: ImageCaptureException) {
+            } catch (e: CancellationException) {
+                withContext(NonCancellable + Dispatchers.IO) { original.delete(); output.delete() }
+                throw e
+            } catch (e: Exception) {
+                // Camera error, a picture that won't decode, or a disk that filled up mid-way:
+                // nothing half-saved is kept.
                 Log.w(TAG, "Capture failed", e)
-                _state.update { it.copy(capturing = false, problem = CameraProblem.CaptureFailed) }
-            } catch (e: IllegalStateException) {
-                Log.w(TAG, "Render failed", e)
-                _state.update { it.copy(capturing = false, problem = CameraProblem.CaptureFailed) }
+                withContext(Dispatchers.IO) { original.delete(); output.delete() }
+                val problem = if (storage.hasRoomForStamp()) CameraProblem.CaptureFailed else CameraProblem.StorageFull
+                _state.update { it.copy(capturing = false, problem = problem) }
             }
         }
     }
@@ -384,6 +409,7 @@ class CameraViewModel @Inject constructor(
 
     private companion object {
         const val TAG = "CameraViewModel"
+        const val KeyShape = "shape"
         const val HighResMinPixels = 40_000_000L
         /** How long a capture waits for a place lookup still running before going date-only. */
         const val PlaceWaitMillis = 1_500L

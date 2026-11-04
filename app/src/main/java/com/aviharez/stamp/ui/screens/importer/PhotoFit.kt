@@ -1,5 +1,8 @@
 package com.aviharez.stamp.ui.screens.importer
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.Saver
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -55,5 +58,11 @@ data class PhotoFit(val zoom: Float = 1f, val pan: Offset = Offset.Zero) {
 
     companion object {
         const val MaxZoom = 5f
+
+        /** Keeps the pinch/drag through Android closing the app in the background. */
+        val StateSaver: Saver<MutableState<PhotoFit>, FloatArray> = Saver(
+            save = { floatArrayOf(it.value.zoom, it.value.pan.x, it.value.pan.y) },
+            restore = { mutableStateOf(PhotoFit(it[0], Offset(it[1], it[2]))) },
+        )
     }
 }

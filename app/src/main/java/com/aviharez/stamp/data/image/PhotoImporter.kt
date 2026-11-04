@@ -64,21 +64,33 @@ class PhotoImporter @Inject constructor(
             return@withContext null
         }
 
-        val (width, height) = uprightSize(file)
-        if (width <= 0 || height <= 0) {
+        describe(id, file) { galleryDateTaken(uri) } ?: run {
             file.delete()
-            return@withContext null
+            null
         }
+    }
+
+    /**
+     * Reads a photo [import] already copied, when the import screen comes back after Android
+     * closed the app. [takenAt] is what the first read found (the gallery's date can't be asked again).
+     */
+    suspend fun reopen(file: File, takenAt: Instant?): ImportedPhoto? = withContext(Dispatchers.IO) {
+        if (file.isFile) describe(file.nameWithoutExtension, file) { takenAt } else null
+    }
+
+    private fun describe(id: String, file: File, fallbackTakenAt: () -> Instant?): ImportedPhoto? {
+        val (width, height) = uprightSize(file)
+        if (width <= 0 || height <= 0) return null
         val exif = runCatching { ExifInterface(file) }.getOrNull()
         val local = exif?.localDateTime()
         val offset = exif?.getAttribute(ExifInterface.TAG_OFFSET_TIME_ORIGINAL)?.let(::parseOffset)
         val takenAt = when {
             local != null && offset != null -> local.toInstant(offset)
             local != null -> local.atZone(ZoneId.systemDefault()).toInstant()
-            else -> galleryDateTaken(uri)
+            else -> fallbackTakenAt()
         }
         val latLong = exif?.latLong
-        ImportedPhoto(
+        return ImportedPhoto(
             id = id,
             original = file,
             width = width,

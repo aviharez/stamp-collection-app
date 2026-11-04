@@ -97,9 +97,13 @@ fun CameraScreen(
 
     var granted by remember { mutableStateOf(isGranted()) }
     var askedOnce by rememberSaveable { mutableStateOf(false) }
+    // "Don't allow" twice (or "don't ask again"): Android shows no dialog any more, only Settings helps.
+    // Read right after the answer; reading it while drawing went stale and left a button that did nothing.
+    var permanentlyDenied by rememberSaveable { mutableStateOf(false) }
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
         granted = result
         askedOnce = true
+        permanentlyDenied = !result && activity?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) == false
     }
     // From the welcome: it already explained the camera, so go straight to the system dialog (once).
     LaunchedEffect(Unit) {
@@ -114,8 +118,6 @@ fun CameraScreen(
     if (granted) {
         CameraContent(onClose = onClose, onCaptured = onCaptured, onPickPhoto = pickPhoto, modifier = modifier)
     } else {
-        val permanentlyDenied = askedOnce &&
-            activity?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) == false
         CameraPermissionPrompt(
             permanentlyDenied = permanentlyDenied,
             onAllow = { launcher.launch(Manifest.permission.CAMERA) },
@@ -167,8 +169,8 @@ private fun CameraContent(
         }
     }
     LaunchedEffect(state.problem) {
-        if (state.problem == CameraProblem.CaptureFailed) {
-            delay(ProblemShownMillis)
+        if (state.problem == CameraProblem.CaptureFailed || state.problem == CameraProblem.StorageFull) {
+            delay(if (state.problem == CameraProblem.StorageFull) LongProblemShownMillis else ProblemShownMillis)
             viewModel.dismissProblem()
         }
     }
@@ -343,7 +345,13 @@ private fun CameraContent(
 
                 state.problem?.let { problem ->
                     HandNote(
-                        stringResource(if (problem == CameraProblem.Unavailable) R.string.camera_unavailable else R.string.camera_capture_failed),
+                        stringResource(
+                            when (problem) {
+                                CameraProblem.Unavailable -> R.string.camera_unavailable
+                                CameraProblem.CaptureFailed -> R.string.camera_capture_failed
+                                CameraProblem.StorageFull -> R.string.storage_full
+                            },
+                        ),
                         color = c.textOnDarkHigh,
                         modifier = Modifier
                             .align(Alignment.Center)
@@ -478,4 +486,5 @@ private const val FocusHoldMillis = 700L
 private const val FlashAlpha = 0.7f
 private const val FlashMillis = 260
 private const val ProblemShownMillis = 2500L
+private const val LongProblemShownMillis = 5000L
 private const val ProblemScrimAlpha = 0.7f
