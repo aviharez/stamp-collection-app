@@ -73,6 +73,7 @@ fun DebugGallery(modifier: Modifier = Modifier) {
             style = StampTheme.type.screenTitle,
             modifier = Modifier.padding(horizontal = s.screen),
         )
+        Section(R.string.debug_section_widgets) { WidgetPreviews() }
         Section(R.string.debug_section_nav) { NavBar() }
         Section(R.string.debug_section_home) { HomeComposition() }
         Section(R.string.debug_section_stamps) { StampShapes() }

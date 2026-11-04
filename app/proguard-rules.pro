@@ -4,3 +4,8 @@
 # reflection. Its own rule (-keep class * extends RoomDatabase) no longer keeps the constructor
 # in R8 full mode (AGP 9 default), so release builds crashed on launch in InitializationProvider.
 -keep class * extends androidx.room.RoomDatabase { <init>(); }
+
+# Same WorkManager 2.7 (also what Glance 1.2 pulls in) creates its InputMerger by reflection, and
+# its rule keeps the class but not the constructor in full mode. Without it, Glance's session
+# worker never runs and release widgets stay on the loading layout forever.
+-keep class * extends androidx.work.InputMerger { public <init>(); }

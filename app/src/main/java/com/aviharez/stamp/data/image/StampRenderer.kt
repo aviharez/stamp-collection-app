@@ -143,7 +143,7 @@ class StampRenderer @Inject constructor() {
         return Bitmap.createBitmap(src, 0, 0, src.width, src.height, m, true).also { if (it !== src) src.recycle() }
     }
 
-    private fun drawStamp(photo: Bitmap, shape: StampShape, perforation: PerforationStyle, frameShortDp: Float): Bitmap {
+    internal fun drawStamp(photo: Bitmap, shape: StampShape, perforation: PerforationStyle, frameShortDp: Float): Bitmap {
         // Outer paper size: the photo plus the paper margin, at the frame's proportions.
         val marginRatio = perforation.paperMarginDp / frameShortDp
         val photoShort = min(photo.width, photo.height).toFloat()

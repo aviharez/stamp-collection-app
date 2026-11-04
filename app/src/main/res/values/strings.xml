@@ -237,6 +237,7 @@
         <item quantity="other">Free albums: %1$d of %1$d used</item>
     </plurals>
     <string name="paywall_overline_watermark">Pro · no watermark</string>
+    <string name="paywall_overline_widget">Pro · home-screen widgets</string>
     <string name="paywall_title">Complete your collection</string>
     <string name="paywall_perk_albums">Unlimited albums</string>
     <string name="paywall_perk_no_mark">No watermark on exports</string>
@@ -345,4 +346,34 @@
     <string name="detail_delete_note">the stamp and its photo leave the app for good (a photo you picked from your gallery stays there)</string>
     <string name="detail_keep">Keep it</string>
     <string name="detail_delete_confirm">Delete</string>
+    <!-- Home-screen widgets (V1.1) -->
+    <string name="widget_name_stamp">Today\'s stamp</string>
+    <string name="widget_desc_stamp">Today\'s stamp, loose on your home screen</string>
+    <string name="widget_name_envelope">Airmail envelope</string>
+    <string name="widget_desc_envelope">Today\'s stamp and your streak, in an airmail envelope</string>
+    <string name="widget_name_strip">Album strip</string>
+    <string name="widget_desc_strip">Your last few days of stamps on a strip of album page</string>
+    <string name="widget_today_slot">today\'s stamp…</string>
+    <string name="widget_stamp_today">Stamp today</string>
+    <string name="widget_waiting">Today\'s stamp is waiting</string>
+    <string name="widget_stamped">Stamped!</string>
+    <string name="widget_stamp_it">Stamp it</string>
+    <!-- Under today's stamp on the album strip, in handwriting -->
+    <string name="widget_today">today</string>
+    <!-- Streak is 0 -->
+    <string name="widget_start">start today</string>
+    <!-- Tag on a widget for free users (shown uppercase) -->
+    <string name="widget_pro">Pro</string>
+    <plurals name="widget_days">
+        <item quantity="one">day</item>
+        <item quantity="other">days</item>
+    </plurals>
+    <plurals name="widget_days_in_row">
+        <item quantity="one">day in a row</item>
+        <item quantity="other">days in a row</item>
+    </plurals>
+    <string name="widget_cd_waiting">Today\'s stamp is waiting. Opens the camera</string>
+    <!-- %1$s = "Kyoto · 4 Nov" or just the date -->
+    <string name="widget_cd_stamped">Today\'s stamp, %1$s. Opens it in its album</string>
+    <string name="widget_cd_locked">Widgets are part of Pro. Opens Pro</string>
 </resources>

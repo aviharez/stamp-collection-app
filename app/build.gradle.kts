@@ -95,6 +95,7 @@ dependencies {
     implementation(libs.androidx.room3.runtime)
     ksp(libs.androidx.room3.compiler)
     implementation(libs.androidx.sqlite.framework)
+    implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.datastore.preferences)
 
     // Location (postmark)

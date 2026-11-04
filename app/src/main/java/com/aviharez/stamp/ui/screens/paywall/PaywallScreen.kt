@@ -77,12 +77,13 @@ private enum class Perk(@DrawableRes val icon: Int, @StringRes val label: Int, v
     NoMark(R.drawable.ic_perk_no_mark, R.string.paywall_perk_no_mark, true),
     Edges(R.drawable.ic_perk_edges, R.string.paywall_perk_edges, false),
     Scrapbook(R.drawable.ic_gallery, R.string.paywall_perk_scrapbook, false),
-    Widget(R.drawable.ic_perk_widget, R.string.paywall_perk_widget, false),
+    Widget(R.drawable.ic_perk_widget, R.string.paywall_perk_widget, true),
 }
 
 private fun PaywallReason.perk(): Perk? = when (this) {
     PaywallReason.Albums -> Perk.Albums
     PaywallReason.Watermark -> Perk.NoMark
+    PaywallReason.Widget -> Perk.Widget
     PaywallReason.Profile -> null
 }
 
@@ -149,6 +150,7 @@ fun PaywallContent(
             when (state.reason) {
                 PaywallReason.Albums -> pluralStringResource(R.plurals.paywall_overline_albums, ProRules.FreeAlbumLimit, ProRules.FreeAlbumLimit)
                 PaywallReason.Watermark -> stringResource(R.string.paywall_overline_watermark)
+                PaywallReason.Widget -> stringResource(R.string.paywall_overline_widget)
                 PaywallReason.Profile -> stringResource(R.string.paywall_overline)
             }.uppercase(),
             style = StampTheme.type.overline,

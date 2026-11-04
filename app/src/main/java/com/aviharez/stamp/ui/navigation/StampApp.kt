@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -38,6 +40,7 @@ import com.aviharez.stamp.ui.debug.DebugGallery
 import com.aviharez.stamp.ui.debug.DebugGalleryEntry
 import com.aviharez.stamp.ui.debug.DebugProSwitch
 import com.aviharez.stamp.ui.screens.paywall.PaywallReason
+import com.aviharez.stamp.widget.WidgetLink
 import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
 import com.aviharez.stamp.ui.screens.settings.AdPrivacyEntry
 import com.aviharez.stamp.ui.screens.settings.BackupEntry
@@ -63,17 +66,31 @@ import com.aviharez.stamp.ui.theme.rememberReduceMotion
 
 /** App root: nav host, the StampNavBar on tab screens, and system-bar styling per screen. */
 @Composable
-fun StampApp(firstRun: FirstRunViewModel = hiltViewModel()) {
+fun StampApp(
+    widgetLink: WidgetLink? = null,
+    onWidgetLinkHandled: () -> Unit = {},
+    firstRun: FirstRunViewModel = hiltViewModel(),
+) {
     // Wait the few ms it takes to know whether this is a fresh install, so Home never flashes first.
     val showWelcome by firstRun.showWelcome.collectAsStateWithLifecycle()
     when (showWelcome) {
         null -> Box(Modifier.fillMaxSize().background(StampTheme.colors.paper))
-        else -> StampNavigation(startOnWelcome = showWelcome == true, onWelcomeDone = firstRun::done)
+        else -> StampNavigation(
+            startOnWelcome = showWelcome == true,
+            onWelcomeDone = firstRun::done,
+            widgetLink = widgetLink,
+            onWidgetLinkHandled = onWidgetLinkHandled,
+        )
     }
 }
 
 @Composable
-private fun StampNavigation(startOnWelcome: Boolean, onWelcomeDone: () -> Unit) {
+private fun StampNavigation(
+    startOnWelcome: Boolean,
+    onWelcomeDone: () -> Unit,
+    widgetLink: WidgetLink?,
+    onWidgetLinkHandled: () -> Unit,
+) {
     val nav = rememberNavController()
     val entry by nav.currentBackStackEntryAsState()
     val destination = entry?.destination
@@ -252,6 +269,26 @@ private fun StampNavigation(startOnWelcome: Boolean, onWelcomeDone: () -> Unit) 
                 )
             }
             composable<DebugGalleryRoute> { DebugGallery() }
+        }
+    }
+
+    // A home-screen widget tap: start again from Home, then go where the widget points.
+    // Ignored while the first-run welcome is showing (that comes first).
+    LaunchedEffect(widgetLink) {
+        val link = widgetLink ?: return@LaunchedEffect
+        if (nav.currentDestination?.hasRoute<WelcomeRoute>() != true) nav.followWidgetLink(link)
+        onWidgetLinkHandled()
+    }
+}
+
+private fun NavHostController.followWidgetLink(link: WidgetLink) {
+    val fromHome: NavOptionsBuilder.() -> Unit = { popUpTo<HomeRoute> { inclusive = false } }
+    when (link) {
+        WidgetLink.Camera -> navigate(CameraRoute(), fromHome)
+        WidgetLink.Pro -> navigate(PaywallRoute(PaywallReason.Widget.name), fromHome)
+        is WidgetLink.Stamp -> {
+            navigate(AlbumPageRoute(link.albumId), fromHome)
+            navigate(StampDetailRoute(link.stampId))
         }
     }
 }

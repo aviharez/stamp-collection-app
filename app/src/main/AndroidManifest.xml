@@ -32,6 +32,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:theme="@style/Theme.StampApp"
@@ -73,6 +74,44 @@
                 android:name="photopicker_activity:0:required"
                 android:value="" />
         </service>
+        <!-- Home-screen widgets (Glance). Each draws one picture; see widget/WidgetArt.kt. -->
+        <receiver
+            android:name=".widget.StampOfDayWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_name_stamp">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_stamp" />
+        </receiver>
+        <receiver
+            android:name=".widget.EnvelopeWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_name_envelope">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_envelope" />
+        </receiver>
+        <receiver
+            android:name=".widget.AlbumStripWidgetReceiver"
+            android:exported="true"
+            android:label="@string/widget_name_strip">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_strip" />
+        </receiver>
+        <!-- Midnight redraw (our own alarm only). -->
+        <receiver
+            android:name=".widget.MidnightReceiver"
+            android:exported="false" />
     </application>
 
 </manifest>
