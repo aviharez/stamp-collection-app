@@ -13,11 +13,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextMeasurer
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -62,60 +64,81 @@ fun Postmark(
             .size(width = width, height = diameter)
             .semantics { contentDescription = description },
     ) {
-        val d = size.height
-        val r = d / 2f
-        val centre = Offset(r, r)
-        rotate(rotation, pivot = centre) {
-            // Rings
-            val outerStroke = d * 0.028f
-            drawCircle(
-                color = color,
-                radius = r - outerStroke / 2f,
-                center = centre,
-                style = Stroke(
-                    width = outerStroke,
-                    pathEffect = if (dashedOuter) PathEffect.dashPathEffect(floatArrayOf(d * 0.06f, d * 0.035f)) else null,
-                ),
-            )
-            drawCircle(color = color, radius = r * 0.8f, center = centre, style = Stroke(width = d * 0.018f))
+        drawPostmark(measurer, city, date, baseStyle, color, size.height, rotation, showWaves, dashedOuter)
+    }
+}
 
-            // City — shrink to fit inside the inner ring.
-            val maxTextWidth = r * 1.18f
-            val cityText = measureFitting(measurer, city.uppercase(), baseStyle, color, (d * 0.17f).toSp(), maxTextWidth)
-            val dateText = measureFitting(measurer, date.uppercase(), baseStyle, color, (d * 0.105f).toSp(), maxTextWidth * 0.9f)
-            drawText(
-                cityText,
-                topLeft = Offset(centre.x - cityText.size.width / 2f, centre.y - cityText.size.height * 0.92f),
-            )
-            drawText(
-                dateText,
-                topLeft = Offset(centre.x - dateText.size.width / 2f, centre.y + d * 0.04f),
-            )
+/**
+ * Draws a postmark [diameter] high at the top-left of this scope (waves to the right, total width
+ * [postmarkWidth]). Shared by [Postmark] and the PNG export so both look the same.
+ */
+internal fun DrawScope.drawPostmark(
+    measurer: TextMeasurer,
+    city: String,
+    date: String,
+    baseStyle: TextStyle,
+    color: Color,
+    diameter: Float,
+    rotation: Float,
+    showWaves: Boolean,
+    dashedOuter: Boolean,
+) {
+    val d = diameter
+    val r = d / 2f
+    val centre = Offset(r, r)
+    rotate(rotation, pivot = centre) {
+        // Rings
+        val outerStroke = d * 0.028f
+        drawCircle(
+            color = color,
+            radius = r - outerStroke / 2f,
+            center = centre,
+            style = Stroke(
+                width = outerStroke,
+                pathEffect = if (dashedOuter) PathEffect.dashPathEffect(floatArrayOf(d * 0.06f, d * 0.035f)) else null,
+            ),
+        )
+        drawCircle(color = color, radius = r * 0.8f, center = centre, style = Stroke(width = d * 0.018f))
 
-            // Cancellation waves to the right of the ring.
-            // A 0-size postmark would make the wave step 0 (endless loop), so skip waves then.
-            if (showWaves && d > 0f) {
-                val waveStroke = Stroke(width = d * 0.024f, cap = StrokeCap.Round)
-                val startX = d * 0.86f
-                val endX = size.width
-                val amplitude = d * 0.045f
-                val wavelength = d * 0.36f
-                WaveOffsets.forEach { offset ->
-                    val y0 = centre.y + offset * r
-                    val path = Path().apply {
-                        moveTo(startX, y0)
-                        var x = startX
-                        while (x < endX) {
-                            x = (x + d * 0.02f).coerceAtMost(endX)
-                            lineTo(x, y0 + amplitude * sin(2 * PI * (x - startX) / wavelength).toFloat())
-                        }
+        // City — shrink to fit inside the inner ring.
+        val maxTextWidth = r * 1.18f
+        val cityText = measureFitting(measurer, city.uppercase(), baseStyle, color, (d * 0.17f).toSp(), maxTextWidth)
+        val dateText = measureFitting(measurer, date.uppercase(), baseStyle, color, (d * 0.105f).toSp(), maxTextWidth * 0.9f)
+        drawText(
+            cityText,
+            topLeft = Offset(centre.x - cityText.size.width / 2f, centre.y - cityText.size.height * 0.92f),
+        )
+        drawText(
+            dateText,
+            topLeft = Offset(centre.x - dateText.size.width / 2f, centre.y + d * 0.04f),
+        )
+
+        // Cancellation waves to the right of the ring.
+        // A 0-size postmark would make the wave step 0 (endless loop), so skip waves then.
+        if (showWaves && d > 0f) {
+            val waveStroke = Stroke(width = d * 0.024f, cap = StrokeCap.Round)
+            val startX = d * 0.86f
+            val endX = postmarkWidth(d)
+            val amplitude = d * 0.045f
+            val wavelength = d * 0.36f
+            WaveOffsets.forEach { offset ->
+                val y0 = centre.y + offset * r
+                val path = Path().apply {
+                    moveTo(startX, y0)
+                    var x = startX
+                    while (x < endX) {
+                        x = (x + d * 0.02f).coerceAtMost(endX)
+                        lineTo(x, y0 + amplitude * sin(2 * PI * (x - startX) / wavelength).toFloat())
                     }
-                    drawPath(path, color, style = waveStroke)
                 }
+                drawPath(path, color, style = waveStroke)
             }
         }
     }
 }
+
+/** Total width of a postmark with waves, for a ring of [diameter]. */
+internal fun postmarkWidth(diameter: Float): Float = diameter * (1f + WavesWidthFactor)
 
 /** Width of the wave block relative to the diameter. */
 private const val WavesWidthFactor = 1.1f
@@ -124,7 +147,7 @@ private const val WavesWidthFactor = 1.1f
 private val WaveOffsets = listOf(-0.42f, -0.14f, 0.14f, 0.42f)
 
 private fun androidx.compose.ui.unit.Density.measureFitting(
-    measurer: androidx.compose.ui.text.TextMeasurer,
+    measurer: TextMeasurer,
     text: String,
     base: TextStyle,
     color: Color,

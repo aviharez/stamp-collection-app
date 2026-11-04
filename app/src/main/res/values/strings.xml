@@ -208,4 +208,21 @@
     <string name="calendar_no_stamps">no stamps</string>
     <!-- Spoken: %1$s = day description -->
     <string name="calendar_today_cd">Today, %1$s</string>
+
+    <!-- Export / share sheet -->
+    <string name="export_title">Share your stamp</string>
+    <string name="export_background">Background</string>
+    <string name="export_bg_transparent">Transparent</string>
+    <string name="export_bg_paper">Paper</string>
+    <string name="export_postmark">Postmark</string>
+    <string name="export_on">On</string>
+    <string name="export_off">Off</string>
+    <string name="export_watermark_note">small “%1$s” mark in the corner · Pro removes it</string>
+    <string name="export_pro_note">full resolution · no watermark</string>
+    <string name="export_save">Save</string>
+    <string name="export_saving">Saving…</string>
+    <string name="export_saved">Saved</string>
+    <string name="export_share">Share</string>
+    <string name="export_failed">Couldn’t make the image. Try again.</string>
+    <string name="export_preview_cd">Preview of the image you’ll share</string>
 </resources>

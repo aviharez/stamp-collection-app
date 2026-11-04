@@ -12,6 +12,11 @@
     <!-- Postmark only needs city + country, so coarse location is enough (optional, asked once). -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- "Save to Photos" on Android 8–9 only; from Android 10 MediaStore needs no permission. -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+
     <application
         android:name=".StampApplication"
         android:allowBackup="true"
@@ -37,6 +42,17 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Shares exported stamp PNGs with other apps (read-only, per-share grant). -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.exports"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <!-- Lets Google Play services install the system photo picker on older Android versions
              (gallery import); without it PickVisualMedia falls back to the document picker. -->

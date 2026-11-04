@@ -40,7 +40,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
@@ -91,6 +90,7 @@ import java.io.File
 import android.net.Uri
 import com.aviharez.stamp.domain.model.StampSource
 import com.aviharez.stamp.ui.screens.importer.rememberPhotoPicker
+import com.aviharez.stamp.ui.screens.export.ExportSheet
 import java.time.LocalDate
 
 /** "Stamped!" for the stamp in the current [com.aviharez.stamp.ui.navigation.StampedRoute]. */
@@ -105,6 +105,7 @@ fun StampedScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val caption by viewModel.caption.collectAsStateWithLifecycle()
     var picking by rememberSaveable { mutableStateOf(false) }
+    var exporting by rememberSaveable { mutableStateOf(false) }
     val stamp = state.stamp
     val fromGallery = stamp?.source == StampSource.Gallery
     // An imported stamp is "retaken" by picking another photo; this one goes only once one is picked.
@@ -124,8 +125,13 @@ fun StampedScreen(
         retakeLabel = stringResource(if (fromGallery) R.string.stamped_pick_another else R.string.stamped_retake),
         onRetake = { if (fromGallery) pickPhoto() else viewModel.retake(onRetake) },
         onStickInAlbum = { stamp?.let { onStickInAlbum(it.albumId) } },
+        onShare = { if (stamp != null) exporting = true },
         modifier = modifier,
     )
+
+    if (exporting && stamp != null) {
+        ExportSheet(stampId = stamp.id, onDismiss = { exporting = false })
+    }
 
     if (picking) {
         AlbumPickerSheet(
@@ -157,6 +163,7 @@ fun StampedContent(
     retakeLabel: String,
     onRetake: () -> Unit,
     onStickInAlbum: () -> Unit,
+    onShare: () -> Unit,
     modifier: Modifier = Modifier,
     animate: Boolean = true,
 ) {
@@ -212,13 +219,11 @@ fun StampedContent(
                     Modifier.fillMaxWidth().padding(top = s.l),
                     horizontalArrangement = Arrangement.spacedBy(s.s),
                 ) {
-                    // Sharing + export (with the free-tier watermark) arrive in milestone 3.
                     PillButton(
                         stringResource(R.string.stamped_share),
-                        onClick = {},
-                        enabled = false,
+                        onClick = onShare,
                         style = PillStyle.OutlineOnDark,
-                        modifier = Modifier.weight(1f).alpha(DisabledAlpha),
+                        modifier = Modifier.weight(1f),
                     )
                     PillButton(
                         stringResource(R.string.stamped_stick),
@@ -431,7 +436,6 @@ private const val SlamMillis = 140
 private const val SlamFromScale = 0.4f
 private const val ShakeMillis = 220
 private val ShakeDistance = 6.dp
-private const val DisabledAlpha = 0.48f
 private const val PreloadTimeoutMillis = 800L
 /** Bigger than the hero ever draws, so the cached bitmap serves the on-screen request. */
 private const val PreloadSizePx = 1200
@@ -456,6 +460,7 @@ private fun StampedContentPreview() {
             retakeLabel = stringResource(R.string.stamped_retake),
             onRetake = {},
             onStickInAlbum = {},
+            onShare = {},
             animate = false,
         )
     }
