@@ -32,7 +32,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.aviharez.stamp.R
-import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.components.NavTab
 import com.aviharez.stamp.ui.debug.DebugGallery
 import com.aviharez.stamp.ui.debug.DebugGalleryEntry
@@ -108,17 +107,14 @@ fun StampApp() {
             ) {
                 CameraScreen(
                     onClose = { nav.popBackStack() },
-                    onCaptured = { path, shape ->
+                    onCaptured = { stampId ->
                         // Replace the camera with the celebration; back from Stamped! returns Home.
-                        nav.navigate(StampedRoute(path, shape.name)) { popUpTo<CameraRoute> { inclusive = true } }
+                        nav.navigate(StampedRoute(stampId)) { popUpTo<CameraRoute> { inclusive = true } }
                     },
                 )
             }
-            composable<StampedRoute> { backStack ->
-                val route = backStack.toRoute<StampedRoute>()
+            composable<StampedRoute> {
                 StampedScreen(
-                    stampPath = route.stampPath,
-                    shape = StampShape.valueOf(route.shape),
                     onRetake = {
                         nav.navigate(CameraRoute) { popUpTo<StampedRoute> { inclusive = true } }
                     },

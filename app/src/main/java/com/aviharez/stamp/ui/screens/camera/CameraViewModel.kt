@@ -30,6 +30,11 @@ import com.aviharez.stamp.data.image.CropSpec
 import com.aviharez.stamp.data.image.NormRect
 import com.aviharez.stamp.data.image.StampRenderer
 import com.aviharez.stamp.data.image.StampStorage
+import com.aviharez.stamp.data.repo.NewStamp
+import com.aviharez.stamp.data.repo.StampRepository
+import com.aviharez.stamp.data.settings.SettingsRepository
+import com.aviharez.stamp.domain.model.Place
+import com.aviharez.stamp.domain.model.StampSource
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -66,7 +71,6 @@ data class ExposureUi(val index: Int, val min: Int, val max: Int, val stepEv: Fl
 }
 
 /** A finished capture, ready for the Stamped! screen. */
-data class CapturedStamp(val path: String, val shape: StampShape)
 
 enum class CameraProblem { Unavailable, CaptureFailed }
 
@@ -86,7 +90,8 @@ data class CameraUiState(
     /** Front camera only: true saves the selfie as the (mirrored) preview shows it. */
     val mirrorSelfie: Boolean = true,
     val capturing: Boolean = false,
-    val captured: CapturedStamp? = null,
+    /** Id of the stamp just saved; the screen navigates to Stamped! with it. */
+    val captured: String? = null,
     val problem: CameraProblem? = null,
 )
 
@@ -94,10 +99,18 @@ data class CameraUiState(
 class CameraViewModel @Inject constructor(
     private val storage: StampStorage,
     private val renderer: StampRenderer,
+    private val stamps: StampRepository,
+    private val settings: SettingsRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CameraUiState())
     val state: StateFlow<CameraUiState> = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            settings.mirrorSelfie.collect { on -> _state.update { it.copy(mirrorSelfie = on) } }
+        }
+    }
 
     private val _surfaceRequest = MutableStateFlow<SurfaceRequest?>(null)
     val surfaceRequest: StateFlow<SurfaceRequest?> = _surfaceRequest.asStateFlow()
@@ -225,7 +238,11 @@ class CameraViewModel @Inject constructor(
 
     fun toggleHighRes() = _state.update { it.copy(highResOn = !it.highResOn) }
 
-    fun toggleMirrorSelfie() = _state.update { it.copy(mirrorSelfie = !it.mirrorSelfie) }
+    fun toggleMirrorSelfie() {
+        val next = !_state.value.mirrorSelfie
+        _state.update { it.copy(mirrorSelfie = next) }
+        viewModelScope.launch { settings.setMirrorSelfie(next) }
+    }
 
     /** Tap-to-focus at [surfacePoint] (already transformed into SurfaceRequest coordinates). */
     fun focusAt(surfacePoint: Offset) {
@@ -277,7 +294,18 @@ class CameraViewModel @Inject constructor(
                         output = storage.renderedFile(id),
                     )
                 }
-                _state.update { it.copy(capturing = false, captured = CapturedStamp(rendered.file.path, rendered.shape)) }
+                val stampId = stamps.add(
+                    NewStamp(
+                        id = id,
+                        shape = rendered.shape,
+                        perforation = snapshot.perforation,
+                        imageFile = rendered.file,
+                        originalFile = original,
+                        place = Place.Unknown,
+                        source = StampSource.Camera,
+                    ),
+                )
+                _state.update { it.copy(capturing = false, captured = stampId) }
             } catch (e: ImageCaptureException) {
                 Log.w(TAG, "Capture failed", e)
                 _state.update { it.copy(capturing = false, problem = CameraProblem.CaptureFailed) }

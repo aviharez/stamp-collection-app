@@ -213,3 +213,6 @@ adb logcat -s AndroidRuntime:E
 - 2026-11-04: Nav bar changed from the Ink pill (InkNavBar) to the "stamp sheet" StampNavBar (concept E of 9): more tactile, labels always visible.
 - 2026-11-04: Camera postmark is AirmailRed (as in design/camera.png), not PaperWhite: white disappears where it overlaps the white stamp border, and red reads as real ink.
 - 2026-11-04: Front camera has a "mirror selfie" toggle (default on = saved as the preview shows it; off = true view, preview un-mirrored to match). Kept in memory for now; persisted with DataStore in milestone 2.
+- 2026-11-04: Room 3 (androidx.room3) with the platform AndroidSQLiteDriver (no bundled native SQLite). Schemas exported to app/schemas.
+- 2026-11-04: Every capture is saved immediately into the last-used album (first ever → auto-created "Everyday" album). "Retake" deletes it; leaving Stamped! keeps it.
+- 2026-11-04: A stamp's calendar day is fixed at capture in the time zone then. Streak: today not stamped yet doesn't break it; a whole missed day does. Computed from stamp days (no separate cache needed yet).

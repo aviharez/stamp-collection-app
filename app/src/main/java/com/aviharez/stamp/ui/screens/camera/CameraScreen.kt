@@ -81,7 +81,7 @@ import kotlin.math.roundToInt
 @Composable
 fun CameraScreen(
     onClose: () -> Unit,
-    onCaptured: (path: String, shape: StampShape) -> Unit,
+    onCaptured: (stampId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LockPortrait()
@@ -123,7 +123,7 @@ fun CameraScreen(
 @Composable
 private fun CameraContent(
     onClose: () -> Unit,
-    onCaptured: (path: String, shape: StampShape) -> Unit,
+    onCaptured: (stampId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CameraViewModel = hiltViewModel(),
 ) {
@@ -142,7 +142,7 @@ private fun CameraContent(
     val latestOnCaptured by rememberUpdatedState(onCaptured)
     LaunchedEffect(state.captured) {
         state.captured?.let {
-            latestOnCaptured(it.path, it.shape)
+            latestOnCaptured(it)
             viewModel.onCapturedHandled()
         }
     }

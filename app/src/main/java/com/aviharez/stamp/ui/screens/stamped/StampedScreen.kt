@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -31,14 +34,36 @@ import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
 import java.io.File
 
-/**
- * "Stamped!" — skeleton for step 4. Step 5 shows the captured stamp; the drop-in / postmark
- * slam animation, streak chip and caption field come in milestone 2.
- */
+/** "Stamped!" for the stamp in the current [com.aviharez.stamp.ui.navigation.StampedRoute]. */
 @Composable
 fun StampedScreen(
+    onRetake: () -> Unit,
+    onStickInAlbum: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: StampedViewModel = hiltViewModel(),
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val stamp = state.stamp
+    StampedContent(
+        stampPath = stamp?.imagePath,
+        shape = stamp?.shape ?: StampShape.Portrait,
+        subtitle = state.albumName?.let { stringResource(R.string.stamped_subtitle, state.numberInAlbum, it) }
+            ?: stringResource(R.string.stamped_subtitle_placeholder),
+        onRetake = { viewModel.retake(onRetake) },
+        onStickInAlbum = onStickInAlbum,
+        modifier = modifier,
+    )
+}
+
+/**
+ * Stateless "Stamped!" layout. The drop-in / postmark slam animation, streak chip, caption and
+ * album picker arrive in milestone 2 step 3.
+ */
+@Composable
+fun StampedContent(
     stampPath: String?,
     shape: StampShape,
+    subtitle: String,
     onRetake: () -> Unit,
     onStickInAlbum: () -> Unit,
     modifier: Modifier = Modifier,
@@ -81,7 +106,7 @@ fun StampedScreen(
                 }
                 Text(stringResource(R.string.stamped_title), style = StampTheme.type.hero, color = c.textOnDarkHigh)
                 Text(
-                    stringResource(R.string.stamped_subtitle_placeholder),
+                    subtitle,
                     style = StampTheme.type.body,
                     color = c.textOnDarkMedium,
                 )
@@ -117,5 +142,5 @@ private const val StampTilt = -4f
 @Preview(heightDp = 800)
 @Composable
 private fun StampedScreenPreview() {
-    StampAppTheme { StampedScreen(null, StampShape.Portrait, {}, {}) }
+    StampAppTheme { StampedContent(null, StampShape.Portrait, "No. 12 in your Everyday album", {}, {}) }
 }

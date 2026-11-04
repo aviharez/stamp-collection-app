@@ -77,5 +77,8 @@
     <string name="stamped_share">Share</string>
     <string name="stamped_stick">Stick in album</string>
     <string name="stamped_subtitle_placeholder">Your newest stamp</string>
+    <string name="stamped_subtitle">No. %1$d in your %2$s album</string>
     <string name="stamped_stamp_cd">Your new stamp</string>
+    <!-- Data -->
+    <string name="album_default_name">Everyday</string>
 </resources>
