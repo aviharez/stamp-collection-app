@@ -24,4 +24,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Stamp App"
 include(":app")
+include(":baselineprofile")
  

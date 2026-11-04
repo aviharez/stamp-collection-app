@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.room3)
+    alias(libs.plugins.baselineprofile)
 }
 
 /** Google's public test IDs (AdMob docs). */
@@ -38,9 +39,12 @@ android {
         release {
             manifestPlaceholders["admobAppId"] = providers.gradleProperty("admobAppId").getOrElse(AdMobTestAppId)
             resValue("string", "admob_rewarded_unit", providers.gradleProperty("admobRewardedId").getOrElse(AdMobTestRewardedId))
-            optimization {
-                enable = false
-            }
+            // R8 shrink + optimise. The classic flags, not the newer `optimization {}` block: the
+            // baseline profile plugin copies release into nonMinifiedRelease and only turns
+            // isMinifyEnabled off, so with `optimization.enable` the profile came out obfuscated.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
@@ -106,6 +110,10 @@ dependencies {
     // Images
     implementation(libs.coil.compose)
     implementation(libs.androidx.exifinterface)
+
+    // Startup / scroll speed: ship the generated baseline profile
+    implementation(libs.androidx.profileinstaller)
+    baselineProfile(project(":baselineprofile"))
 
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
