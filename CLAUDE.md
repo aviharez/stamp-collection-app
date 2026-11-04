@@ -41,7 +41,7 @@ Package structure:
 app/src/main/java/<package>/
   ui/theme/        Color.kt, Type.kt, Shape.kt, Spacing.kt, Theme.kt
   ui/components/   Stamp.kt, PerforatedShape.kt, Postmark.kt, AirmailStripe.kt, WashiTape.kt,
-                   PaperGrain.kt, HandNote.kt, AlbumCover.kt, InkNavBar.kt, buttons
+                   PaperGrain.kt, HandNote.kt, AlbumCover.kt, StampNavBar.kt, buttons
   ui/screens/      home/, camera/, stamped/, album/, collections/, calendar/, paywall/, settings/
   data/            db/ (Room), repo/, location/, image/ (stamp rendering + export)
   domain/          models, use cases (CreateStamp, ExportStamp, StreakCalculator)
@@ -127,12 +127,15 @@ Max 4 sizes per screen. Values bigger than labels.
 - **WashiTape**: semi-transparent striped strip, rotated, overlapping a stamp corner.
 - **PaperGrain**: subtle noise overlay (pre-rendered tiled PNG, multiply, ~30% opacity) on kraft and cobalt surfaces.
 - **HandNote**: Caveat text, slight rotation, Ink 72–100%.
-- **InkNavBar**: floating rounded pill, Ink background, 4 icons (Album, Calendar, Map, Profile), active icon full white.
+- **StampNavBar** ("stamp sheet"): grained Kraft strip (card radius, warm shadow) holding 4 mini perforated stamps
+  (Album, Calendar, Map, Profile) with Caveat lowercase labels, always visible. Active stamp turns AirmailRed with a
+  PaperWhite icon, tilts −7° and lifts (×1.12); inactive stamps are PaperWhite with Ink icons, resting tilt ±1.5°.
+  Squash on press + haptic tick on select; snaps when "reduce motion" is on.
 - **AlbumCover**: cloth-textured coloured cover, darker 12dp spine, cream name plate in Fraunces italic.
 
 ### Screens (see `/design/*.png`)
 1. **Home** — date + streak chip; big italic title "Your stamp album"; a kraft album page with the latest stamps
-   (tape, postmark, hand notes); airmail-envelope card "Today's stamp is waiting" + red "Stamp it" button; InkNavBar.
+   (tape, postmark, hand notes); airmail-envelope card "Today's stamp is waiting" + red "Stamp it" button; StampNavBar.
    Empty state when nothing stamped today; if already stamped, the card shows today's stamp instead.
 2. **Camera** — Ink background, airmail stripe top; close · "City, date" · flash; viewfinder with dimmed outside and
    perforated frame for the chosen shape; live postmark preview; vertical exposure slider; zoom chips; shape picker
@@ -190,7 +193,7 @@ adb logcat -s AndroidRuntime:E
 ## 8. Milestones
 
 1. **Foundation + Camera (week 1)** — theme tokens, fonts, signature components with previews (Stamp/PerforatedShape,
-   Postmark, AirmailStripe, PaperGrain, InkNavBar); navigation skeleton; Camera screen with live preview, frame
+   Postmark, AirmailStripe, PaperGrain, StampNavBar); navigation skeleton; Camera screen with live preview, frame
    overlay, focus, exposure, zoom/lens, shape picker, capture → orientation-correct cropped stamp → placeholder
    Stamped screen.
 2. **Albums + data (week 2)** — Room models (Stamp, Collection), save flow, Stamped! screen with animation,
@@ -205,3 +208,5 @@ adb logcat -s AndroidRuntime:E
 ## Decisions log
 - 2026-11-04: Android first, Kotlin + Compose + CameraX. Airmail design direction approved. Rewarded ads only.
 - 2026-11-04: Light-only theme (no dark mode). The app is a paper album; Camera (Ink) and Stamped! (Cobalt) are drawn dark explicitly with textOnDark* tokens.
+- 2026-11-04: Default perforation is Classic (hole radius 3.5dp, pitch 12dp), measured from the mockups; Fine / Bold / Scallop are the other edge styles.
+- 2026-11-04: Nav bar changed from the Ink pill (InkNavBar) to the "stamp sheet" StampNavBar (concept E of 9): more tactile, labels always visible.

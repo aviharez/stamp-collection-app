@@ -21,7 +21,7 @@
     <string name="debug_section_stripe">Airmail stripe</string>
     <string name="debug_section_grain">Paper grain (kraft · cobalt · sage)</string>
     <string name="debug_section_notes">Hand notes</string>
-    <string name="debug_section_nav">Ink nav bar (tap me)</string>
+    <string name="debug_section_nav">Stamp nav bar (tap me)</string>
     <string name="debug_section_tokens">Theme tokens</string>
 
     <string name="debug_sample_page">JAPAN TRIP · P.3</string>

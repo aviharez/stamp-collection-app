@@ -36,13 +36,13 @@ import com.aviharez.stamp.ui.components.AirmailEnvelope
 import com.aviharez.stamp.ui.components.AirmailStripe
 import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.HandNote
-import com.aviharez.stamp.ui.components.InkNavBar
-import com.aviharez.stamp.ui.components.InkNavTab
 import com.aviharez.stamp.ui.components.InkStrength
+import com.aviharez.stamp.ui.components.NavTab
 import com.aviharez.stamp.ui.components.Postmark
 import com.aviharez.stamp.ui.components.PreviewArt
 import com.aviharez.stamp.ui.components.PreviewArtKind
 import com.aviharez.stamp.ui.components.Stamp
+import com.aviharez.stamp.ui.components.StampNavBar
 import com.aviharez.stamp.ui.components.Tilt
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
@@ -68,6 +68,7 @@ fun DebugGallery(modifier: Modifier = Modifier) {
             style = StampTheme.type.screenTitle,
             modifier = Modifier.padding(horizontal = s.screen),
         )
+        Section(R.string.debug_section_nav) { NavBar() }
         Section(R.string.debug_section_home) { HomeComposition() }
         Section(R.string.debug_section_stamps) { StampShapes() }
         Section(R.string.debug_section_edges) { EdgeStyles() }
@@ -75,7 +76,6 @@ fun DebugGallery(modifier: Modifier = Modifier) {
         Section(R.string.debug_section_stripe) { Stripes() }
         Section(R.string.debug_section_grain) { Grains() }
         Section(R.string.debug_section_notes) { Notes() }
-        Section(R.string.debug_section_nav) { NavBar() }
         Section(R.string.debug_section_tokens) { ThemeSpecimen() }
     }
 }
@@ -180,9 +180,7 @@ private fun HomeComposition() {
                 }
             }
         }
-        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-            InkNavBar(selected = InkNavTab.Album, onSelect = {})
-        }
+        StampNavBar(selected = NavTab.Album, onSelect = {}, modifier = Modifier.fillMaxWidth())
     }
 }
 
@@ -296,10 +294,12 @@ private fun Notes() {
 
 @Composable
 private fun NavBar() {
-    var tab by rememberSaveable { mutableStateOf(InkNavTab.Album) }
-    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-        InkNavBar(selected = tab, onSelect = { tab = it })
-    }
+    var tab by rememberSaveable { mutableStateOf(NavTab.Album) }
+    StampNavBar(
+        selected = tab,
+        onSelect = { tab = it },
+        modifier = Modifier.fillMaxWidth().padding(horizontal = StampTheme.spacing.screenFullBleed),
+    )
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFFF6F0E6, heightDp = 2400)
