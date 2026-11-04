@@ -70,10 +70,12 @@ import com.aviharez.stamp.data.image.NormRect
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.components.AirmailStripe
 import com.aviharez.stamp.ui.components.CircleIconButton
+import com.aviharez.stamp.ui.components.GalleryStampButton
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.Postmark
 import com.aviharez.stamp.ui.components.rememberDateText
 import com.aviharez.stamp.ui.components.rememberPostmarkLines
+import com.aviharez.stamp.ui.screens.importer.rememberPhotoPicker
 import com.aviharez.stamp.ui.theme.StampTheme
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
@@ -83,9 +85,11 @@ import kotlin.math.roundToInt
 fun CameraScreen(
     onClose: () -> Unit,
     onCaptured: (stampId: String) -> Unit,
+    onImport: (Uri) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LockPortrait()
+    val pickPhoto = rememberPhotoPicker(onImport)
     val context = LocalContext.current
     val activity = LocalActivity.current
     fun isGranted() = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -103,7 +107,7 @@ fun CameraScreen(
     }
 
     if (granted) {
-        CameraContent(onClose = onClose, onCaptured = onCaptured, modifier = modifier)
+        CameraContent(onClose = onClose, onCaptured = onCaptured, onPickPhoto = pickPhoto, modifier = modifier)
     } else {
         val permanentlyDenied = askedOnce &&
             activity?.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) == false
@@ -116,6 +120,7 @@ fun CameraScreen(
                 )
             },
             onClose = onClose,
+            onPickPhoto = pickPhoto,
             modifier = modifier,
         )
     }
@@ -125,6 +130,7 @@ fun CameraScreen(
 private fun CameraContent(
     onClose: () -> Unit,
     onCaptured: (stampId: String) -> Unit,
+    onPickPhoto: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CameraViewModel = hiltViewModel(),
 ) {
@@ -353,7 +359,7 @@ private fun CameraContent(
                 .padding(horizontal = s.screenFullBleed, vertical = s.s),
         )
 
-        // Bottom: (gallery import joins in milestone 2) · shutter · flip
+        // Bottom: gallery (mini stamp) · shutter · flip
         Row(
             Modifier
                 .navigationBarsPadding()
@@ -361,7 +367,16 @@ private fun CameraContent(
                 .padding(horizontal = s.screen, vertical = s.m),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Spacer(Modifier.weight(1f))
+            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                GalleryStampButton(
+                    onClick = onPickPhoto,
+                    contentDescription = stringResource(R.string.camera_gallery),
+                    latestPath = state.latest?.imagePath,
+                    latestShape = state.latest?.shape ?: StampShape.Portrait,
+                    enabled = !state.capturing,
+                    modifier = Modifier.rotate(iconRotation),
+                )
+            }
             ShutterButton(
                 onClick = {
                     shownFrame?.let { frame ->

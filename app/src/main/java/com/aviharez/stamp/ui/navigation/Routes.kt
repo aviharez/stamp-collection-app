@@ -16,6 +16,9 @@ import kotlinx.serialization.Serializable
 /** Camera. Full screen, dark. */
 @Serializable data object CameraRoute
 
+/** Gallery import: frame a picked photo ([uri] from the system photo picker). Full screen, dark. */
+@Serializable data class ImportRoute(val uri: String)
+
 /** "Stamped!" celebration for a just-saved stamp. Full screen, cobalt. */
 @Serializable data class StampedRoute(val stampId: String)
 

@@ -19,8 +19,8 @@ class StampStorage @Inject constructor(@ApplicationContext context: Context) {
 
     fun newId(): String = UUID.randomUUID().toString()
 
-    /** Full-quality capture as delivered by the camera (with EXIF). */
-    fun originalFile(id: String): File = File(originals.also { it.mkdirs() }, "$id.jpg")
+    /** Full-quality source: the camera JPEG (with EXIF), or a copy of an imported photo. */
+    fun originalFile(id: String, extension: String = "jpg"): File = File(originals.also { it.mkdirs() }, "$id.$extension")
 
     /** Rendered stamp: PNG, perforated, transparent outside the paper. */
     fun renderedFile(id: String): File = File(rendered.also { it.mkdirs() }, "$id.png")

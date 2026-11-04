@@ -43,6 +43,7 @@ fun CameraPermissionPrompt(
     onAllow: () -> Unit,
     onOpenSettings: () -> Unit,
     onClose: () -> Unit,
+    onPickPhoto: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val s = StampTheme.spacing
@@ -97,6 +98,14 @@ fun CameraPermissionPrompt(
                 leadingIcon = R.drawable.ic_camera,
             )
             Spacer(Modifier.height(s.xs))
+            // Gallery import never needs the camera (CLAUDE.md §6).
+            PillButton(
+                text = stringResource(R.string.camera_permission_gallery),
+                onClick = onPickPhoto,
+                style = PillStyle.Plate,
+                leadingIcon = R.drawable.ic_gallery,
+            )
+            Spacer(Modifier.height(s.xs))
             PillButton(
                 text = stringResource(R.string.camera_permission_not_now),
                 onClick = onClose,
@@ -112,5 +121,5 @@ private const val PromptTilt = -5f
 @Preview(heightDp = 800)
 @Composable
 private fun CameraPermissionPromptPreview() {
-    StampAppTheme { CameraPermissionPrompt(permanentlyDenied = false, onAllow = {}, onOpenSettings = {}, onClose = {}) }
+    StampAppTheme { CameraPermissionPrompt(permanentlyDenied = false, onAllow = {}, onOpenSettings = {}, onClose = {}, onPickPhoto = {}) }
 }

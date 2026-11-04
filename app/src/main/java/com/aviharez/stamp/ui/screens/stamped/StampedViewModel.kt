@@ -95,7 +95,7 @@ class StampedViewModel @Inject constructor(
         }
     }
 
-    /** Throws the stamp away (row + files), then [then] reopens the camera. */
+    /** Throws the stamp away (row + files), then [then] reopens the camera (or the next import). */
     fun retake(then: () -> Unit) {
         captionSave?.cancel()
         viewModelScope.launch {

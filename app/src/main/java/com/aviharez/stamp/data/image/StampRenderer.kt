@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.asAndroidPath
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withSave
-import androidx.exifinterface.media.ExifInterface
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.components.PerforationCornerDp
@@ -56,53 +55,78 @@ data class RenderedStamp(val file: File, val shape: StampShape)
 @Singleton
 class StampRenderer @Inject constructor() {
 
+    /** Camera capture: [CropSpec.window] is in viewfinder coordinates. */
     fun render(original: File, spec: CropSpec, output: File): RenderedStamp {
-        val exifOrientation = ExifInterface(original).getAttributeInt(
-            ExifInterface.TAG_ORIENTATION,
-            ExifInterface.ORIENTATION_NORMAL,
-        )
-        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-        BitmapFactory.decodeFile(original.path, bounds)
-        val swapsAxes = exifOrientation in SwapAxes
-        val uprightW = if (swapsAxes) bounds.outHeight else bounds.outWidth
-        val uprightH = if (swapsAxes) bounds.outWidth else bounds.outHeight
-
+        val (uprightW, uprightH) = uprightSize(original)
         val window = viewfinderToPhoto(spec.window, spec.viewfinderAspect, uprightW.toFloat() / uprightH)
+        return renderWindow(
+            original = original,
+            window = window,
+            turnBefore = 0,
+            turnAfter = spec.deviceRotation,
+            shape = spec.shape,
+            perforation = spec.perforation,
+            frameShortDp = spec.frameShortDp,
+            output = output,
+        )
+    }
+
+    /**
+     * Gallery import: the photo is turned [quarterTurns] × 90° clockwise first, and [window] is
+     * normalised to that turned, upright photo.
+     */
+    fun renderImport(
+        original: File,
+        window: NormRect,
+        quarterTurns: Int,
+        shape: StampShape,
+        perforation: PerforationStyle,
+        frameShortDp: Float,
+        output: File,
+    ): RenderedStamp = renderWindow(
+        original = original,
+        window = window,
+        turnBefore = Math.floorMod(quarterTurns, 4) * 90,
+        turnAfter = 0,
+        shape = shape,
+        perforation = perforation,
+        frameShortDp = frameShortDp,
+        output = output,
+    )
+
+    private fun renderWindow(
+        original: File,
+        window: NormRect,
+        turnBefore: Int,
+        turnAfter: Int,
+        shape: StampShape,
+        perforation: PerforationStyle,
+        frameShortDp: Float,
+        output: File,
+    ): RenderedStamp {
+        val exifOrientation = exifOrientation(original)
+        val (uprightW, uprightH) = uprightSize(original)
+        val turnedW = if (turnBefore % 180 != 0) uprightH else uprightW
+        val turnedH = if (turnBefore % 180 != 0) uprightW else uprightH
 
         // Sample down only as far as the crop still delivers MaxLongPx.
-        val cropLongPx = max(window.width * uprightW, window.height * uprightH)
+        val cropLongPx = max(window.width * turnedW, window.height * turnedH)
         var sample = 1
         while (cropLongPx / (sample * 2) >= MaxLongPx) sample *= 2
 
         val decoded = BitmapFactory.decodeFile(original.path, BitmapFactory.Options().apply { inSampleSize = sample })
             ?: error("Could not decode ${original.name}")
-        val upright = applyExif(decoded, exifOrientation)
+        val upright = decoded.applyExif(exifOrientation)
+        val turned = rotate(upright, turnBefore)
+        val cropped = crop(turned, window)
+        val photo = rotate(cropped, turnAfter)
+        val finalShape = if (turnAfter % 180 != 0) shape.quarterTurned() else shape
 
-        val cropped = crop(upright, window)
-        val photo = rotate(cropped, spec.deviceRotation)
-        val shape = if (spec.deviceRotation % 180 != 0) spec.shape.quarterTurned() else spec.shape
-
-        val stamp = drawStamp(photo, shape, spec)
+        val stamp = drawStamp(photo, finalShape, perforation, frameShortDp)
         photo.recycle()
         output.outputStream().use { stamp.compress(Bitmap.CompressFormat.PNG, PngQuality, it) }
         stamp.recycle()
-        return RenderedStamp(output, shape)
-    }
-
-    /** Maps raw sensor pixels to upright pixels for all 8 EXIF orientations (incl. mirrors). */
-    private fun applyExif(src: Bitmap, orientation: Int): Bitmap {
-        val m = Matrix()
-        when (orientation) {
-            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> m.setScale(-1f, 1f)
-            ExifInterface.ORIENTATION_ROTATE_180 -> m.setRotate(180f)
-            ExifInterface.ORIENTATION_FLIP_VERTICAL -> { m.setRotate(180f); m.postScale(-1f, 1f) }
-            ExifInterface.ORIENTATION_TRANSPOSE -> { m.setRotate(90f); m.postScale(-1f, 1f) }
-            ExifInterface.ORIENTATION_ROTATE_90 -> m.setRotate(90f)
-            ExifInterface.ORIENTATION_TRANSVERSE -> { m.setRotate(-90f); m.postScale(-1f, 1f) }
-            ExifInterface.ORIENTATION_ROTATE_270 -> m.setRotate(-90f)
-            else -> return src
-        }
-        return Bitmap.createBitmap(src, 0, 0, src.width, src.height, m, true).also { if (it !== src) src.recycle() }
+        return RenderedStamp(output, finalShape)
     }
 
     private fun crop(src: Bitmap, window: NormRect): Bitmap {
@@ -119,9 +143,9 @@ class StampRenderer @Inject constructor() {
         return Bitmap.createBitmap(src, 0, 0, src.width, src.height, m, true).also { if (it !== src) src.recycle() }
     }
 
-    private fun drawStamp(photo: Bitmap, shape: StampShape, spec: CropSpec): Bitmap {
+    private fun drawStamp(photo: Bitmap, shape: StampShape, perforation: PerforationStyle, frameShortDp: Float): Bitmap {
         // Outer paper size: the photo plus the paper margin, at the frame's proportions.
-        val marginRatio = spec.perforation.paperMarginDp / spec.frameShortDp
+        val marginRatio = perforation.paperMarginDp / frameShortDp
         val photoShort = min(photo.width, photo.height).toFloat()
         val outerShortFromPhoto = photoShort / (1f - 2f * marginRatio)
         val outerLongFromPhoto = outerShortFromPhoto / min(shape.aspectRatio, 1f / shape.aspectRatio)
@@ -129,16 +153,16 @@ class StampRenderer @Inject constructor() {
         val outerW = (if (shape.aspectRatio >= 1f) outerLong else outerLong * shape.aspectRatio).roundToInt()
         val outerH = (if (shape.aspectRatio >= 1f) outerLong / shape.aspectRatio else outerLong).roundToInt()
 
-        val pxPerDp = min(outerW, outerH) / spec.frameShortDp
-        val margin = spec.perforation.paperMarginDp * pxPerDp
+        val pxPerDp = min(outerW, outerH) / frameShortDp
+        val margin = perforation.paperMarginDp * pxPerDp
 
         val out = createBitmap(outerW, outerH) // ARGB_8888, transparent
         val canvas = Canvas(out)
         val paperPath = perforatedPath(
             size = Size(outerW.toFloat(), outerH.toFloat()),
             stampShape = shape,
-            holeRadius = spec.perforation.holeRadiusDp * pxPerDp,
-            pitch = spec.perforation.pitchDp * pxPerDp,
+            holeRadius = perforation.holeRadiusDp * pxPerDp,
+            pitch = perforation.pitchDp * pxPerDp,
             cornerRadius = PerforationCornerDp * pxPerDp,
         ).asAndroidPath()
         canvas.drawPath(paperPath, Paint(Paint.ANTI_ALIAS_FLAG).apply { color = PaperWhite.toArgb() })
@@ -163,11 +187,5 @@ class StampRenderer @Inject constructor() {
         const val MinLongPx = 1600
         const val MaxLongPx = 2400
         const val PngQuality = 100
-        val SwapAxes = setOf(
-            ExifInterface.ORIENTATION_TRANSPOSE,
-            ExifInterface.ORIENTATION_ROTATE_90,
-            ExifInterface.ORIENTATION_TRANSVERSE,
-            ExifInterface.ORIENTATION_ROTATE_270,
-        )
     }
 }

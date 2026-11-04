@@ -88,12 +88,16 @@ import coil3.SingletonImageLoader
 import coil3.request.ImageRequest
 import androidx.compose.ui.platform.LocalContext
 import java.io.File
+import android.net.Uri
+import com.aviharez.stamp.domain.model.StampSource
+import com.aviharez.stamp.ui.screens.importer.rememberPhotoPicker
 import java.time.LocalDate
 
 /** "Stamped!" for the stamp in the current [com.aviharez.stamp.ui.navigation.StampedRoute]. */
 @Composable
 fun StampedScreen(
     onRetake: () -> Unit,
+    onPickAnother: (Uri) -> Unit,
     onStickInAlbum: (albumId: Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: StampedViewModel = hiltViewModel(),
@@ -102,6 +106,9 @@ fun StampedScreen(
     val caption by viewModel.caption.collectAsStateWithLifecycle()
     var picking by rememberSaveable { mutableStateOf(false) }
     val stamp = state.stamp
+    val fromGallery = stamp?.source == StampSource.Gallery
+    // An imported stamp is "retaken" by picking another photo; this one goes only once one is picked.
+    val pickPhoto = rememberPhotoPicker { uri -> viewModel.retake { onPickAnother(uri) } }
 
     StampedContent(
         stampPath = stamp?.imagePath,
@@ -114,7 +121,8 @@ fun StampedScreen(
         caption = caption,
         onCaptionChange = viewModel::onCaptionChange,
         onChangeAlbum = { picking = true },
-        onRetake = { viewModel.retake(onRetake) },
+        retakeLabel = stringResource(if (fromGallery) R.string.stamped_pick_another else R.string.stamped_retake),
+        onRetake = { if (fromGallery) pickPhoto() else viewModel.retake(onRetake) },
         onStickInAlbum = { stamp?.let { onStickInAlbum(it.albumId) } },
         modifier = modifier,
     )
@@ -146,6 +154,7 @@ fun StampedContent(
     caption: String,
     onCaptionChange: (String) -> Unit,
     onChangeAlbum: () -> Unit,
+    retakeLabel: String,
     onRetake: () -> Unit,
     onStickInAlbum: () -> Unit,
     modifier: Modifier = Modifier,
@@ -167,7 +176,7 @@ fun StampedContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 PillButton(
-                    stringResource(R.string.stamped_retake),
+                    retakeLabel,
                     onClick = onRetake,
                     style = PillStyle.Plate,
                     modifier = Modifier.align(Alignment.Start),
@@ -444,6 +453,7 @@ private fun StampedContentPreview() {
             caption = "",
             onCaptionChange = {},
             onChangeAlbum = {},
+            retakeLabel = stringResource(R.string.stamped_retake),
             onRetake = {},
             onStickInAlbum = {},
             animate = false,

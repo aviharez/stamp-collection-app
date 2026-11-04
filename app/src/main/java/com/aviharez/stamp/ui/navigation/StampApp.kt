@@ -40,6 +40,7 @@ import com.aviharez.stamp.ui.screens.album.AlbumPageScreen
 import com.aviharez.stamp.ui.screens.camera.CameraScreen
 import com.aviharez.stamp.ui.screens.collections.CollectionsScreen
 import com.aviharez.stamp.ui.screens.home.HomeScreen
+import com.aviharez.stamp.ui.screens.importer.ImportScreen
 import com.aviharez.stamp.ui.screens.stamped.StampedScreen
 import com.aviharez.stamp.ui.theme.StampTheme
 import com.aviharez.stamp.ui.theme.SystemBarsFor
@@ -58,7 +59,7 @@ fun StampApp() {
     var lastTab by remember { mutableStateOf(NavTab.Album) }
     if (currentTab != null && currentTab != lastTab) lastTab = currentTab
 
-    SystemBarsFor(darkBackground = destination.isAny(CameraRoute::class, StampedRoute::class))
+    SystemBarsFor(darkBackground = destination.isAny(CameraRoute::class, ImportRoute::class, StampedRoute::class))
 
     Scaffold(
         containerColor = StampTheme.colors.paper,
@@ -114,12 +115,33 @@ fun StampApp() {
                         // Replace the camera with the celebration; back from Stamped! returns Home.
                         nav.navigate(StampedRoute(stampId)) { popUpTo<CameraRoute> { inclusive = true } }
                     },
+                    onImport = { uri -> nav.navigate(ImportRoute(uri.toString())) },
+                )
+            }
+            composable<ImportRoute>(
+                enterTransition = { if (reduceMotion) EnterTransition.None else fadeIn(tween(ScreenMillis)) },
+            ) {
+                ImportScreen(
+                    onClose = { nav.popBackStack() },
+                    onSaved = { stampId ->
+                        // Like a capture: Stamped! replaces the camera (if import started there) and this screen.
+                        val fromCamera = nav.hasInBackStack<CameraRoute>()
+                        nav.navigate(StampedRoute(stampId)) {
+                            if (fromCamera) popUpTo<CameraRoute> { inclusive = true } else popUpTo<ImportRoute> { inclusive = true }
+                        }
+                    },
+                    onPickAnother = { uri ->
+                        nav.navigate(ImportRoute(uri.toString())) { popUpTo<ImportRoute> { inclusive = true } }
+                    },
                 )
             }
             composable<StampedRoute> {
                 StampedScreen(
                     onRetake = {
                         nav.navigate(CameraRoute) { popUpTo<StampedRoute> { inclusive = true } }
+                    },
+                    onPickAnother = { uri ->
+                        nav.navigate(ImportRoute(uri.toString())) { popUpTo<StampedRoute> { inclusive = true } }
                     },
                     onStickInAlbum = { albumId ->
                         // Open the album the stamp went into; back from there returns Home.
@@ -153,6 +175,9 @@ private fun NavDestination.tab(): NavTab? = when {
     isAny(ProfileRoute::class) -> NavTab.Profile
     else -> null
 }
+
+private inline fun <reified T : Any> NavHostController.hasInBackStack(): Boolean =
+    runCatching { getBackStackEntry<T>() }.isSuccess
 
 private fun NavDestination?.isAny(vararg routes: kotlin.reflect.KClass<*>): Boolean =
     this?.hierarchy?.any { dest -> routes.any { dest.hasRoute(it) } } == true

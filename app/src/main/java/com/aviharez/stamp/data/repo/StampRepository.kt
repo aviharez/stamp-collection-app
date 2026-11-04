@@ -30,6 +30,10 @@ data class NewStamp(
     val originalFile: File,
     val place: Place,
     val source: StampSource,
+    /** When the photo was taken; null = now (camera). */
+    val takenAt: Instant? = null,
+    /** The calendar day it counts for; null = [takenAt]'s day here. */
+    val day: LocalDate? = null,
 )
 
 @Singleton
@@ -42,7 +46,8 @@ class StampRepository @Inject constructor(
     /** Saves a new stamp into the last-used album (or the default one). Returns the stamp id. */
     suspend fun add(new: NewStamp): String {
         val albumId = settings.lastAlbumId()?.takeIf { albums.get(it) != null } ?: albums.ensureDefault()
-        val now = clock.instant()
+        val takenAt = new.takenAt ?: clock.instant()
+        val day = new.day ?: takenAt.atZone(clock.zone).toLocalDate()
         dao.insert(
             StampEntity(
                 id = new.id,
@@ -51,8 +56,8 @@ class StampRepository @Inject constructor(
                 perforation = new.perforation.name,
                 imagePath = new.imageFile.path,
                 originalPath = new.originalFile.path,
-                takenAt = now.toEpochMilli(),
-                day = now.atZone(clock.zone).toLocalDate().toString(),
+                takenAt = takenAt.toEpochMilli(),
+                day = day.toString(),
                 city = new.place.city,
                 country = new.place.country,
                 countryCode = new.place.countryCode,

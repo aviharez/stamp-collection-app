@@ -111,6 +111,17 @@
     <string name="camera_permission_not_now">Not now</string>
 
     <!-- Stamped! -->
+    <string name="camera_gallery">Make a stamp from a photo in your gallery</string>
+    <string name="camera_permission_gallery">Use a photo instead</string>
+    <string name="import_make">Make it a stamp</string>
+    <string name="import_rotate">Rotate photo</string>
+    <string name="import_pick_another">Pick another photo</string>
+    <string name="import_hint">pinch &amp; drag to fit</string>
+    <string name="import_loading">opening your photo…</string>
+    <string name="import_saving">sticking it down…</string>
+    <string name="import_failed">Couldn\'t open that photo.</string>
+    <string name="import_photo_cd">Your photo behind the stamp frame. Pinch to zoom, drag to move.</string>
+    <string name="stamped_pick_another">Pick another</string>
     <string name="stamped_title">Stamped!</string>
     <string name="stamped_retake">Retake</string>
     <string name="stamped_share">Share</string>

@@ -35,6 +35,7 @@ import com.aviharez.stamp.data.repo.NewStamp
 import com.aviharez.stamp.data.repo.StampRepository
 import com.aviharez.stamp.data.settings.SettingsRepository
 import com.aviharez.stamp.domain.model.Place
+import com.aviharez.stamp.domain.model.Stamp
 import com.aviharez.stamp.domain.model.StampSource
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
@@ -101,6 +102,8 @@ data class CameraUiState(
     /** Id of the stamp just saved; the screen navigates to Stamped! with it. */
     val captured: String? = null,
     val problem: CameraProblem? = null,
+    /** Newest saved stamp, shown on the gallery button. */
+    val latest: Stamp? = null,
 )
 
 @HiltViewModel
@@ -116,6 +119,9 @@ class CameraViewModel @Inject constructor(
     val state: StateFlow<CameraUiState> = _state.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            stamps.observeRecent(1).collect { list -> _state.update { it.copy(latest = list.firstOrNull()) } }
+        }
         viewModelScope.launch {
             settings.mirrorSelfie.collect { on -> _state.update { it.copy(mirrorSelfie = on) } }
         }

@@ -53,7 +53,7 @@ class PlaceProvider @Inject constructor(@ApplicationContext private val context:
             if (System.currentTimeMillis() - at < CacheMillis && place.hasName) return place
         }
         val location = locate() ?: return Place.Unknown
-        val place = geocode(location)
+        val place = geocode(location.latitude, location.longitude)
         cached = System.currentTimeMillis() to place
         place
     }
@@ -90,16 +90,19 @@ class PlaceProvider @Inject constructor(@ApplicationContext private val context:
             .maxByOrNull { it.time }
     }
 
-    private suspend fun geocode(location: Location): Place {
-        val coords = Place(null, null, null, location.latitude, location.longitude)
+    /** City · country for coordinates already known (e.g. a photo's EXIF GPS). Needs no permission. */
+    suspend fun placeAt(latitude: Double, longitude: Double): Place = geocode(latitude, longitude)
+
+    private suspend fun geocode(latitude: Double, longitude: Double): Place {
+        val coords = Place(null, null, null, latitude, longitude)
         if (!Geocoder.isPresent()) return coords
         val geocoder = Geocoder(context, Locale.getDefault())
         val address = withTimeoutOrNull(GeocodeTimeoutMillis) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 suspendCancellableCoroutine { cont ->
                     geocoder.getFromLocation(
-                        location.latitude,
-                        location.longitude,
+                        latitude,
+                        longitude,
                         1,
                         object : Geocoder.GeocodeListener {
                             override fun onGeocode(addresses: MutableList<Address>) {
@@ -116,7 +119,7 @@ class PlaceProvider @Inject constructor(@ApplicationContext private val context:
                 withContext(Dispatchers.IO) {
                     try {
                         @Suppress("DEPRECATION")
-                        geocoder.getFromLocation(location.latitude, location.longitude, 1)?.firstOrNull()
+                        geocoder.getFromLocation(latitude, longitude, 1)?.firstOrNull()
                     } catch (e: IOException) {
                         Log.i(TAG, "Geocoder failed (offline?)", e)
                         null
