@@ -80,12 +80,46 @@
     <string name="stamped_stick">Stick in album</string>
     <string name="stamped_subtitle_placeholder">Your newest stamp</string>
     <string name="stamped_subtitle">No. %1$d in your %2$s album</string>
+    <string name="stamped_change_album">Change album</string>
+    <string name="stamped_caption_hint">write something on the back…</string>
+    <string name="stamped_caption_label">Note on the back of the stamp</string>
     <string name="stamped_stamp_cd">Your new stamp</string>
     <!-- Location (postmark) -->
     <string name="location_ask_title">Put your city on the postmark?</string>
     <string name="location_ask_body">Only a rough location, just for the city and country. Without it, postmarks show the date.</string>
     <string name="location_ask_allow">Allow</string>
     <string name="location_ask_not_now">Not now</string>
+
+    <!-- Albums -->
+    <plurals name="album_stamp_count">
+        <item quantity="one">%d stamp</item>
+        <item quantity="other">%d stamps</item>
+    </plurals>
+    <string name="album_picker_title">Stick it in…</string>
+    <string name="album_new">New album</string>
+    <string name="album_new_title">A new album</string>
+    <string name="album_new_name_hint">Name it, e.g. Japan trip</string>
+    <string name="album_new_category">Kind</string>
+    <string name="album_new_cover">Cover</string>
+    <string name="album_new_create">Create album</string>
+    <string name="album_category_trips">Trips</string>
+    <string name="album_category_everyday">Everyday</string>
+    <string name="album_category_pets">Pets</string>
+    <string name="album_category_other">Other</string>
+    <string name="album_cover_ink">Ink blue</string>
+    <string name="album_cover_kraft">Kraft</string>
+    <string name="album_cover_sage">Sage</string>
+    <string name="album_cover_red">Airmail red</string>
+    <string name="album_cover_cobalt">Cobalt</string>
+    <string name="album_selected_cd">Current album</string>
+
+    <!-- Streak -->
+    <plurals name="streak_days">
+        <item quantity="one">%d day in a row</item>
+        <item quantity="other">%d days in a row</item>
+    </plurals>
+    <string name="streak_personal_best">%1$s · personal best</string>
+    <string name="streak_day_one">Day one of your streak</string>
 
     <!-- Data -->
     <string name="album_default_name">Everyday</string>

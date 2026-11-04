@@ -150,12 +150,12 @@ fun CircleIconButton(
 }
 
 @Composable
-private fun pressScale(source: MutableInteractionSource) = run {
+internal fun pressScale(source: MutableInteractionSource) = run {
     val pressed by source.collectIsPressedAsState()
     animateFloatAsState(if (pressed) PressedScale else 1f, airmailSpring(rememberReduceMotion()), label = "press")
 }
 
-private fun Modifier.clickableWithRipple(
+internal fun Modifier.clickableWithRipple(
     source: MutableInteractionSource,
     enabled: Boolean,
     rippleColor: Color,

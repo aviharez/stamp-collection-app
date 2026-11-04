@@ -118,7 +118,10 @@ fun StampApp() {
                     onRetake = {
                         nav.navigate(CameraRoute) { popUpTo<StampedRoute> { inclusive = true } }
                     },
-                    onStickInAlbum = { nav.popBackStack(HomeRoute, inclusive = false) },
+                    onStickInAlbum = { albumId ->
+                        // Open the album the stamp went into; back from there returns Home.
+                        nav.navigate(AlbumPageRoute(albumId)) { popUpTo<HomeRoute> { inclusive = false } }
+                    },
                 )
             }
             composable<CalendarRoute> {

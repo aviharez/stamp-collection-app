@@ -6,7 +6,7 @@ import java.time.Instant
 enum class AlbumCategory { Trips, Everyday, Pets, Other }
 
 /** Cloth colour of an album cover. Mapped to Airmail colour tokens in the UI. */
-enum class AlbumCoverColor { Cobalt, Red, Sage, Kraft, Ink }
+enum class AlbumCoverColor { Ink, Cobalt, Red, Sage, Kraft }
 
 /** A collection of stamps ("album"). */
 data class Album(
