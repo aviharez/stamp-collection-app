@@ -17,9 +17,17 @@ data class Album(
     val createdAt: Instant,
 )
 
+/** The newest stamp of an album, as shown on its cover. */
+data class CoverStamp(
+    val imagePath: String,
+    val shape: StampShape,
+    val perforation: PerforationStyle,
+    val takenAt: Instant,
+)
+
 /** An album with what its cover and page previews need. */
 data class AlbumSummary(
     val album: Album,
     val stampCount: Int,
-    val latestStampPath: String?,
+    val latest: CoverStamp?,
 )

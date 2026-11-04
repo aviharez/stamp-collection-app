@@ -9,14 +9,19 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,23 +51,39 @@ import com.aviharez.stamp.ui.theme.PaperPreview
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
 
-/** Name + kind + cover colour for a new album. Used in a bottom sheet (Stamped!, Collections). */
+/** What an [AlbumForm] starts from: a new album, or the album being edited. */
+data class AlbumDraft(
+    val name: String = "",
+    val category: AlbumCategory = AlbumCategory.Trips,
+    val cover: AlbumCoverColor = AlbumCoverColor.Ink,
+)
+
+/**
+ * Name + kind + cover colour of an album. New albums (Stamped! picker, Collections) and edits
+ * (album page "…") share it; [initial] decides the title and button.
+ */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun NewAlbumForm(
-    onCreate: (name: String, category: AlbumCategory, cover: AlbumCoverColor) -> Unit,
+fun AlbumForm(
+    onSubmit: (name: String, category: AlbumCategory, cover: AlbumCoverColor) -> Unit,
     modifier: Modifier = Modifier,
+    initial: AlbumDraft? = null,
 ) {
     val c = StampTheme.colors
     val s = StampTheme.spacing
-    var name by rememberSaveable { mutableStateOf("") }
-    var category by rememberSaveable { mutableStateOf(AlbumCategory.Trips) }
-    var cover by rememberSaveable { mutableStateOf(AlbumCoverColor.Ink) }
+    val start = initial ?: AlbumDraft()
+    var name by rememberSaveable { mutableStateOf(start.name) }
+    var category by rememberSaveable { mutableStateOf(start.category) }
+    var cover by rememberSaveable { mutableStateOf(start.cover) }
     val canCreate = name.isNotBlank()
-    val submit = { if (canCreate) onCreate(name.trim(), category, cover) }
+    val submit = { if (canCreate) onSubmit(name.trim(), category, cover) }
 
     Column(modifier, verticalArrangement = Arrangement.spacedBy(s.m)) {
-        Text(stringResource(R.string.album_new_title), style = StampTheme.type.cardTitle, color = c.textHigh)
+        Text(
+            stringResource(if (initial == null) R.string.album_new_title else R.string.album_edit_title),
+            style = StampTheme.type.cardTitle,
+            color = c.textHigh,
+        )
 
         BasicTextField(
             value = name,
@@ -116,11 +137,42 @@ fun NewAlbumForm(
         }
 
         PillButton(
-            stringResource(R.string.album_new_create),
+            stringResource(if (initial == null) R.string.album_new_create else R.string.album_edit_save),
             onClick = submit,
             enabled = canCreate,
             style = if (canCreate) PillStyle.Red else PillStyle.Outline,
             modifier = Modifier.fillMaxWidth().padding(top = s.xs),
+        )
+    }
+}
+
+/** [AlbumForm] in a Paper bottom sheet. Dismisses itself after a submit. */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AlbumFormSheet(
+    onSubmit: (name: String, category: AlbumCategory, cover: AlbumCoverColor) -> Unit,
+    onDismiss: () -> Unit,
+    initial: AlbumDraft? = null,
+) {
+    val c = StampTheme.colors
+    val s = StampTheme.spacing
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = c.paper,
+        contentColor = c.textHigh,
+    ) {
+        AlbumForm(
+            onSubmit = { name, category, cover ->
+                onSubmit(name, category, cover)
+                onDismiss()
+            },
+            initial = initial,
+            modifier = Modifier
+                .navigationBarsPadding()
+                .imePadding()
+                .padding(horizontal = s.screen)
+                .padding(bottom = s.l),
         )
     }
 }
@@ -132,6 +184,6 @@ private val SwatchSpine = 6.dp
 
 @PaperPreview
 @Composable
-private fun NewAlbumFormPreview() {
-    StampAppTheme { NewAlbumForm(onCreate = { _, _, _ -> }, modifier = Modifier.padding(StampTheme.spacing.screen)) }
+private fun AlbumFormPreview() {
+    StampAppTheme { AlbumForm(onSubmit = { _, _, _ -> }, modifier = Modifier.padding(StampTheme.spacing.screen)) }
 }

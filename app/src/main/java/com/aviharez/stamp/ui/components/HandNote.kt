@@ -10,6 +10,8 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import com.aviharez.stamp.ui.theme.PaperPreview
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
@@ -30,6 +32,8 @@ fun HandNote(
     style: TextStyle = StampTheme.type.note,
     maxLines: Int = Int.MAX_VALUE,
     color: Color = Color.Unspecified,
+    overflow: TextOverflow = TextOverflow.Clip,
+    textAlign: TextAlign? = null,
 ) {
     val colors = StampTheme.colors
     Text(
@@ -37,6 +41,8 @@ fun HandNote(
         style = style,
         color = color.takeOrElse { if (strength == InkStrength.Strong) colors.handInk else colors.handInkSoft },
         maxLines = maxLines,
+        overflow = overflow,
+        textAlign = textAlign,
         modifier = modifier.rotate(rotation),
     )
 }

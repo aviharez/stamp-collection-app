@@ -57,4 +57,7 @@ data class AlbumSummaryRow(
     @Embedded val album: AlbumEntity,
     @ColumnInfo(name = "stamp_count") val stampCount: Int,
     @ColumnInfo(name = "latest_image_path") val latestImagePath: String?,
+    @ColumnInfo(name = "latest_shape") val latestShape: String?,
+    @ColumnInfo(name = "latest_perforation") val latestPerforation: String?,
+    @ColumnInfo(name = "latest_taken_at") val latestTakenAt: Long?,
 )

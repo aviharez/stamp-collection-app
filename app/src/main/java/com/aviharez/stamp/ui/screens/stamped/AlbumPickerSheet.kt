@@ -27,10 +27,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -44,7 +40,8 @@ import com.aviharez.stamp.domain.model.AlbumCategory
 import com.aviharez.stamp.domain.model.AlbumCoverColor
 import com.aviharez.stamp.domain.model.AlbumSummary
 import com.aviharez.stamp.ui.components.AlbumCover
-import com.aviharez.stamp.ui.screens.collections.NewAlbumForm
+import com.aviharez.stamp.ui.components.dashedOutline
+import com.aviharez.stamp.ui.screens.collections.AlbumForm
 import com.aviharez.stamp.ui.theme.Elevation
 import com.aviharez.stamp.ui.theme.StampTheme
 
@@ -77,7 +74,7 @@ fun AlbumPickerSheet(
                 .padding(bottom = s.l),
         ) {
             if (creating) {
-                NewAlbumForm(onCreate = { name, category, cover ->
+                AlbumForm(onSubmit = { name, category, cover ->
                     onCreate(name, category, cover)
                     onDismiss()
                 })
@@ -137,18 +134,11 @@ private fun AlbumRow(summary: AlbumSummary, selected: Boolean, onClick: () -> Un
 private fun NewAlbumRow(onClick: () -> Unit) {
     val c = StampTheme.colors
     val s = StampTheme.spacing
-    val dash = with(androidx.compose.ui.platform.LocalDensity.current) { DashLength.toPx() }
     Row(
         Modifier
             .fillMaxWidth()
             .heightIn(min = RowHeight)
-            .drawBehind {
-                drawRoundRect(
-                    color = c.outline,
-                    cornerRadius = CornerRadius(12.dp.toPx()),
-                    style = Stroke(width = 1.5.dp.toPx(), pathEffect = PathEffect.dashPathEffect(floatArrayOf(dash, dash))),
-                )
-            }
+            .dashedOutline(c.outline)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = s.m),
         verticalAlignment = Alignment.CenterVertically,
@@ -164,4 +154,3 @@ private val CoverWidth = 36.dp
 private val CoverHeight = 46.dp
 private val CoverSpine = 5.dp
 private val ListMaxHeight = 320.dp
-private val DashLength = 6.dp

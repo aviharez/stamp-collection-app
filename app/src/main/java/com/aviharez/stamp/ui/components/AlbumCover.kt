@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -57,7 +58,8 @@ fun AlbumCover(
 ) {
     val c = StampTheme.colors
     val cloth = cover.color()
-    val spine = lerp(cloth, c.ink, SpineDarken)
+    // The spine is a shade darker; on a cover that is already near-Ink, a shade lighter instead.
+    val spine = if (cloth.luminance() < DarkClothLuminance) lerp(cloth, c.paperWhite, SpineLighten) else lerp(cloth, c.ink, SpineDarken)
     val shape = AlbumCoverShape
     Box(
         modifier
@@ -90,6 +92,8 @@ fun AlbumCover(
 
 private val SpineWidth = 12.dp
 private const val SpineDarken = 0.28f
+private const val SpineLighten = 0.1f
+private const val DarkClothLuminance = 0.05f
 private val AlbumCoverShape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp, topEnd = 12.dp, bottomEnd = 12.dp)
 private val SpineShape = RoundedCornerShape(topStart = 4.dp, bottomStart = 4.dp)
 

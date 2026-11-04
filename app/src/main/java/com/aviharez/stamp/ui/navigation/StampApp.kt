@@ -30,7 +30,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.aviharez.stamp.R
 import com.aviharez.stamp.ui.components.NavTab
 import com.aviharez.stamp.ui.debug.DebugGallery
@@ -93,13 +92,17 @@ fun StampApp() {
                     contentPadding = inner,
                     onStampIt = { nav.navigate(CameraRoute) },
                     onOpenCollections = { nav.navigate(CollectionsRoute) },
+                    onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
                 )
             }
             composable<CollectionsRoute> {
                 CollectionsScreen(contentPadding = inner, onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) })
             }
-            composable<AlbumPageRoute> { backStack ->
-                AlbumPageScreen(albumId = backStack.toRoute<AlbumPageRoute>().albumId, onBack = { nav.popBackStack() })
+            composable<AlbumPageRoute> {
+                AlbumPageScreen(
+                    onBack = { nav.popBackStack() },
+                    onNextStamp = { nav.navigate(CameraRoute) },
+                )
             }
             composable<CameraRoute>(
                 enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },

@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -46,11 +47,19 @@ fun RenderedStamp(
                 .tintedShadow(elevation, shadowShape, shadowTint)
                 .background(StampTheme.colors.paperWhite, shadowShape),
         )
-        AsyncImage(
-            model = file,
-            contentDescription = contentDescription,
-            contentScale = ContentScale.Fit,
-            modifier = Modifier.fillMaxSize(),
-        )
+        if (LocalInspectionMode.current) {
+            // @Preview has no stamp files: draw a stand-in picture on perforated paper instead.
+            val kind = PreviewArtKind.entries[Math.floorMod(file.path.hashCode(), PreviewArtKind.entries.size)]
+            Stamp(shape, Modifier.fillMaxSize(), perforation = perforation, elevation = 0.dp) {
+                PreviewArt(kind, Modifier.matchParentSize())
+            }
+        } else {
+            AsyncImage(
+                model = file,
+                contentDescription = contentDescription,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize(),
+            )
+        }
     }
 }

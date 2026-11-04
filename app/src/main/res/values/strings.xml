@@ -31,17 +31,54 @@
     <!-- %1$s = weekday name, e.g. "Wednesday" -->
     <string name="home_today_body">Keep one moment from %1$s.</string>
     <string name="home_stamp_it">Stamp it</string>
+    <!-- Kraft page header: %1$s = album name, %2$d = page number. Shown uppercase. -->
+    <string name="home_page_label">%1$s · p.%2$d</string>
+    <!-- %1$s = album name -->
+    <string name="home_page_cd">Latest page of %1$s. Opens the album.</string>
+    <string name="home_today_done_title">Today\'s stamp is in</string>
+    <!-- %1$s = album name -->
+    <string name="home_today_done_body">Stuck in %1$s.</string>
+    <string name="home_stamp_another">Stamp another</string>
 
     <!-- Collections -->
     <string name="collections_overline">My albums</string>
     <string name="collections_title">Collections</string>
-    <!-- Placeholder album names until Room data exists: %1$d = album number -->
-    <string name="album_placeholder_name">Album no. %1$d</string>
+    <string name="collections_filter_all">All</string>
+    <!-- "6 albums · 214 stamps": %1$s = album count, %2$s = stamp count -->
+    <string name="collections_stats">%1$s · %2$s</string>
+    <plurals name="collections_album_count">
+        <item quantity="one">%d album</item>
+        <item quantity="other">%d albums</item>
+    </plurals>
+    <!-- Under a cover: %1$s = "42 stamps", %2$s = when it was last stamped -->
+    <string name="collections_cover_note">%1$s · %2$s</string>
+    <string name="collections_updated_today">updated today</string>
+    <string name="collections_updated_yesterday">updated yesterday</string>
+    <!-- %1$s = date, e.g. "4 Nov" -->
+    <string name="collections_updated_on">updated %1$s</string>
+    <string name="collections_empty_cover">empty, for now</string>
+    <string name="collections_empty_filter">nothing in here yet</string>
 
     <!-- Album page -->
     <string name="album_next_stamp">next stamp…</string>
     <string name="album_map">Map</string>
     <string name="album_share_page">Share this page</string>
+    <!-- %1$d = current page, %2$d = number of pages. Shown uppercase. -->
+    <string name="album_page_of">Page %1$d of %2$d</string>
+    <!-- "42 stamps · 15 days": %1$s = stamp count, %2$s = day count -->
+    <string name="album_stats">%1$s · %2$s</string>
+    <plurals name="album_day_count">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <string name="album_more_cd">Edit album</string>
+    <string name="album_next_stamp_cd">Take the next stamp for this album</string>
+    <string name="album_edit_title">This album</string>
+    <string name="album_edit_save">Save changes</string>
+    <!-- Spoken description of a stamp: %1$s = what/where and date, e.g. "Kyoto, 4 Nov" -->
+    <string name="stamp_cd">Stamp, %1$s</string>
+    <!-- Hand-written under a stamp: "4 nov · sunrise": %1$s = date, %2$s = title / note / city -->
+    <string name="stamp_page_note">%1$s · %2$s</string>
 
     <!-- Camera -->
     <string name="camera_header_place">%1$s · %2$s</string>
@@ -117,6 +154,10 @@
     <plurals name="streak_days">
         <item quantity="one">%d day in a row</item>
         <item quantity="other">%d days in a row</item>
+    </plurals>
+    <plurals name="streak_days_short">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
     </plurals>
     <string name="streak_personal_best">%1$s · personal best</string>
     <string name="streak_day_one">Day one of your streak</string>

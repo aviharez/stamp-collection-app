@@ -8,6 +8,9 @@ import com.aviharez.stamp.domain.model.Album
 import com.aviharez.stamp.domain.model.AlbumCategory
 import com.aviharez.stamp.domain.model.AlbumCoverColor
 import com.aviharez.stamp.domain.model.AlbumSummary
+import com.aviharez.stamp.domain.model.CoverStamp
+import com.aviharez.stamp.domain.model.PerforationStyle
+import com.aviharez.stamp.domain.model.StampShape
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -27,7 +30,17 @@ class AlbumRepository @Inject constructor(
     private val defaultLock = Mutex()
 
     fun observeSummaries(): Flow<List<AlbumSummary>> = dao.observeSummaries().map { rows ->
-        rows.map { AlbumSummary(it.album.toDomain(), it.stampCount, it.latestImagePath) }
+        rows.map { row ->
+            val latest = row.latestImagePath?.let { path ->
+                CoverStamp(
+                    imagePath = path,
+                    shape = enumOr(row.latestShape.orEmpty(), StampShape.Portrait),
+                    perforation = enumOr(row.latestPerforation.orEmpty(), PerforationStyle.Classic),
+                    takenAt = Instant.ofEpochMilli(row.latestTakenAt ?: 0L),
+                )
+            }
+            AlbumSummary(row.album.toDomain(), row.stampCount, latest)
+        }
     }
 
     fun observe(id: Long): Flow<Album?> = dao.observe(id).map { it?.toDomain() }
@@ -47,6 +60,12 @@ class AlbumRepository @Inject constructor(
         )
 
     suspend fun update(album: Album) = dao.update(album.toEntity())
+
+    /** Rename / recolour / recategorise. Blank names are ignored. */
+    suspend fun edit(id: Long, name: String, category: AlbumCategory, cover: AlbumCoverColor) {
+        val album = get(id) ?: return
+        dao.update(album.copy(name = name.trim().ifEmpty { album.name }, category = category, cover = cover).toEntity())
+    }
 
     /** The first album, creating "Everyday" when there is none yet (first stamp ever). */
     suspend fun ensureDefault(): Long = defaultLock.withLock {

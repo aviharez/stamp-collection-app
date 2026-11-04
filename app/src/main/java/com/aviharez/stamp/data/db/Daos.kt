@@ -12,9 +12,14 @@ interface AlbumDao {
         """
         SELECT a.*,
             (SELECT COUNT(*) FROM stamps s WHERE s.album_id = a.id) AS stamp_count,
-            (SELECT s.image_path FROM stamps s WHERE s.album_id = a.id
-                ORDER BY s.taken_at DESC LIMIT 1) AS latest_image_path
+            l.image_path AS latest_image_path,
+            l.shape AS latest_shape,
+            l.perforation AS latest_perforation,
+            l.taken_at AS latest_taken_at
         FROM albums a
+        LEFT JOIN stamps l ON l.id = (
+            SELECT s.id FROM stamps s WHERE s.album_id = a.id ORDER BY s.taken_at DESC LIMIT 1
+        )
         ORDER BY a.created_at ASC
         """,
     )
