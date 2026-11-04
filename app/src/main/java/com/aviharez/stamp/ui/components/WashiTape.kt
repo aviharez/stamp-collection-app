@@ -56,6 +56,8 @@ fun WashiTape(
     Canvas(modifier.size(width, height).rotate(rotation)) {
         val w = size.width
         val h = size.height
+        // Squeezed to nothing (e.g. mid-rotation): the stripe step below would be 0 → endless loop.
+        if (w <= 0f || h <= 0f) return@Canvas
         val tooth = h / TornTeeth
         val bite = h * TornDepth
         val outline = Path().apply {

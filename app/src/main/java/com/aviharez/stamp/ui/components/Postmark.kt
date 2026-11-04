@@ -93,7 +93,8 @@ fun Postmark(
             )
 
             // Cancellation waves to the right of the ring.
-            if (showWaves) {
+            // A 0-size postmark would make the wave step 0 (endless loop), so skip waves then.
+            if (showWaves && d > 0f) {
                 val waveStroke = Stroke(width = d * 0.024f, cap = StrokeCap.Round)
                 val startX = d * 0.86f
                 val endX = size.width
