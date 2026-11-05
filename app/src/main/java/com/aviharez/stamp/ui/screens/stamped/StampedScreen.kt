@@ -157,7 +157,7 @@ fun StampedScreen(
         ExportSheet(
             stampId = stamp.id,
             onDismiss = { exporting = false },
-            onGetPro = { onOpenPaywall(PaywallReason.Watermark) },
+            onGetPro = onOpenPaywall,
         )
     }
 

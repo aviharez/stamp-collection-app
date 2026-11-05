@@ -55,10 +55,11 @@ import java.io.File
  * The three "send to a friend" looks. Each is laid out at a phone-independent design width and
  * exported at [widthPx] × [heightPx] (4 px per dp).
  */
-enum class PostcardStyle(val widthPx: Int, val heightPx: Int) {
-    Envelope(1800, 1200),
-    Postcard(1800, 1200),
-    Greetings(1440, 1920);
+/** [free]: the Envelope for everyone; the other looks are Pro (free users can try them on, not send them). */
+enum class PostcardStyle(val widthPx: Int, val heightPx: Int, val free: Boolean) {
+    Envelope(1800, 1200, free = true),
+    Postcard(1800, 1200, free = false),
+    Greetings(1440, 1920, free = false);
 
     val aspect: Float get() = widthPx.toFloat() / heightPx
     val designWidth: Dp get() = (widthPx / PxPerDp).dp

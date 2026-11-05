@@ -231,6 +231,10 @@
     <string name="postcard_envelope">Envelope</string>
     <string name="postcard_postcard">Postcard</string>
     <string name="postcard_card">Card</string>
+    <string name="postcard_pro_tag">PRO</string>
+    <string name="postcard_pro_cd">%1$s, Pro</string>
+    <string name="postcard_send_with_pro">Send the %1$s with Pro</string>
+    <string name="postcard_pro_note">this look comes with Pro · the Envelope is free</string>
     <string name="postcard_to_hint">to… (their name)</string>
     <string name="postcard_to_label">Who it’s for</string>
     <string name="postcard_message_hint">a few words for them…</string>
@@ -254,11 +258,13 @@
     <string name="paywall_overline_watermark">Pro · no watermark</string>
     <string name="paywall_overline_widget">Pro · home-screen widgets</string>
     <string name="paywall_overline_filters">Pro · every filter</string>
+    <string name="paywall_overline_postcards">Pro · postcard &amp; card looks</string>
     <string name="paywall_title">Complete your collection</string>
     <string name="paywall_perk_albums">Unlimited albums</string>
     <string name="paywall_perk_no_mark">No watermark on exports</string>
     <string name="paywall_perk_edges">Every edge style</string>
     <string name="paywall_perk_filters">All 9 photo filters</string>
+    <string name="paywall_perk_postcards">Postcard &amp; card looks</string>
     <string name="paywall_perk_scrapbook">Scrapbook pages &amp; stickers</string>
     <string name="paywall_perk_widget">Home-screen widget</string>
     <string name="paywall_soon">soon</string>

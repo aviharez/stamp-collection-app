@@ -68,6 +68,9 @@ data class ExportUiState(
     val text: PostcardText = PostcardText("", ""),
 ) {
     val watermark: Boolean get() = !isPro && !adUnlocked
+
+    /** A free user trying on a Pro postcard look: preview only, sending opens the paywall. */
+    val lookLocked: Boolean get() = !isPro && choice.postcard?.free == false
 }
 
 sealed interface ExportEvent {

@@ -1,5 +1,8 @@
 package com.aviharez.stamp.ui.screens.export
 
+import com.aviharez.stamp.ui.screens.paywall.PaywallReason
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.offset
 import android.graphics.Bitmap
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.heightIn
@@ -98,7 +101,7 @@ import com.aviharez.stamp.ui.theme.StampTheme
 fun ExportSheet(
     stampId: String,
     onDismiss: () -> Unit,
-    onGetPro: () -> Unit,
+    onGetPro: (PaywallReason) -> Unit,
     viewModel: ExportViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(stampId) { viewModel.bind(stampId) }
@@ -160,7 +163,8 @@ fun ExportSheet(
             onMessage = viewModel::setMessage,
             onSave = save,
             onShare = { if (postcard == null) viewModel.share() else capture(viewModel::sharePicture) },
-            onGetPro = onGetPro,
+            onGetPro = { onGetPro(PaywallReason.Watermark) },
+            onUnlockLook = { onGetPro(PaywallReason.Postcards) },
             onWatchAd = { activity?.let(viewModel::watchAd) },
             modifier = Modifier.navigationBarsPadding().imePadding(),
         )
@@ -178,6 +182,7 @@ fun ExportContent(
     onSave: () -> Unit,
     onShare: () -> Unit,
     onGetPro: () -> Unit,
+    onUnlockLook: () -> Unit,
     onWatchAd: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -199,12 +204,16 @@ fun ExportContent(
                 color = c.textMedium,
             )
             Row(
-                Modifier.bleed(s.screen).horizontalScroll(rememberScrollState()).padding(horizontal = s.screen),
+                Modifier
+                    .bleed(s.screen)
+                    .horizontalScroll(rememberScrollState())
+                    .padding(horizontal = s.screen)
+                    .padding(top = s.xxs),
                 horizontalArrangement = Arrangement.spacedBy(s.xs),
             ) {
                 PaperChip(stringResource(R.string.export_as_stamp), selected = postcard == null, onClick = { onPostcard(null) })
                 PostcardStyle.entries.forEach { style ->
-                    PaperChip(stringResource(style.label), selected = postcard == style, onClick = { onPostcard(style) })
+                    LookChip(style, selected = postcard == style, locked = !state.isPro && !style.free, onClick = { onPostcard(style) })
                 }
             }
         }
@@ -216,6 +225,7 @@ fun ExportContent(
         }
 
         when {
+            state.lookLocked -> HandNote(stringResource(R.string.postcard_pro_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
             state.isPro -> HandNote(stringResource(R.string.export_pro_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
             state.adUnlocked -> HandNote(stringResource(R.string.export_unlocked_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
             else -> WatermarkRow(state.ad, onGetPro, onWatchAd)
@@ -259,7 +269,41 @@ fun ExportContent(
             Text(stringResource(R.string.export_failed), style = StampTheme.type.label, color = c.airmailRed)
         }
 
-        SaveShareRow(state.save, state.sharing, onSave, onShare, Modifier.padding(top = s.xs))
+        if (postcard != null && state.lookLocked) {
+            // Try it on for free; sending this look is Pro (the paywall opens with its perk lit).
+            PillButton(
+                stringResource(R.string.postcard_send_with_pro, stringResource(postcard.label)),
+                onClick = onUnlockLook,
+                style = PillStyle.Red,
+                modifier = Modifier.fillMaxWidth().padding(top = s.xs),
+            )
+        } else {
+            SaveShareRow(state.save, state.sharing, onSave, onShare, Modifier.padding(top = s.xs))
+        }
+    }
+}
+
+/** A "Send as" chip; a Pro look carries the same small red "PRO" tag as the Pro filters. */
+@Composable
+private fun LookChip(style: PostcardStyle, selected: Boolean, locked: Boolean, onClick: () -> Unit) {
+    val c = StampTheme.colors
+    val label = stringResource(style.label)
+    val description = if (locked) stringResource(R.string.postcard_pro_cd, label) else label
+    Box {
+        PaperChip(label, selected = selected, onClick = onClick, modifier = Modifier.semantics { contentDescription = description })
+        if (locked) {
+            Text(
+                stringResource(R.string.postcard_pro_tag),
+                style = StampTheme.type.overline,
+                color = c.textOnDarkHigh,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(y = -StampTheme.spacing.xxs)
+                    .background(c.airmailRed, StampTheme.shapes.plate)
+                    .padding(horizontal = StampTheme.spacing.xxs)
+                    .clearAndSetSemantics { },
+            )
+        }
     }
 }
 
@@ -420,7 +464,7 @@ private val LabelWidth = 104.dp
 @Composable
 private fun ExportContentPreview() {
     StampAppTheme {
-        ExportContent(ExportUiState(), {}, {}, {}, {}, {}, {}, {}, {}, {})
+        ExportContent(ExportUiState(), {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
     }
 }
 
@@ -430,7 +474,7 @@ private fun ExportContentProPreview() {
     StampAppTheme {
         ExportContent(
             ExportUiState(choice = ExportChoice(ExportBackground.Paper, postmark = false), isPro = true, save = SaveState.Saved),
-            {}, {}, {}, {}, {}, {}, {}, {}, {},
+            {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
         )
     }
 }
@@ -445,7 +489,7 @@ private fun ExportContentPostcardPreview() {
                 stamp = previewStamps(1).first(),
                 text = PostcardText("Mia", "sunrise hike!! wish you were here"),
             ),
-            {}, {}, {}, {}, {}, {}, {}, {}, {},
+            {}, {}, {}, {}, {}, {}, {}, {}, {}, {},
         )
     }
 }
