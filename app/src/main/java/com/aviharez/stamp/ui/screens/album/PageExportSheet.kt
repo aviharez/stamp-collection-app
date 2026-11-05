@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -28,23 +27,16 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.asAndroidBitmap
-import androidx.compose.ui.graphics.layer.GraphicsLayer
-import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.Constraints
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -57,7 +49,9 @@ import com.aviharez.stamp.ui.components.InkStrength
 import com.aviharez.stamp.ui.components.LocalImageLoads
 import com.aviharez.stamp.ui.components.Tilt
 import com.aviharez.stamp.ui.components.previewStamps
+import com.aviharez.stamp.ui.screens.export.OffscreenCapture
 import com.aviharez.stamp.ui.screens.export.SaveShareRow
+import com.aviharez.stamp.ui.screens.export.ScaledArt
 import com.aviharez.stamp.ui.screens.export.WatermarkRow
 import com.aviharez.stamp.ui.screens.export.rememberSaveToPhotos
 import com.aviharez.stamp.ui.screens.export.sharePng
@@ -126,7 +120,7 @@ fun PageExportSheet(
         contentColor = StampTheme.colors.textHigh,
     ) {
         // The full-size picture, laid out and recorded off screen (never drawn here).
-        OffscreenCapture(layer) {
+        OffscreenCapture(layer, ExportWidthPx, ExportHeightPx, DesignWidth) {
             CompositionLocalProvider(LocalImageLoads provides loads) {
                 PageExportCard(content, watermark = state.watermark)
             }
@@ -185,41 +179,17 @@ private fun PagePreview(content: PageExportContent, watermark: Boolean) {
         contentAlignment = Alignment.Center,
     ) {
         val w = min(maxWidth, maxHeight * ExportAspect)
-        val density = LocalDensity.current
         val shape = StampTheme.shapes.plate
         // A lifted print, so the page's own paper reads apart from the sheet's.
-        Box(
+        ScaledArt(
+            w,
+            ExportAspect,
+            DesignWidth,
             Modifier
-                .size(w, w / ExportAspect)
                 .tintedShadow(Elevation.Card, shape, StampTheme.colors.shadowWarm)
                 .clip(shape)
                 .clearAndSetSemantics { },
-        ) {
-            CompositionLocalProvider(LocalDensity provides Density(density.density * w.value / DesignWidth.value, fontScale = 1f)) {
-                PageExportCard(content, watermark)
-            }
-        }
-    }
-}
-
-/**
- * Lays [content] out at the export size (ExportWidthPx × ExportHeightPx, fixed density and font
- * scale so it never depends on the phone) and records it into [layer] without drawing it.
- */
-@Composable
-private fun OffscreenCapture(layer: GraphicsLayer, content: @Composable () -> Unit) {
-    Box(
-        Modifier
-            .layout { measurable, _ ->
-                val placeable = measurable.measure(Constraints.fixed(ExportWidthPx, ExportHeightPx))
-                layout(0, 0) { placeable.place(0, 0) }
-            }
-            .drawWithContent { layer.record { this@drawWithContent.drawContent() } }
-            .clearAndSetSemantics { },
-    ) {
-        CompositionLocalProvider(LocalDensity provides Density(ExportWidthPx / DesignWidth.value, fontScale = 1f)) {
-            content()
-        }
+        ) { PageExportCard(content, watermark) }
     }
 }
 

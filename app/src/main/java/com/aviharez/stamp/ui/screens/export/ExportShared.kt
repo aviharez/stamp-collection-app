@@ -10,12 +10,23 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.layer.GraphicsLayer
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.unit.Constraints
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
@@ -84,6 +95,38 @@ internal fun SaveShareRow(
             leadingIcon = R.drawable.ic_share,
             modifier = Modifier.weight(1f),
         )
+    }
+}
+
+/**
+ * Lays [content] out at [widthPx] × [heightPx] with a fixed density ([widthPx] / [designWidth],
+ * font scale 1, so it never depends on the phone) and records it into [layer] without drawing it.
+ */
+@Composable
+internal fun OffscreenCapture(layer: GraphicsLayer, widthPx: Int, heightPx: Int, designWidth: Dp, content: @Composable () -> Unit) {
+    Box(
+        Modifier
+            .layout { measurable, _ ->
+                val placeable = measurable.measure(Constraints.fixed(widthPx, heightPx))
+                layout(0, 0) { placeable.place(0, 0) }
+            }
+            .drawWithContent { layer.record { this@drawWithContent.drawContent() } }
+            .clearAndSetSemantics { },
+    ) {
+        CompositionLocalProvider(LocalDensity provides Density(widthPx / designWidth.value, fontScale = 1f)) {
+            content()
+        }
+    }
+}
+
+/** [content] laid out at [designWidth] (font scale 1) and drawn scaled to [width] × [width] / [aspect]. */
+@Composable
+internal fun ScaledArt(width: Dp, aspect: Float, designWidth: Dp, modifier: Modifier = Modifier, content: @Composable () -> Unit) {
+    val density = LocalDensity.current
+    Box(modifier.size(width, width / aspect)) {
+        CompositionLocalProvider(LocalDensity provides Density(density.density * width.value / designWidth.value, fontScale = 1f)) {
+            content()
+        }
     }
 }
 

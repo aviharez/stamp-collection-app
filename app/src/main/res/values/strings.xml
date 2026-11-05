@@ -226,6 +226,21 @@
     <string name="export_saved">Saved</string>
     <string name="export_share">Share</string>
     <string name="export_failed">Couldn’t make the image. Try again.</string>
+    <string name="export_send_as">Send as</string>
+    <string name="export_as_stamp">Stamp</string>
+    <string name="postcard_envelope">Envelope</string>
+    <string name="postcard_postcard">Postcard</string>
+    <string name="postcard_card">Card</string>
+    <string name="postcard_to_hint">to… (their name)</string>
+    <string name="postcard_to_label">Who it’s for</string>
+    <string name="postcard_message_hint">a few words for them…</string>
+    <string name="postcard_message_label">Message on the postcard</string>
+    <string name="postcard_to">To %1$s</string>
+    <string name="postcard_par_avion">Par avion · by airmail</string>
+    <string name="postcard_post_card">Post card</string>
+    <string name="postcard_greetings_from">Greetings from</string>
+    <string name="postcard_greetings">A stamp for you</string>
+    <string name="postcard_made_with">made with %1$s</string>
     <string name="export_preview_cd">Preview of the image you’ll share</string>
 
     <!-- Paywall (Pro) -->

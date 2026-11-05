@@ -1,5 +1,40 @@
 package com.aviharez.stamp.ui.screens.export
 
+import android.graphics.Bitmap
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.withFrameNanos
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.asAndroidBitmap
+import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.min
+import com.aviharez.stamp.domain.model.Stamp
+import com.aviharez.stamp.ui.components.ImageLoads
+import com.aviharez.stamp.ui.components.bleed
+import com.aviharez.stamp.ui.components.LocalImageLoads
+import com.aviharez.stamp.ui.components.previewStamps
+import com.aviharez.stamp.ui.theme.Elevation
+import com.aviharez.stamp.ui.theme.tintedShadow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import android.Manifest
 import android.content.ClipData
 import android.content.Intent
@@ -80,7 +115,27 @@ fun ExportSheet(
         }
     }
 
-    val save = rememberSaveToPhotos(viewModel::saveToPhotos)
+    val scope = rememberCoroutineScope()
+    val layer = rememberGraphicsLayer()
+    val stamp = state.stamp
+    val loads = remember(stamp?.imagePath) { ImageLoads() }
+
+    /** Postcards: waits for the stamp picture, then for the redraw that has it, then copies the capture. */
+    fun capture(then: (Bitmap) -> Unit) {
+        val path = stamp?.imagePath ?: return
+        scope.launch {
+            viewModel.setBusy(true)
+            withTimeoutOrNull(ImageWaitMs) { loads.done.first { path in it } }
+            repeat(2) { withFrameNanos { } }
+            val bitmap = runCatching { layer.toImageBitmap().asAndroidBitmap().copy(Bitmap.Config.ARGB_8888, false) }.getOrNull()
+            viewModel.setBusy(false)
+            if (bitmap != null) then(bitmap) else viewModel.failed()
+        }
+    }
+    val postcard = state.choice.postcard
+    val save = rememberSaveToPhotos {
+        if (postcard == null) viewModel.saveToPhotos() else capture(viewModel::savePicture)
+    }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -88,15 +143,26 @@ fun ExportSheet(
         containerColor = StampTheme.colors.paper,
         contentColor = StampTheme.colors.textHigh,
     ) {
+        if (postcard != null && stamp != null) {
+            // The full-size postcard, laid out and recorded off screen (never drawn here).
+            OffscreenCapture(layer, postcard.widthPx, postcard.heightPx, postcard.designWidth) {
+                CompositionLocalProvider(LocalImageLoads provides loads) {
+                    PostcardArt(postcard, stamp, state.text, watermark = state.watermark)
+                }
+            }
+        }
         ExportContent(
             state = state,
+            onPostcard = viewModel::setPostcard,
             onBackground = viewModel::setBackground,
             onPostmark = viewModel::setPostmark,
+            onTo = viewModel::setTo,
+            onMessage = viewModel::setMessage,
             onSave = save,
-            onShare = viewModel::share,
+            onShare = { if (postcard == null) viewModel.share() else capture(viewModel::sharePicture) },
             onGetPro = onGetPro,
             onWatchAd = { activity?.let(viewModel::watchAd) },
-            modifier = Modifier.navigationBarsPadding(),
+            modifier = Modifier.navigationBarsPadding().imePadding(),
         )
     }
 }
@@ -104,8 +170,11 @@ fun ExportSheet(
 @Composable
 fun ExportContent(
     state: ExportUiState,
+    onPostcard: (PostcardStyle?) -> Unit,
     onBackground: (ExportBackground) -> Unit,
     onPostmark: (Boolean) -> Unit,
+    onTo: (String) -> Unit,
+    onMessage: (String) -> Unit,
     onSave: () -> Unit,
     onShare: () -> Unit,
     onGetPro: () -> Unit,
@@ -114,13 +183,37 @@ fun ExportContent(
 ) {
     val c = StampTheme.colors
     val s = StampTheme.spacing
+    val postcard = state.choice.postcard
     Column(
-        modifier.fillMaxWidth().padding(horizontal = s.screen).padding(bottom = s.l),
+        modifier.fillMaxWidth().verticalScroll(rememberScrollState()).padding(horizontal = s.screen).padding(bottom = s.l),
         verticalArrangement = Arrangement.spacedBy(s.m),
     ) {
         Text(stringResource(R.string.export_title), style = StampTheme.type.cardTitle)
 
-        ExportPreview(state.preview, checkered = state.choice.background == ExportBackground.Transparent)
+        // Four looks don't fit beside a label: the label on top, the chips in one row that scrolls
+        // edge to edge when it is wider than the sheet (large fonts, long translations).
+        Column(verticalArrangement = Arrangement.spacedBy(s.xs)) {
+            Text(
+                stringResource(R.string.export_send_as).uppercase(),
+                style = StampTheme.type.overline,
+                color = c.textMedium,
+            )
+            Row(
+                Modifier.bleed(s.screen).horizontalScroll(rememberScrollState()).padding(horizontal = s.screen),
+                horizontalArrangement = Arrangement.spacedBy(s.xs),
+            ) {
+                PaperChip(stringResource(R.string.export_as_stamp), selected = postcard == null, onClick = { onPostcard(null) })
+                PostcardStyle.entries.forEach { style ->
+                    PaperChip(stringResource(style.label), selected = postcard == style, onClick = { onPostcard(style) })
+                }
+            }
+        }
+
+        if (postcard == null) {
+            ExportPreview(state.preview, checkered = state.choice.background == ExportBackground.Transparent)
+        } else if (state.stamp != null) {
+            PostcardPreview(postcard, state.stamp, state.text, state.watermark)
+        }
 
         when {
             state.isPro -> HandNote(stringResource(R.string.export_pro_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
@@ -128,21 +221,38 @@ fun ExportContent(
             else -> WatermarkRow(state.ad, onGetPro, onWatchAd)
         }
 
-        OptionRow(stringResource(R.string.export_background)) {
-            PaperChip(
-                stringResource(R.string.export_bg_transparent),
-                selected = state.choice.background == ExportBackground.Transparent,
-                onClick = { onBackground(ExportBackground.Transparent) },
+        if (postcard == null) {
+            OptionRow(stringResource(R.string.export_background)) {
+                PaperChip(
+                    stringResource(R.string.export_bg_transparent),
+                    selected = state.choice.background == ExportBackground.Transparent,
+                    onClick = { onBackground(ExportBackground.Transparent) },
+                )
+                PaperChip(
+                    stringResource(R.string.export_bg_paper),
+                    selected = state.choice.background == ExportBackground.Paper,
+                    onClick = { onBackground(ExportBackground.Paper) },
+                )
+            }
+            OptionRow(stringResource(R.string.export_postmark)) {
+                PaperChip(stringResource(R.string.export_on), selected = state.choice.postmark, onClick = { onPostmark(true) })
+                PaperChip(stringResource(R.string.export_off), selected = !state.choice.postmark, onClick = { onPostmark(false) })
+            }
+        } else {
+            HandField(
+                value = state.text.to,
+                onValueChange = onTo,
+                hint = stringResource(R.string.postcard_to_hint),
+                label = stringResource(R.string.postcard_to_label),
+                imeAction = ImeAction.Next,
             )
-            PaperChip(
-                stringResource(R.string.export_bg_paper),
-                selected = state.choice.background == ExportBackground.Paper,
-                onClick = { onBackground(ExportBackground.Paper) },
+            HandField(
+                value = state.text.message,
+                onValueChange = onMessage,
+                hint = stringResource(R.string.postcard_message_hint),
+                label = stringResource(R.string.postcard_message_label),
+                singleLine = false,
             )
-        }
-        OptionRow(stringResource(R.string.export_postmark)) {
-            PaperChip(stringResource(R.string.export_on), selected = state.choice.postmark, onClick = { onPostmark(true) })
-            PaperChip(stringResource(R.string.export_off), selected = !state.choice.postmark, onClick = { onPostmark(false) })
         }
 
         if (state.failed) {
@@ -152,6 +262,76 @@ fun ExportContent(
         SaveShareRow(state.save, state.sharing, onSave, onShare, Modifier.padding(top = s.xs))
     }
 }
+
+/** The postcard at preview size: the same art as the export, laid out at its design width and scaled down. */
+@Composable
+private fun PostcardPreview(style: PostcardStyle, stamp: Stamp, text: PostcardText, watermark: Boolean) {
+    val description = stringResource(R.string.export_preview_cd)
+    val shape = StampTheme.shapes.plate
+    BoxWithConstraints(
+        Modifier.fillMaxWidth().height(PreviewHeight).semantics { contentDescription = description },
+        contentAlignment = Alignment.Center,
+    ) {
+        ScaledArt(
+            width = min(maxWidth, maxHeight * style.aspect),
+            aspect = style.aspect,
+            designWidth = style.designWidth,
+            modifier = Modifier
+                .tintedShadow(Elevation.Card, shape, StampTheme.colors.shadowWarm)
+                .clip(shape)
+                .clearAndSetSemantics { },
+        ) { PostcardArt(style, stamp, text, watermark) }
+    }
+}
+
+/** A hand-written line in a dashed box (as "write on the back"); the label is for TalkBack. */
+@Composable
+private fun HandField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    hint: String,
+    label: String,
+    singleLine: Boolean = true,
+    imeAction: ImeAction = ImeAction.Done,
+) {
+    val c = StampTheme.colors
+    val s = StampTheme.spacing
+    val focus = LocalFocusManager.current
+    BasicTextField(
+        value = value,
+        onValueChange = onValueChange,
+        singleLine = singleLine,
+        maxLines = if (singleLine) 1 else MessageLines,
+        textStyle = StampTheme.type.noteSmall.copy(color = c.handInk),
+        cursorBrush = SolidColor(c.airmailRed),
+        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = imeAction),
+        keyboardActions = KeyboardActions(
+            onNext = { focus.moveFocus(FocusDirection.Down) },
+            onDone = { focus.clearFocus() },
+        ),
+        modifier = Modifier.fillMaxWidth().semantics { contentDescription = label },
+        decorationBox = { field ->
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = s.touchTarget)
+                    .dashedOutline(c.outline)
+                    .padding(horizontal = s.m, vertical = s.xs),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                if (value.isEmpty()) Text(hint, style = StampTheme.type.noteSmall, color = c.textLow)
+                field()
+            }
+        },
+    )
+}
+
+private val PostcardStyle.label: Int
+    get() = when (this) {
+        PostcardStyle.Envelope -> R.string.postcard_envelope
+        PostcardStyle.Postcard -> R.string.postcard_postcard
+        PostcardStyle.Greetings -> R.string.postcard_card
+    }
 
 /** The watermark row: the two honest ways out side by side, Pro first, the ad as the quiet option. */
 @Composable
@@ -231,6 +411,8 @@ private fun OptionRow(label: String, chips: @Composable () -> Unit) {
 }
 
 private val PreviewHeight = 240.dp
+private const val ImageWaitMs = 5_000L
+private const val MessageLines = 3
 private val CheckerCell = 8.dp
 private val LabelWidth = 104.dp
 
@@ -238,7 +420,7 @@ private val LabelWidth = 104.dp
 @Composable
 private fun ExportContentPreview() {
     StampAppTheme {
-        ExportContent(ExportUiState(), onBackground = {}, onPostmark = {}, onSave = {}, onShare = {}, onGetPro = {}, onWatchAd = {})
+        ExportContent(ExportUiState(), {}, {}, {}, {}, {}, {}, {}, {}, {})
     }
 }
 
@@ -248,12 +430,22 @@ private fun ExportContentProPreview() {
     StampAppTheme {
         ExportContent(
             ExportUiState(choice = ExportChoice(ExportBackground.Paper, postmark = false), isPro = true, save = SaveState.Saved),
-            onBackground = {},
-            onPostmark = {},
-            onSave = {},
-            onShare = {},
-            onGetPro = {},
-            onWatchAd = {},
+            {}, {}, {}, {}, {}, {}, {}, {}, {},
+        )
+    }
+}
+
+@PaperPreview
+@Composable
+private fun ExportContentPostcardPreview() {
+    StampAppTheme {
+        ExportContent(
+            ExportUiState(
+                choice = ExportChoice(postcard = PostcardStyle.Greetings),
+                stamp = previewStamps(1).first(),
+                text = PostcardText("Mia", "sunrise hike!! wish you were here"),
+            ),
+            {}, {}, {}, {}, {}, {}, {}, {}, {},
         )
     }
 }
