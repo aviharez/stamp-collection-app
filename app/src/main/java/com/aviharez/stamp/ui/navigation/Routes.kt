@@ -19,6 +19,9 @@ import kotlinx.serialization.Serializable
 /** Scrapbook page editor for an album: a new page, or the page [pageId]. Full screen, no nav bar. */
 @Serializable data class ScrapbookRoute(val albumId: Long, val pageId: String? = null)
 
+/** Profile → Credits (fonts, map, libraries and their licences). Full screen, no nav bar. */
+@Serializable data object CreditsRoute
+
 /** Printable sticker sheets of an album's stamps. Full screen, no nav bar. */
 @Serializable data class StickerSheetRoute(val albumId: Long)
 

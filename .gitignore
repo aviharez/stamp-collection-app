@@ -20,3 +20,8 @@ local.properties
 
 # Design mockups stay local (not tracked)
 /design/
+
+# Release signing (upload key + passwords) stays on this machine
+keystore.properties
+*.jks
+*.keystore

@@ -94,6 +94,7 @@ fun ProfileScreen(
     contentPadding: PaddingValues,
     onGetPro: () -> Unit,
     modifier: Modifier = Modifier,
+    onOpenCredits: () -> Unit = {},
     footerExtras: @Composable () -> Unit = {},
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
@@ -137,6 +138,9 @@ fun ProfileScreen(
         },
         onOpenAppSettings = { context.startActivity(appSettings(context)) },
         onRate = { openPlayStore(context) },
+        onFeedback = feedbackAction(context),
+        onPrivacy = privacyAction(context),
+        onCredits = onOpenCredits,
         versionName = remember(context) { versionName(context) },
         reminder = { ReminderEntry() },
         backup = { BackupEntry() },
@@ -166,6 +170,10 @@ fun ProfileContent(
     backup: @Composable () -> Unit,
     footerExtras: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    /** Null until a support email / privacy-policy URL is set (gradle properties). */
+    onFeedback: (() -> Unit)? = null,
+    onPrivacy: (() -> Unit)? = null,
+    onCredits: () -> Unit = {},
 ) {
     val s = StampTheme.spacing
     val t = StampTheme.type
@@ -226,6 +234,9 @@ fun ProfileContent(
             verticalArrangement = Arrangement.spacedBy(s.xs),
         ) {
             PaperChip(stringResource(R.string.profile_rate), selected = false, onClick = onRate)
+            onFeedback?.let { PaperChip(stringResource(R.string.profile_feedback), selected = false, onClick = it) }
+            onPrivacy?.let { PaperChip(stringResource(R.string.profile_privacy), selected = false, onClick = it) }
+            PaperChip(stringResource(R.string.profile_credits), selected = false, onClick = onCredits)
             footerExtras()
         }
         if (versionName != null) {
@@ -421,6 +432,27 @@ private fun openPlayStore(context: Context) {
         val web = Intent(Intent.ACTION_VIEW, context.getString(R.string.play_store_web_link, pkg).toUri())
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         runCatching { context.startActivity(web) }
+    }
+}
+
+/** An email to the support address (subject: app + version), or null when none is set. */
+private fun feedbackAction(context: Context): (() -> Unit)? {
+    val email = context.getString(R.string.support_email).takeIf { it.isNotBlank() } ?: return null
+    return {
+        val subject = context.getString(R.string.profile_feedback_subject, context.getString(R.string.app_name), versionName(context).orEmpty())
+        val mail = Intent(Intent.ACTION_SENDTO, "mailto:".toUri())
+            .putExtra(Intent.EXTRA_EMAIL, arrayOf(email))
+            .putExtra(Intent.EXTRA_SUBJECT, subject)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        runCatching { context.startActivity(mail) }
+    }
+}
+
+/** The privacy policy in the browser, or null when no URL is set. */
+private fun privacyAction(context: Context): (() -> Unit)? {
+    val url = context.getString(R.string.privacy_policy_url).takeIf { it.isNotBlank() } ?: return null
+    return {
+        runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
     }
 }
 

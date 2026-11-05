@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -6,6 +8,15 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.room3)
     alias(libs.plugins.baselineprofile)
+}
+
+/**
+ * Upload key for Play (keystore.properties in the project root, never committed):
+ * storeFile=/absolute/path/upload.jks, storePassword=…, keyAlias=upload, keyPassword=…
+ * Without it, release builds are unsigned (fine for checking R8; Play needs it signed).
+ */
+val uploadKey = rootProject.file("keystore.properties").takeIf { it.exists() }?.let { file ->
+    Properties().apply { file.inputStream().use { load(it) } }
 }
 
 /** Google's public test IDs (AdMob docs). */
@@ -26,6 +37,21 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Profile → "Send feedback" / "Privacy policy" show once these are set (gradle.properties).
+        resValue("string", "support_email", providers.gradleProperty("supportEmail").getOrElse(""))
+        resValue("string", "privacy_policy_url", providers.gradleProperty("privacyPolicyUrl").getOrElse(""))
+    }
+
+    signingConfigs {
+        if (uploadKey != null) {
+            create("upload") {
+                storeFile = file(uploadKey.getProperty("storeFile"))
+                storePassword = uploadKey.getProperty("storePassword")
+                keyAlias = uploadKey.getProperty("keyAlias")
+                keyPassword = uploadKey.getProperty("keyPassword")
+            }
+        }
     }
 
     buildTypes {
@@ -44,6 +70,7 @@ android {
             // isMinifyEnabled off, so with `optimization.enable` the profile came out obfuscated.
             isMinifyEnabled = true
             isShrinkResources = true
+            if (uploadKey != null) signingConfig = signingConfigs.getByName("upload")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

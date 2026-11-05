@@ -328,6 +328,20 @@
     <string name="profile_place_blocked_note">location is off for this app, so postmarks show only the date</string>
     <string name="profile_open_settings">Open settings</string>
     <string name="profile_rate">Rate the app</string>
+    <string name="profile_feedback">Send feedback</string>
+    <string name="profile_feedback_subject">%1$s feedback · version %2$s</string>
+    <string name="profile_privacy">Privacy policy</string>
+    <string name="profile_credits">Credits</string>
+    <string name="credits_title">Credits</string>
+    <string name="credits_note">made with these, thank you</string>
+    <string name="credits_section_fonts">Fonts</string>
+    <string name="credits_section_map">Map</string>
+    <string name="credits_section_code">Code</string>
+    <string name="credits_licence_ofl">SIL OFL 1.1</string>
+    <string name="credits_licence_apache">Apache 2.0</string>
+    <string name="credits_licence_public_domain">Public domain</string>
+    <string name="credits_licence_google">Google terms</string>
+    <string name="credits_footer">tap one to read its licence</string>
     <string name="profile_version">version %1$s</string>
     <string name="play_store_app_link" translatable="false">market://details?id=%1$s</string>
     <string name="play_store_web_link" translatable="false">https://play.google.com/store/apps/details?id=%1$s</string>

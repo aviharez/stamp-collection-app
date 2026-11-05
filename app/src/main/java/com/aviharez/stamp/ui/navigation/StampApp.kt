@@ -56,6 +56,7 @@ import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
 import com.aviharez.stamp.ui.screens.scrapbook.ScrapbookScreen
 import com.aviharez.stamp.ui.screens.stickers.StickerSheetScreen
+import com.aviharez.stamp.ui.screens.settings.CreditsScreen
 import com.aviharez.stamp.ui.screens.settings.ProfileScreen
 import com.aviharez.stamp.ui.screens.stamped.StampedScreen
 import com.aviharez.stamp.ui.screens.welcome.FirstRunViewModel
@@ -189,6 +190,9 @@ private fun StampNavigation(
                     onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Scrapbook.name)) },
                 )
             }
+            composable<CreditsRoute> {
+                CreditsScreen(onBack = { nav.popBackStack() })
+            }
             composable<StickerSheetRoute> {
                 StickerSheetScreen(
                     onBack = { nav.popBackStack() },
@@ -286,6 +290,7 @@ private fun StampNavigation(
                 ProfileScreen(
                     contentPadding = inner,
                     onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) },
+                    onOpenCredits = { nav.navigate(CreditsRoute) },
                     footerExtras = {
                         DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
                         DebugProSwitch()
