@@ -5,6 +5,7 @@ import android.net.Uri
 import com.aviharez.stamp.data.billing.ProStatus
 import com.aviharez.stamp.data.db.AlbumDao
 import com.aviharez.stamp.data.db.AlbumEntity
+import com.aviharez.stamp.data.db.ScrapPageDao
 import com.aviharez.stamp.data.db.StampDao
 import com.aviharez.stamp.data.db.StampEntity
 import com.aviharez.stamp.data.image.RenderSpec
@@ -58,6 +59,7 @@ class BackupManager @Inject constructor(
     @param:ApplicationContext private val context: Context,
     private val albums: AlbumDao,
     private val stamps: StampDao,
+    private val scrapPages: ScrapPageDao,
     private val storage: StampStorage,
     private val settings: SettingsRepository,
     private val pro: ProStatus,
@@ -102,6 +104,7 @@ class BackupManager @Inject constructor(
         val manifest = BackupFormat.manifestOf(
             albums = albums.all(),
             stamps = all,
+            scrapPages = scrapPages.all(),
             originalExtension = { s -> File(s.originalPath).takeIf { it.isFile }?.extension?.takeIf(SafeExtension::matches) },
             settings = BackupSettings(mirrorSelfie = settings.mirrorSelfie.first(), bonusAlbums = pro.bonusAlbums.first()),
             now = now,
@@ -147,7 +150,7 @@ class BackupManager @Inject constructor(
             val m = manifest ?: return BackupState.Failed(restoring = true, error = BackupError.NotABackup)
             if (m.format > BackupFormat.Version) return BackupState.Failed(restoring = true, error = BackupError.NewerVersion)
 
-            val plan = BackupFormat.plan(m, albums.all(), stamps.ids().toSet(), staged)
+            val plan = BackupFormat.plan(m, albums.all(), stamps.ids().toSet(), staged, scrapPages.ids().mapTo(HashSet()) { it.lowercase() })
             val albumIds = plan.reuseAlbums.toMutableMap()
             plan.newAlbums.forEach { a ->
                 albumIds[a.key] = albums.insert(AlbumEntity(name = a.name, category = a.category, cover = a.cover, createdAt = a.createdAt))
@@ -161,6 +164,7 @@ class BackupManager @Inject constructor(
                 stamps.insert(b.toEntity(albumIds.getValue(b.albumKey), rendered, original))
                 _state.value = BackupState.Working(restoring = true, done = i + 1, total = plan.newStamps.size)
             }
+            plan.newScrapPages.forEach { scrapPages.upsert(BackupFormat.scrapPageEntity(it, albumIds.getValue(it.albumKey))) }
             m.settings.mirrorSelfie?.let { settings.setMirrorSelfie(it) }
             pro.restoreBonusAlbums(m.settings.bonusAlbums)
             return BackupState.Restored(plan.newStamps.size, plan.newAlbums.size, plan.alreadyHere)

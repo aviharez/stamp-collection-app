@@ -1,14 +1,19 @@
 package com.aviharez.stamp.data.backup
 
 import com.aviharez.stamp.data.db.AlbumEntity
+import com.aviharez.stamp.data.db.ScrapPageEntity
 import com.aviharez.stamp.data.db.StampEntity
+import com.aviharez.stamp.data.repo.ScrapCodec
+import com.aviharez.stamp.data.repo.ScrapItemJson
+import com.aviharez.stamp.data.repo.toDomain
+import com.aviharez.stamp.data.repo.toJson
 import com.aviharez.stamp.domain.model.StampFilter
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 /**
  * A backup is one ZIP file: `backup.json` (this manifest) first, then every stamp's images as
- * `rendered/<id>.png` and `originals/<id>.<ext>`. Plain ZIP so it stays readable without the app.
+ * `rendered/<id>.png` and `originals/<id>.<ext>`. Scrapbook pages live in the manifest (they hold no images). Plain ZIP so it stays readable without the app.
  */
 @Serializable
 data class BackupManifest(
@@ -17,6 +22,17 @@ data class BackupManifest(
     val albums: List<BackupAlbum>,
     val stamps: List<BackupStamp>,
     val settings: BackupSettings = BackupSettings(),
+    /** Added with scrapbook pages; older files have none. */
+    val scrapPages: List<BackupScrapPage> = emptyList(),
+)
+
+@Serializable
+data class BackupScrapPage(
+    val id: String,
+    val albumKey: Long,
+    val createdAt: Long,
+    val updatedAt: Long,
+    val items: List<ScrapItemJson>,
 )
 
 /** [key] is the album's id on the phone it came from; only used to link stamps inside the file. */
@@ -62,6 +78,8 @@ data class RestorePlan(
     val newStamps: List<BackupStamp>,
     /** Stamps already here (same id), skipped. */
     val alreadyHere: Int,
+    /** Scrapbook pages not on this phone yet, whose album exists in the file. */
+    val newScrapPages: List<BackupScrapPage> = emptyList(),
 )
 
 object BackupFormat {
@@ -93,6 +111,7 @@ object BackupFormat {
     fun manifestOf(
         albums: List<AlbumEntity>,
         stamps: List<StampEntity>,
+        scrapPages: List<ScrapPageEntity>,
         originalExtension: (StampEntity) -> String?,
         settings: BackupSettings,
         now: Long,
@@ -123,6 +142,17 @@ object BackupFormat {
             )
         },
         settings = settings,
+        scrapPages = scrapPages.map { p ->
+            BackupScrapPage(p.id, p.albumId, p.createdAt, p.updatedAt, ScrapCodec.decode(p.items).map { it.toJson() })
+        },
+    )
+
+    fun scrapPageEntity(p: BackupScrapPage, albumId: Long) = ScrapPageEntity(
+        id = p.id.lowercase(),
+        albumId = albumId,
+        createdAt = p.createdAt,
+        updatedAt = p.updatedAt,
+        items = ScrapCodec.encode(p.items.mapNotNull { it.toDomain() }),
     )
 
     /**
@@ -136,6 +166,7 @@ object BackupFormat {
         existingAlbums: List<AlbumEntity>,
         existingStampIds: Set<String>,
         imagesInFile: Set<String>,
+        existingScrapPageIds: Set<String> = emptySet(),
     ): RestorePlan {
         val reuse = manifest.albums.mapNotNull { a ->
             existingAlbums.firstOrNull { it.name == a.name && it.createdAt == a.createdAt }?.let { a.key to it.id }
@@ -151,6 +182,11 @@ object BackupFormat {
             newAlbums = manifest.albums.filter { it.key !in reuse }.distinctBy { it.key },
             newStamps = new,
             alreadyHere = here.size,
+            // Pages point at stamps by id, which a restore keeps; a stamp that didn't come back just isn't drawn.
+            newScrapPages = manifest.scrapPages
+                .filter { isStampId(it.id) && it.albumKey in albumKeys }
+                .distinctBy { it.id.lowercase() }
+                .filter { it.id.lowercase() !in existingScrapPageIds },
         )
     }
 }

@@ -70,3 +70,24 @@ data class AlbumSummaryRow(
     @ColumnInfo(name = "latest_perforation") val latestPerforation: String?,
     @ColumnInfo(name = "latest_taken_at") val latestTakenAt: Long?,
 )
+
+/** A free-form scrapbook page; its pieces are JSON ([com.aviharez.stamp.data.repo.ScrapCodec]). */
+@Entity(
+    tableName = "scrap_pages",
+    foreignKeys = [
+        ForeignKey(
+            entity = AlbumEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["album_id"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("album_id")],
+)
+data class ScrapPageEntity(
+    @PrimaryKey val id: String,
+    @ColumnInfo(name = "album_id") val albumId: Long,
+    @ColumnInfo(name = "created_at") val createdAt: Long,
+    @ColumnInfo(name = "updated_at") val updatedAt: Long,
+    val items: String,
+)

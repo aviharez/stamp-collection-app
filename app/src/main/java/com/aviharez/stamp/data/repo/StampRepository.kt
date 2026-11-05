@@ -91,6 +91,10 @@ class StampRepository @Inject constructor(
     fun observeByAlbum(albumId: Long): Flow<List<Stamp>> =
         dao.observeByAlbum(albumId).map { list -> list.map { it.toDomain() } }
 
+    /** The stamps with these ids that still exist (any album). */
+    fun observeByIds(ids: Collection<String>): Flow<List<Stamp>> =
+        if (ids.isEmpty()) kotlinx.coroutines.flow.flowOf(emptyList()) else dao.observeByIds(ids.toList()).map { list -> list.map { it.toDomain() } }
+
     fun observeRecent(limit: Int): Flow<List<Stamp>> =
         dao.observeRecent(limit).map { list -> list.map { it.toDomain() } }
 

@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room3.Room
 import androidx.sqlite.driver.AndroidSQLiteDriver
 import com.aviharez.stamp.data.db.AlbumDao
+import com.aviharez.stamp.data.db.ScrapPageDao
 import com.aviharez.stamp.data.db.StampDao
 import com.aviharez.stamp.data.db.StampDatabase
 import dagger.Module
@@ -27,12 +28,14 @@ object DataModule {
     fun database(@ApplicationContext context: Context): StampDatabase =
         Room.databaseBuilder<StampDatabase>(context, StampDatabase.NAME)
             .setDriver(AndroidSQLiteDriver())
-            .addMigrations(StampDatabase.Migration1To2, StampDatabase.Migration2To3)
+            .addMigrations(StampDatabase.Migration1To2, StampDatabase.Migration2To3, StampDatabase.Migration3To4)
             .build()
 
     @Provides fun albumDao(db: StampDatabase): AlbumDao = db.albumDao()
 
     @Provides fun stampDao(db: StampDatabase): StampDao = db.stampDao()
+
+    @Provides fun scrapPageDao(db: StampDatabase): ScrapPageDao = db.scrapPageDao()
 
     @Provides
     @Singleton

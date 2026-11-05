@@ -1,7 +1,11 @@
 package com.aviharez.stamp.data.backup
 
 import com.aviharez.stamp.data.db.AlbumEntity
+import com.aviharez.stamp.data.db.ScrapPageEntity
 import com.aviharez.stamp.data.db.StampEntity
+import com.aviharez.stamp.data.repo.ScrapCodec
+import com.aviharez.stamp.domain.model.ScrapItem
+import com.aviharez.stamp.domain.model.ScrapKind
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -20,9 +24,17 @@ class BackupFormatTest {
         latitude = null, longitude = null, title = null, caption = "hi", source = "Camera",
     )
 
+    private val pageId = "33333333-3333-3333-3333-333333333333"
+    private val pageItems = listOf(
+        ScrapItem(id = "a", kind = ScrapKind.Stamp, ref = idA, x = 0.5f, y = 0.4f, scale = 1.2f, rotation = -4f),
+        ScrapItem(id = "b", kind = ScrapKind.Note, text = "first day", x = 0.3f, y = 0.8f),
+    )
+    private val page = ScrapPageEntity(pageId, albumId = 7, createdAt = 10, updatedAt = 11, items = ScrapCodec.encode(pageItems))
+
     private val manifest = BackupFormat.manifestOf(
         albums = listOf(trip, empty),
         stamps = listOf(stamp(idA), stamp(idB)),
+        scrapPages = listOf(page),
         originalExtension = { "jpg" },
         settings = BackupSettings(mirrorSelfie = false, bonusAlbums = 1),
         now = 5,
@@ -41,6 +53,17 @@ class BackupFormatTest {
         assertEquals(2, plan.newAlbums.size)
         assertEquals(2, plan.newStamps.size)
         assertEquals(0, plan.alreadyHere)
+        assertEquals(listOf(pageId), plan.newScrapPages.map { it.id })
+        val restored = BackupFormat.scrapPageEntity(plan.newScrapPages[0], albumId = 70)
+        assertEquals(pageItems, ScrapCodec.decode(restored.items))
+        assertEquals(70L, restored.albumId)
+    }
+
+    @Test
+    fun scrapPagesAlreadyHereOrWithoutTheirAlbumAreSkipped() {
+        val orphan = manifest.scrapPages[0].copy(id = "44444444-4444-4444-4444-444444444444", albumKey = 99)
+        val withOrphan = manifest.copy(scrapPages = manifest.scrapPages + orphan)
+        assertTrue(BackupFormat.plan(withOrphan, emptyList(), emptySet(), allImages, existingScrapPageIds = setOf(pageId)).newScrapPages.isEmpty())
     }
 
     @Test

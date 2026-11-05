@@ -2,6 +2,7 @@ package com.aviharez.stamp.data.db
 
 import androidx.room3.Dao
 import androidx.room3.Insert
+import androidx.room3.OnConflictStrategy
 import androidx.room3.Query
 import androidx.room3.Update
 import kotlinx.coroutines.flow.Flow
@@ -67,6 +68,9 @@ interface StampDao {
     @Query("SELECT * FROM stamps WHERE id = :id")
     fun observe(id: String): Flow<StampEntity?>
 
+    @Query("SELECT * FROM stamps WHERE id IN (:ids)")
+    fun observeByIds(ids: List<String>): Flow<List<StampEntity>>
+
     @Query("SELECT * FROM stamps WHERE album_id = :albumId ORDER BY taken_at DESC")
     fun observeByAlbum(albumId: Long): Flow<List<StampEntity>>
 
@@ -108,5 +112,26 @@ interface StampDao {
     suspend fun moveToAlbum(id: String, albumId: Long)
 
     @Query("DELETE FROM stamps WHERE id = :id")
+    suspend fun delete(id: String)
+}
+
+@Dao
+interface ScrapPageDao {
+    @Query("SELECT * FROM scrap_pages WHERE album_id = :albumId ORDER BY created_at ASC")
+    fun observeByAlbum(albumId: Long): Flow<List<ScrapPageEntity>>
+
+    @Query("SELECT * FROM scrap_pages WHERE id = :id")
+    suspend fun get(id: String): ScrapPageEntity?
+
+    @Query("SELECT * FROM scrap_pages ORDER BY created_at ASC")
+    suspend fun all(): List<ScrapPageEntity>
+
+    @Query("SELECT id FROM scrap_pages")
+    suspend fun ids(): List<String>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(page: ScrapPageEntity)
+
+    @Query("DELETE FROM scrap_pages WHERE id = :id")
     suspend fun delete(id: String)
 }
