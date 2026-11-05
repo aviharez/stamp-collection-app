@@ -247,7 +247,6 @@ fun ProfileContent(
             PaperChip(stringResource(R.string.profile_rate), selected = false, onClick = onRate)
             onFeedback?.let { PaperChip(stringResource(R.string.profile_feedback), selected = false, onClick = it) }
             onPrivacy?.let { PaperChip(stringResource(R.string.profile_privacy), selected = false, onClick = it) }
-            PaperChip(stringResource(R.string.profile_credits), selected = false, onClick = onCredits)
             footerExtras()
         }
         HandNote(
@@ -257,11 +256,19 @@ fun ProfileContent(
             strength = InkStrength.Strong,
         )
         if (versionName != null) {
-            HandNote(
-                stringResource(R.string.profile_version, versionName),
-                style = t.noteSmall,
-                strength = InkStrength.Soft,
-            )
+            // The version line opens the credits / open-source licences (kept quiet, still reachable).
+            Box(
+                Modifier
+                    .heightIn(min = s.touchTarget)
+                    .clickable(onClickLabel = stringResource(R.string.profile_credits), role = Role.Button, onClick = onCredits),
+                contentAlignment = Alignment.CenterStart,
+            ) {
+                HandNote(
+                    stringResource(R.string.profile_version, versionName),
+                    style = t.noteSmall,
+                    strength = InkStrength.Soft,
+                )
+            }
         }
     }
 }
