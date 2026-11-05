@@ -1,5 +1,7 @@
 package com.aviharez.stamp.ui.screens.stamped
 
+import android.net.Uri
+import androidx.activity.compose.LocalActivity
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.Spring
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,8 +30,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,12 +49,15 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,41 +66,42 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.SingletonImageLoader
+import coil3.request.ImageRequest
 import com.aviharez.stamp.R
+import com.aviharez.stamp.data.ads.AdOffer
+import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.Place
-import com.aviharez.stamp.domain.model.StampShape
-import com.aviharez.stamp.domain.usecase.Streak
-import com.aviharez.stamp.ui.components.AirmailStripe
-import com.aviharez.stamp.ui.components.FilterPicker
-import com.aviharez.stamp.ui.components.bleed
-import com.aviharez.stamp.ui.components.label
 import com.aviharez.stamp.domain.model.StampFilter
-import com.aviharez.stamp.ui.screens.filter.FilterUi
+import com.aviharez.stamp.domain.model.StampShape
+import com.aviharez.stamp.domain.model.StampSource
+import com.aviharez.stamp.domain.usecase.Streak
+import com.aviharez.stamp.ui.components.AdChip
+import com.aviharez.stamp.ui.components.AirmailStripe
 import com.aviharez.stamp.ui.components.GrainedSurface
+import com.aviharez.stamp.ui.components.LookPicker
 import com.aviharez.stamp.ui.components.PillButton
 import com.aviharez.stamp.ui.components.PillStyle
 import com.aviharez.stamp.ui.components.Postmark
 import com.aviharez.stamp.ui.components.RenderedStamp
 import com.aviharez.stamp.ui.components.Stamp
 import com.aviharez.stamp.ui.components.StreakChip
+import com.aviharez.stamp.ui.components.bleed
+import com.aviharez.stamp.ui.components.label
 import com.aviharez.stamp.ui.components.rememberPostmarkLines
+import com.aviharez.stamp.ui.screens.export.ExportSheet
+import com.aviharez.stamp.ui.screens.filter.FilterUi
+import com.aviharez.stamp.ui.screens.filter.keepLookLabel
+import com.aviharez.stamp.ui.screens.importer.rememberPhotoPicker
+import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import com.aviharez.stamp.ui.theme.Elevation
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
 import com.aviharez.stamp.ui.theme.rememberReduceMotion
-import com.aviharez.stamp.domain.model.PerforationStyle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
-import coil3.SingletonImageLoader
-import coil3.request.ImageRequest
-import androidx.compose.ui.platform.LocalContext
 import java.io.File
-import android.net.Uri
-import com.aviharez.stamp.domain.model.StampSource
-import com.aviharez.stamp.ui.screens.importer.rememberPhotoPicker
-import com.aviharez.stamp.ui.screens.export.ExportSheet
-import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import java.time.LocalDate
 
 /** "Stamped!" for the stamp in the current [com.aviharez.stamp.ui.navigation.StampedRoute]. */
@@ -129,9 +134,10 @@ fun StampedScreen(
     val fromGallery = stamp?.source == StampSource.Gallery
     // An imported stamp is "retaken" by picking another photo; this one goes only once one is picked.
     val pickPhoto = rememberPhotoPicker { uri -> viewModel.retake { onPickAnother(uri) } }
+    val activity = LocalActivity.current
 
     StampedContent(
-        // A Pro filter tried on shows its preview; the album keeps the saved picture.
+        // A Pro look tried on shows its preview; the album keeps the saved picture.
         stampPath = filter.preview?.path ?: stamp?.imagePath,
         shape = stamp?.shape ?: StampShape.Portrait,
         place = stamp?.place ?: Place.Unknown,
@@ -147,9 +153,11 @@ fun StampedScreen(
         onStickInAlbum = { stamp?.let { onStickInAlbum(it.albumId) } },
         onShare = { if (stamp != null) exporting = true },
         filter = filter,
-        isPro = state.isPro,
         onPickFilter = viewModel::pickFilter,
-        onKeepFilter = { onOpenPaywall(PaywallReason.Filters) },
+        onPickEdge = viewModel::pickEdge,
+        onKeepLook = { onOpenPaywall(filter.keepReason) },
+        onWatchEdgeAd = { activity?.let(viewModel::watchEdgeAd) },
+        onPreloadEdgeAd = viewModel::preloadEdgeAd,
         modifier = modifier,
     )
 
@@ -203,9 +211,11 @@ fun StampedContent(
     onShare: () -> Unit,
     modifier: Modifier = Modifier,
     filter: FilterUi = FilterUi(),
-    isPro: Boolean = false,
     onPickFilter: (StampFilter) -> Unit = {},
-    onKeepFilter: () -> Unit = {},
+    onPickEdge: (PerforationStyle) -> Unit = {},
+    onKeepLook: () -> Unit = {},
+    onWatchEdgeAd: () -> Unit = {},
+    onPreloadEdgeAd: () -> Unit = {},
     animate: Boolean = true,
 ) {
     val s = StampTheme.spacing
@@ -234,26 +244,38 @@ fun StampedContent(
                     StampHero(
                         stampPath = stampPath,
                         shape = shape,
+                        perforation = filter.shownEdge,
                         place = place,
                         day = day,
                         animate = animate,
                         modifier = Modifier.fillMaxSize(),
                     )
                     if (filter.tryingPro) {
-                        PillButton(
-                            stringResource(R.string.filter_keep_with_pro, stringResource(filter.selected.label)),
-                            onClick = onKeepFilter,
-                            style = PillStyle.Red,
-                            modifier = Modifier.align(Alignment.TopCenter),
-                        )
+                        LaunchedEffect(filter.edgeAdOffered) { if (filter.edgeAdOffered) onPreloadEdgeAd() }
+                        Column(Modifier.align(Alignment.TopCenter), horizontalAlignment = Alignment.CenterHorizontally) {
+                            // Side by side; at large font sizes the ad chip moves under instead of being squeezed.
+                            FlowRow(
+                                horizontalArrangement = Arrangement.spacedBy(s.xs, Alignment.CenterHorizontally),
+                                itemVerticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                PillButton(keepLookLabel(filter), onClick = onKeepLook, style = PillStyle.Red)
+                                if (filter.edgeAdOffered) {
+                                    AdChip(stringResource(R.string.edge_ad), loading = filter.ad == AdOffer.Loading, onClick = onWatchEdgeAd, onDark = true)
+                                }
+                            }
+                            if (filter.edgeAdOffered && filter.ad == AdOffer.Unavailable) {
+                                Text(stringResource(R.string.ad_unavailable), style = StampTheme.type.label, color = c.textOnDarkMedium)
+                            }
+                        }
                     }
                 }
                 if (filter.available) {
-                    FilterPicker(
+                    LookPicker(
                         photo = filter.thumbnail,
                         selected = filter.selected,
-                        isPro = isPro,
-                        onPick = onPickFilter,
+                        access = filter.access,
+                        onPickFilter = onPickFilter,
+                        onPickEdge = onPickEdge,
                         onDark = true,
                         modifier = Modifier.bleed(s.screen).padding(bottom = s.xs),
                     )
@@ -305,6 +327,7 @@ fun StampedContent(
 private fun StampHero(
     stampPath: String?,
     shape: StampShape,
+    perforation: PerforationStyle,
     place: Place,
     day: LocalDate,
     animate: Boolean,
@@ -394,6 +417,7 @@ private fun StampHero(
                 RenderedStamp(
                     file = File(stampPath),
                     shape = shape,
+                    perforation = perforation,
                     contentDescription = stringResource(R.string.stamped_stamp_cd),
                     shadowTint = c.shadowNavy,
                     elevation = Elevation.Raised,

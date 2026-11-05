@@ -127,9 +127,9 @@ class StampRepository @Inject constructor(
      * A re-drawn picture (new crop / turn / shape / filter); the old PNG is deleted. Date, place
      * and words stay.
      */
-    suspend fun replaceImage(id: String, image: RenderedStamp, filter: StampFilter) {
+    suspend fun replaceImage(id: String, image: RenderedStamp, filter: StampFilter, perforation: PerforationStyle) {
         val old = dao.get(id) ?: return
-        dao.setImage(id, image.shape.name, image.file.path, filter.name, image.spec.encode())
+        dao.setImage(id, image.shape.name, image.file.path, filter.name, perforation.name, image.spec.encode())
         if (old.imagePath != image.file.path) withContext(Dispatchers.IO) { File(old.imagePath).delete() }
     }
 

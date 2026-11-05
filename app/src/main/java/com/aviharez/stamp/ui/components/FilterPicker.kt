@@ -11,24 +11,33 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
@@ -37,10 +46,11 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.layout.layout
 import com.aviharez.stamp.R
+import com.aviharez.stamp.data.billing.LookAccess
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampFilter
+import com.aviharez.stamp.domain.model.StampLook
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.theme.Elevation
 import com.aviharez.stamp.ui.theme.PaperPreview
@@ -78,6 +88,93 @@ val StampFilter.label: Int
         StampFilter.GreenInk -> R.string.filter_green_ink
     }
 
+/** Name shown under the edge's mini stamp. */
+val PerforationStyle.label: Int
+    get() = when (this) {
+        PerforationStyle.Classic -> R.string.edge_classic
+        PerforationStyle.Fine -> R.string.edge_fine
+        PerforationStyle.Bold -> R.string.edge_bold
+        PerforationStyle.Scallop -> R.string.edge_scallop
+    }
+
+/** Which row the look picker shows. */
+enum class LookTab { Filters, Edges }
+
+/**
+ * Everything about a stamp's look in one place: "Filters · Edges" tabs over a row of mini stamps.
+ * The edge row shows the photo in the picked filter, so each mini stamp is the whole look.
+ * Locked choices carry a "PRO" tag (an edge unlocked for a day by an ad says "24H"); tapping one
+ * still calls back (the caller tries it on).
+ *
+ * @param onDark labels in PaperWhite (Stamped!'s cobalt).
+ */
+@Composable
+fun LookPicker(
+    photo: ImageBitmap?,
+    selected: StampLook,
+    access: LookAccess,
+    onPickFilter: (StampFilter) -> Unit,
+    onPickEdge: (PerforationStyle) -> Unit,
+    modifier: Modifier = Modifier,
+    onDark: Boolean = false,
+    contentPadding: PaddingValues = PaddingValues(horizontal = StampTheme.spacing.screen),
+) {
+    var tab by rememberSaveable { mutableStateOf(LookTab.Filters) }
+    Column(modifier) {
+        LookTabs(tab, onPick = { tab = it }, onDark = onDark, modifier = Modifier.padding(contentPadding))
+        when (tab) {
+            LookTab.Filters -> FilterPicker(photo, selected.filter, access.isPro, onPickFilter, onDark = onDark, contentPadding = contentPadding)
+            LookTab.Edges -> EdgePicker(photo, selected, access, onPickEdge, onDark = onDark, contentPadding = contentPadding)
+        }
+    }
+}
+
+/** Two words, the picked one in red ink and underlined like a hand-made index tab. */
+@Composable
+private fun LookTabs(tab: LookTab, onPick: (LookTab) -> Unit, onDark: Boolean, modifier: Modifier = Modifier) {
+    val c = StampTheme.colors
+    val haptics = LocalHapticFeedback.current
+    val locale = LocalConfiguration.current.locales[0]
+    Row(modifier.selectableGroup(), horizontalArrangement = Arrangement.spacedBy(StampTheme.spacing.m)) {
+        LookTab.entries.forEach { t ->
+            val picked = t == tab
+            val ink = when {
+                picked && onDark -> c.textOnDarkHigh
+                picked -> c.airmailRed
+                onDark -> c.textOnDarkMedium
+                else -> c.textMedium
+            }
+            Box(
+                Modifier
+                    .heightIn(min = StampTheme.spacing.touchTargetMin)
+                    .selectable(selected = picked, role = Role.Tab) {
+                        if (!picked) haptics.performHapticFeedback(HapticFeedbackType.SegmentTick)
+                        onPick(t)
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    stringResource(t.label).lowercase(locale),
+                    style = StampTheme.type.noteLarge,
+                    color = ink,
+                    modifier = Modifier.drawBehind {
+                        if (picked) {
+                            val y = size.height - TabUnderline.toPx()
+                            drawLine(ink, Offset(0f, y), Offset(size.width, y), strokeWidth = TabUnderline.toPx(), cap = StrokeCap.Round)
+                        }
+                    },
+                )
+            }
+        }
+    }
+}
+
+private val LookTab.label: Int
+    get() = when (this) {
+        LookTab.Filters -> R.string.look_tab_filters
+        LookTab.Edges -> R.string.look_tab_edges
+    }
+
 /**
  * A row of mini stamps, one per [StampFilter], each showing [photo] in that filter (a small,
  * square-cropped copy of the picture). The picked one lifts and tilts like the nav bar's active
@@ -96,19 +193,18 @@ fun FilterPicker(
     onDark: Boolean = false,
     contentPadding: PaddingValues = PaddingValues(horizontal = StampTheme.spacing.screen),
 ) {
-    Row(
-        modifier
-            .horizontalScroll(rememberScrollState())
-            .padding(contentPadding)
-            .padding(vertical = StampTheme.spacing.xs),
-        horizontalArrangement = Arrangement.spacedBy(StampTheme.spacing.s),
-    ) {
+    MiniStampRow(modifier, contentPadding) {
         StampFilter.entries.forEachIndexed { index, filter ->
-            FilterStamp(
+            val name = stringResource(filter.label)
+            val locked = !isPro && !filter.free
+            LookStamp(
                 photo = photo,
-                filter = filter,
+                colorFilter = remember(filter) { filter.composeColorFilter() },
+                perforation = PerforationStyle.Fine,
+                name = name,
+                description = if (locked) stringResource(R.string.filter_pro_cd, name) else name,
+                tag = if (locked) stringResource(R.string.filter_pro_tag) else null,
                 selected = filter == selected,
-                locked = !isPro && !filter.free,
                 restTilt = if (index % 2 == 0) RestTilt else -RestTilt,
                 onDark = onDark,
                 onClick = { onPick(filter) },
@@ -117,15 +213,67 @@ fun FilterPicker(
     }
 }
 
+/** A row of mini stamps, one per [PerforationStyle], each the photo in [selected]'s filter with that edge. */
 @Composable
-private fun FilterStamp(
+fun EdgePicker(
     photo: ImageBitmap?,
-    filter: StampFilter,
+    selected: StampLook,
+    access: LookAccess,
+    onPick: (PerforationStyle) -> Unit,
+    modifier: Modifier = Modifier,
+    onDark: Boolean = false,
+    contentPadding: PaddingValues = PaddingValues(horizontal = StampTheme.spacing.screen),
+) {
+    val colorFilter = remember(selected.filter) { selected.filter.composeColorFilter() }
+    MiniStampRow(modifier, contentPadding) {
+        PerforationStyle.entries.forEachIndexed { index, edge ->
+            val name = stringResource(edge.label)
+            val (tag, description) = when {
+                edge.free || access.isPro -> null to name
+                edge in access.trialEdges -> stringResource(R.string.edge_trial_tag) to stringResource(R.string.edge_trial_cd, name)
+                else -> stringResource(R.string.filter_pro_tag) to stringResource(R.string.edge_pro_cd, name)
+            }
+            LookStamp(
+                photo = photo,
+                colorFilter = colorFilter,
+                perforation = edge,
+                name = name,
+                description = description,
+                tag = tag,
+                trialTag = edge in access.trialEdges && !access.isPro,
+                selected = edge == selected.edge,
+                restTilt = if (index % 2 == 0) RestTilt else -RestTilt,
+                onDark = onDark,
+                onClick = { onPick(edge) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun MiniStampRow(modifier: Modifier, contentPadding: PaddingValues, content: @Composable () -> Unit) {
+    Row(
+        modifier
+            .horizontalScroll(rememberScrollState())
+            .padding(contentPadding)
+            .padding(vertical = StampTheme.spacing.xs),
+        horizontalArrangement = Arrangement.spacedBy(StampTheme.spacing.s),
+    ) { content() }
+}
+
+@Composable
+private fun LookStamp(
+    photo: ImageBitmap?,
+    colorFilter: ColorFilter?,
+    perforation: PerforationStyle,
+    name: String,
+    description: String,
+    tag: String?,
     selected: Boolean,
-    locked: Boolean,
     restTilt: Float,
     onDark: Boolean,
     onClick: () -> Unit,
+    trialTag: Boolean = false,
 ) {
     val c = StampTheme.colors
     val reduceMotion = rememberReduceMotion()
@@ -142,9 +290,6 @@ private fun FilterStamp(
         airmailSpring(reduceMotion),
         label = "lift",
     )
-    val name = stringResource(filter.label)
-    val description = if (locked) stringResource(R.string.filter_pro_cd, name) else name
-    val colorFilter = remember(filter) { filter.composeColorFilter() }
     val locale = LocalConfiguration.current.locales[0]
 
     Column(
@@ -173,7 +318,7 @@ private fun FilterStamp(
             Stamp(
                 StampShape.Square,
                 Modifier.size(StampSize),
-                perforation = PerforationStyle.Fine,
+                perforation = perforation,
                 elevation = if (selected) Elevation.Card else Elevation.Low,
                 shadowTint = if (onDark) c.shadowNavy else c.shadowWarm,
             ) {
@@ -189,15 +334,15 @@ private fun FilterStamp(
                     Box(Modifier.matchParentSize().background(c.surface2))
                 }
             }
-            if (locked) {
+            if (tag != null) {
                 Text(
-                    stringResource(R.string.filter_pro_tag),
+                    tag,
                     style = StampTheme.type.overline,
                     color = c.textOnDarkHigh,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = TagOffset, y = -TagOffset)
-                        .background(c.airmailRed, StampTheme.shapes.plate)
+                        .background(if (trialTag) c.ink else c.airmailRed, StampTheme.shapes.plate)
                         .padding(horizontal = StampTheme.spacing.xxs),
                 )
             }
@@ -223,6 +368,7 @@ private const val RestTilt = 1.5f
 private const val PickedTilt = -7f
 private const val PickedScale = 1.12f
 private const val PressedScale = 0.9f
+private val TabUnderline = 2.dp
 
 @PaperPreview
 @Composable
@@ -231,6 +377,23 @@ private fun FilterPickerPreview() {
         Column {
             FilterPicker(photo = null, selected = StampFilter.Postcard, isPro = false, onPick = {})
             FilterPicker(photo = null, selected = StampFilter.Original, isPro = true, onPick = {})
+        }
+    }
+}
+
+@PaperPreview
+@Composable
+private fun EdgePickerPreview() {
+    StampAppTheme {
+        Column {
+            LookPicker(
+                photo = null,
+                selected = StampLook(edge = PerforationStyle.Bold),
+                access = LookAccess(trialEdges = setOf(PerforationStyle.Bold)),
+                onPickFilter = {},
+                onPickEdge = {},
+            )
+            EdgePicker(photo = null, selected = StampLook(), access = LookAccess(isPro = true), onPick = {})
         }
     }
 }

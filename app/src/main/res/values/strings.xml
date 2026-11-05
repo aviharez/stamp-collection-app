@@ -257,6 +257,7 @@
     <string name="paywall_overline_watermark">Pro · no watermark</string>
     <string name="paywall_overline_widget">Pro · home-screen widgets</string>
     <string name="paywall_overline_filters">Pro · every filter</string>
+    <string name="paywall_overline_edges">Pro · every edge style</string>
     <string name="paywall_overline_postcards">Pro · postcard &amp; card looks</string>
     <string name="paywall_overline_scrapbook">Pro · keep this scrapbook page</string>
     <string name="paywall_title">Complete your collection</string>
@@ -432,10 +433,22 @@
     <string name="filter_pro_tag">PRO</string>
     <string name="filter_pro_cd">%1$s, Pro filter</string>
     <string name="filter_keep_with_pro">Keep %1$s with Pro</string>
-    <string name="filter_button">Filter</string>
-    <string name="filter_tray_title">Pick a filter</string>
+    <string name="filter_button">Look</string>
     <string name="filter_done">Done</string>
     <string name="filter_try_note">Just trying it on: your stamp keeps its saved look</string>
+    <string name="look_tab_filters">Filters</string>
+    <string name="look_tab_edges">Edges</string>
+    <string name="look_keep_with_pro">Keep this look with Pro</string>
+    <string name="edge_classic">Classic</string>
+    <string name="edge_fine">Fine</string>
+    <string name="edge_bold">Bold</string>
+    <string name="edge_scallop">Scallop</string>
+    <string name="edge_pro_cd">%1$s edge, Pro</string>
+    <string name="edge_trial_tag">24H</string>
+    <string name="edge_trial_cd">%1$s edge, yours for a day</string>
+    <string name="edge_keep_with_pro">Keep the %1$s edge with Pro</string>
+    <string name="edge_ad">24h · short ad</string>
+    <string name="edge_try_note">Just trying it on · or have it for a day</string>
 
     <!-- Scrapbook pages -->
     <string name="album_scrapbook">Scrapbook page</string>

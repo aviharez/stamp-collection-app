@@ -1,9 +1,12 @@
 package com.aviharez.stamp.ui.screens.detail
 
+import android.app.Activity
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.aviharez.stamp.data.ads.RewardedAds
+import com.aviharez.stamp.data.billing.EdgeAccess
 import com.aviharez.stamp.data.billing.ProRules
 import com.aviharez.stamp.data.billing.ProStatus
 import com.aviharez.stamp.data.image.StampFilterer
@@ -13,6 +16,7 @@ import com.aviharez.stamp.di.AppScope
 import com.aviharez.stamp.domain.model.AlbumCategory
 import com.aviharez.stamp.domain.model.AlbumCoverColor
 import com.aviharez.stamp.domain.model.AlbumSummary
+import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.Stamp
 import com.aviharez.stamp.domain.model.StampFilter
 import com.aviharez.stamp.ui.navigation.StampDetailRoute
@@ -61,16 +65,24 @@ class StampDetailViewModel @Inject constructor(
     private val albums: AlbumRepository,
     proStatus: ProStatus,
     filterer: StampFilterer,
+    edges: EdgeAccess,
+    ads: RewardedAds,
     @param:AppScope private val appScope: CoroutineScope,
 ) : ViewModel() {
 
     val stampId = savedState.toRoute<StampDetailRoute>().stampId
     private val stamp = stamps.observe(stampId)
 
-    private val filters = FilterSession(filterer, viewModelScope, appScope, stamp, proStatus.isPro)
+    private val filters = FilterSession(filterer, edges, ads, viewModelScope, appScope, stamp)
     val filter: StateFlow<FilterUi> = filters.state
 
-    fun pickFilter(filter: StampFilter) = filters.pick(filter)
+    fun pickFilter(filter: StampFilter) = filters.pickFilter(filter)
+
+    fun pickEdge(edge: PerforationStyle) = filters.pickEdge(edge)
+
+    fun preloadEdgeAd() = filters.preloadAd()
+
+    fun watchEdgeAd(activity: Activity) = filters.watchEdgeAd(activity)
 
     /** The tray closed: a Pro filter that was only tried on goes away. */
     fun closeFilters() = filters.revert()

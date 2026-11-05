@@ -59,11 +59,16 @@ fun PaperChip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Mo
 /**
  * "… · short ad" chip: always an outline next to the filled Pro chip, so the ad is the quiet,
  * optional choice. [loading] = consent/ad on its way (not tappable again).
+ *
+ * @param onDark on Stamped!'s cobalt: a cobalt-filled chip with a light outline, so it still reads
+ *   where it overlaps the stamp.
  */
 @Composable
-fun AdChip(text: String, loading: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun AdChip(text: String, loading: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier, onDark: Boolean = false) {
     val c = StampTheme.colors
     val shape = StampTheme.shapes.pill
+    val ink = if (onDark) c.textOnDarkHigh else c.textHigh
+    val soft = if (onDark) c.textOnDarkLow else c.textLow
     val source = remember { MutableInteractionSource() }
     val scale by pressScale(source)
     Box(
@@ -75,8 +80,9 @@ fun AdChip(text: String, loading: Boolean, onClick: () -> Unit, modifier: Modifi
         Row(
             Modifier
                 .clip(shape)
-                .border(BorderWidth, c.outline, shape)
-                .clickableWithRipple(source, !loading, c.textHigh, onClick)
+                .then(if (onDark) Modifier.background(c.cobalt) else Modifier)
+                .border(BorderWidth, if (onDark) c.textOnDarkMedium else c.outline, shape)
+                .clickableWithRipple(source, !loading, ink, onClick)
                 .padding(horizontal = StampTheme.spacing.s, vertical = StampTheme.spacing.xs),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(StampTheme.spacing.xxs),
@@ -84,14 +90,14 @@ fun AdChip(text: String, loading: Boolean, onClick: () -> Unit, modifier: Modifi
             Icon(
                 painterResource(R.drawable.ic_play_ad),
                 contentDescription = null,
-                tint = if (loading) c.textLow else c.textHigh,
+                tint = if (loading) soft else ink,
                 modifier = Modifier.size(AdIconSize),
             )
             FitText(
                 if (loading) stringResource(R.string.ad_loading) else text,
                 StampTheme.type.chip,
                 Modifier.weight(1f, fill = false),
-                color = if (loading) c.textMedium else c.textHigh,
+                color = if (loading) soft else ink,
             )
         }
     }

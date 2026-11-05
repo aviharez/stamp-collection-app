@@ -23,12 +23,14 @@ enum class StampShape(val aspectRatio: Float) {
  * @param holeRadiusDp radius of each perforation hole (holes are centred on the edge).
  * @param pitchDp target distance between hole centres; the real pitch is adjusted so holes
  *   fit each edge evenly.
+ * @param free part of the free tier; the others are Pro (CLAUDE.md §4 "all edges/filters"),
+ *   or unlocked for a day with a short ad.
  */
-enum class PerforationStyle(val holeRadiusDp: Float, val pitchDp: Float) {
-    Classic(holeRadiusDp = 3.5f, pitchDp = 12f),
-    Fine(holeRadiusDp = 2.5f, pitchDp = 8f),
-    Bold(holeRadiusDp = 4.5f, pitchDp = 16f),
-    Scallop(holeRadiusDp = 4.5f, pitchDp = 10.5f),
+enum class PerforationStyle(val holeRadiusDp: Float, val pitchDp: Float, val free: Boolean) {
+    Classic(holeRadiusDp = 3.5f, pitchDp = 12f, free = true),
+    Fine(holeRadiusDp = 2.5f, pitchDp = 8f, free = false),
+    Bold(holeRadiusDp = 4.5f, pitchDp = 16f, free = false),
+    Scallop(holeRadiusDp = 4.5f, pitchDp = 10.5f, free = false),
     ;
 
     /** White paper between the perforated edge and the picture: a hole's diameter + a little. */
@@ -38,3 +40,9 @@ enum class PerforationStyle(val holeRadiusDp: Float, val pitchDp: Float) {
         const val PAPER_MARGIN_EXTRA_DP = 2f
     }
 }
+
+/** How a stamp's picture is finished: its colour filter and its perforated edge. */
+data class StampLook(
+    val filter: StampFilter = StampFilter.Original,
+    val edge: PerforationStyle = PerforationStyle.Classic,
+)

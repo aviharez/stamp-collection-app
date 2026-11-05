@@ -76,10 +76,10 @@ private enum class Perk(@DrawableRes val icon: Int, @StringRes val label: Int, v
     Albums(R.drawable.ic_perk_albums, R.string.paywall_perk_albums, true),
     NoMark(R.drawable.ic_perk_no_mark, R.string.paywall_perk_no_mark, true),
     Filters(R.drawable.ic_perk_filters, R.string.paywall_perk_filters, true),
+    Edges(R.drawable.ic_perk_edges, R.string.paywall_perk_edges, true),
     Postcards(R.drawable.ic_perk_postcards, R.string.paywall_perk_postcards, true),
     Widget(R.drawable.ic_perk_widget, R.string.paywall_perk_widget, true),
     Scrapbook(R.drawable.ic_perk_scrapbook, R.string.paywall_perk_scrapbook, true),
-    Edges(R.drawable.ic_perk_edges, R.string.paywall_perk_edges, false),
 }
 
 private fun PaywallReason.perk(): Perk? = when (this) {
@@ -87,6 +87,7 @@ private fun PaywallReason.perk(): Perk? = when (this) {
     PaywallReason.Watermark -> Perk.NoMark
     PaywallReason.Widget -> Perk.Widget
     PaywallReason.Filters -> Perk.Filters
+    PaywallReason.Edges -> Perk.Edges
     PaywallReason.Postcards -> Perk.Postcards
     PaywallReason.Scrapbook -> Perk.Scrapbook
     PaywallReason.Profile -> null
@@ -157,6 +158,7 @@ fun PaywallContent(
                 PaywallReason.Watermark -> stringResource(R.string.paywall_overline_watermark)
                 PaywallReason.Widget -> stringResource(R.string.paywall_overline_widget)
                 PaywallReason.Filters -> stringResource(R.string.paywall_overline_filters)
+                PaywallReason.Edges -> stringResource(R.string.paywall_overline_edges)
                 PaywallReason.Postcards -> stringResource(R.string.paywall_overline_postcards)
                 PaywallReason.Scrapbook -> stringResource(R.string.paywall_overline_scrapbook)
                 PaywallReason.Profile -> stringResource(R.string.paywall_overline)
@@ -168,13 +170,16 @@ fun PaywallContent(
         Text(stringResource(R.string.paywall_title), style = StampTheme.type.screenTitle, color = c.textHigh)
 
         PerkSheet(highlight = state.reason.perk(), modifier = Modifier.padding(top = s.m))
-        HandNote(
-            stringResource(R.string.paywall_soon_note),
-            style = StampTheme.type.noteSmall,
-            strength = InkStrength.Soft,
-            rotation = -1f,
-            modifier = Modifier.padding(top = s.xs, start = s.xs),
-        )
+        // Only while some perk is still a dashed "soon" slot.
+        if (Perk.entries.any { !it.available }) {
+            HandNote(
+                stringResource(R.string.paywall_soon_note),
+                style = StampTheme.type.noteSmall,
+                strength = InkStrength.Soft,
+                rotation = -1f,
+                modifier = Modifier.padding(top = s.xs, start = s.xs),
+            )
+        }
 
         val offers = (state.offers as? OffersState.Ready)?.offers.orEmpty()
         Row(

@@ -27,6 +27,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aviharez.stamp.data.billing.EdgeAccess
 import com.aviharez.stamp.data.image.CropSpec
 import com.aviharez.stamp.data.image.NormRect
 import com.aviharez.stamp.data.image.StampRenderer
@@ -35,26 +36,26 @@ import com.aviharez.stamp.data.location.PlaceProvider
 import com.aviharez.stamp.data.repo.NewStamp
 import com.aviharez.stamp.data.repo.StampRepository
 import com.aviharez.stamp.data.settings.SettingsRepository
+import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.Place
 import com.aviharez.stamp.domain.model.Stamp
-import com.aviharez.stamp.domain.model.StampSource
-import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.StampShape
+import com.aviharez.stamp.domain.model.StampSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
-import kotlinx.coroutines.async
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.io.File
 import java.util.concurrent.Executors
 import javax.inject.Inject
@@ -123,6 +124,7 @@ class CameraViewModel @Inject constructor(
     private val stamps: StampRepository,
     private val settings: SettingsRepository,
     private val places: PlaceProvider,
+    edges: EdgeAccess,
 ) : ViewModel() {
 
     // The chosen shape survives Android closing the app in the background.
@@ -137,6 +139,9 @@ class CameraViewModel @Inject constructor(
         }
         viewModelScope.launch {
             settings.mirrorSelfie.collect { on -> _state.update { it.copy(mirrorSelfie = on) } }
+        }
+        viewModelScope.launch {
+            edges.edgeForNewStamps.collect { edge -> _state.update { it.copy(perforation = edge) } }
         }
         viewModelScope.launch {
             if (places.hasPermission()) refreshPlace()

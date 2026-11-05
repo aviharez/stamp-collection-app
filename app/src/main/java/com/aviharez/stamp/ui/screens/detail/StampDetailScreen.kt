@@ -1,11 +1,15 @@
 package com.aviharez.stamp.ui.screens.detail
 
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,35 +56,37 @@ import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aviharez.stamp.R
+import com.aviharez.stamp.data.ads.AdOffer
+import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.Stamp
-import com.aviharez.stamp.ui.components.FitText
-import com.aviharez.stamp.ui.components.FilterPicker
-import com.aviharez.stamp.ui.components.GrainedSurface
-import com.aviharez.stamp.ui.components.label
 import com.aviharez.stamp.domain.model.StampFilter
-import com.aviharez.stamp.ui.screens.filter.FilterUi
-import com.aviharez.stamp.ui.theme.Elevation
-import com.aviharez.stamp.ui.theme.tintedShadow
-import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.PaddingValues
+import com.aviharez.stamp.ui.components.AdChip
 import com.aviharez.stamp.ui.components.CircleIconButton
+import com.aviharez.stamp.ui.components.FitText
+import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
+import com.aviharez.stamp.ui.components.LookPicker
 import com.aviharez.stamp.ui.components.PillButton
 import com.aviharez.stamp.ui.components.PillStyle
 import com.aviharez.stamp.ui.components.Postmark
 import com.aviharez.stamp.ui.components.RenderedStamp
 import com.aviharez.stamp.ui.components.dashedOutline
 import com.aviharez.stamp.ui.components.description
+import com.aviharez.stamp.ui.components.label
 import com.aviharez.stamp.ui.components.previewStamps
 import com.aviharez.stamp.ui.components.rememberDateText
 import com.aviharez.stamp.ui.components.rememberPostmarkLines
 import com.aviharez.stamp.ui.screens.export.ExportSheet
+import com.aviharez.stamp.ui.screens.filter.FilterUi
+import com.aviharez.stamp.ui.screens.filter.keepLookLabel
 import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import com.aviharez.stamp.ui.screens.stamped.AlbumPickerSheet
+import com.aviharez.stamp.ui.theme.Elevation
 import com.aviharez.stamp.ui.theme.PaperPreview
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
+import com.aviharez.stamp.ui.theme.tintedShadow
 import java.io.File
 
 /**
@@ -120,6 +126,7 @@ fun StampDetailScreen(
     }
 
     val stamp = state.stamp ?: return
+    val activity = LocalActivity.current
     StampDetailContent(
         stamp = stamp,
         subtitle = state.album?.let { stringResource(R.string.detail_number, state.numberInAlbum, it.album.name) }.orEmpty(),
@@ -135,11 +142,13 @@ fun StampDetailScreen(
         onReframe = { onReframe(stamp.id) },
         onShare = { exporting = true },
         filter = filter,
-        isPro = state.isPro,
         filtering = filtering && filter.available,
         onOpenFilters = { filtering = true },
         onPickFilter = viewModel::pickFilter,
-        onKeepFilter = { onOpenPaywall(PaywallReason.Filters) },
+        onPickEdge = viewModel::pickEdge,
+        onKeepLook = { onOpenPaywall(filter.keepReason) },
+        onWatchEdgeAd = { activity?.let(viewModel::watchEdgeAd) },
+        onPreloadEdgeAd = viewModel::preloadEdgeAd,
         onCloseFilters = {
             filtering = false
             viewModel.closeFilters()
@@ -208,12 +217,14 @@ fun StampDetailContent(
     modifier: Modifier = Modifier,
     canShare: Boolean = true,
     filter: FilterUi = FilterUi(),
-    isPro: Boolean = false,
-    /** The filter tray is open (in place of the words and buttons). */
+    /** The look tray (filters and edges) is open, in place of the words and buttons. */
     filtering: Boolean = false,
     onOpenFilters: () -> Unit = {},
     onPickFilter: (StampFilter) -> Unit = {},
-    onKeepFilter: () -> Unit = {},
+    onPickEdge: (PerforationStyle) -> Unit = {},
+    onKeepLook: () -> Unit = {},
+    onWatchEdgeAd: () -> Unit = {},
+    onPreloadEdgeAd: () -> Unit = {},
     onCloseFilters: () -> Unit = {},
 ) {
     val s = StampTheme.spacing
@@ -256,13 +267,14 @@ fun StampDetailContent(
 
         StampHero(
             stamp,
-            // A Pro filter tried on shows its preview; the saved picture stays as it is.
+            // A Pro look tried on shows its preview; the saved picture stays as it is.
             file = File(filter.preview?.path ?: stamp.imagePath),
+            perforation = filter.shownEdge,
             modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = s.screen, vertical = s.m),
         )
 
         if (filtering) {
-            FilterTray(filter, isPro, onPickFilter, onKeepFilter, onCloseFilters)
+            LookTray(filter, onPickFilter, onPickEdge, onKeepLook, onWatchEdgeAd, onPreloadEdgeAd, onCloseFilters)
             return@Column
         }
 
@@ -317,7 +329,7 @@ fun StampDetailContent(
 
 /** The stamp as large as fits, its postmark over the bottom-end corner (as on Stamped! and in exports). */
 @Composable
-private fun StampHero(stamp: Stamp, file: File, modifier: Modifier = Modifier) {
+private fun StampHero(stamp: Stamp, file: File, perforation: PerforationStyle, modifier: Modifier = Modifier) {
     val lines = rememberPostmarkLines(stamp.place, stamp.day)
     BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
         val aspect = stamp.shape.aspectRatio
@@ -331,7 +343,7 @@ private fun StampHero(stamp: Stamp, file: File, modifier: Modifier = Modifier) {
             RenderedStamp(
                 file = file,
                 shape = stamp.shape,
-                perforation = stamp.perforation,
+                perforation = perforation,
                 contentDescription = stamp.description(),
                 modifier = Modifier.fillMaxSize(),
             )
@@ -347,50 +359,66 @@ private fun StampHero(stamp: Stamp, file: File, modifier: Modifier = Modifier) {
 }
 
 /**
- * Kraft tray under the stamp: the filters as mini stamps (a pick shows on the big stamp straight
- * away and is saved; a Pro filter for a free user is only tried on) and "Done".
+ * Kraft tray under the stamp: "Filters · Edges" mini stamps (a pick shows on the big stamp straight
+ * away and is saved; a Pro look for a free user is only tried on, with Pro and, for an edge, a
+ * day's trial for a short ad) and "Done".
  */
 @Composable
-private fun FilterTray(
+private fun LookTray(
     filter: FilterUi,
-    isPro: Boolean,
-    onPick: (StampFilter) -> Unit,
+    onPickFilter: (StampFilter) -> Unit,
+    onPickEdge: (PerforationStyle) -> Unit,
     onKeep: () -> Unit,
+    onWatchAd: () -> Unit,
+    onPreloadAd: () -> Unit,
     onDone: () -> Unit,
 ) {
     val s = StampTheme.spacing
     val c = StampTheme.colors
+    LaunchedEffect(filter.edgeAdOffered) { if (filter.edgeAdOffered) onPreloadAd() }
     GrainedSurface(
         c.kraft,
         Modifier.fillMaxWidth().padding(horizontal = s.screenFullBleed).tintedShadow(Elevation.Card, StampTheme.shapes.card, c.shadowWarm),
         StampTheme.shapes.card,
     ) {
-        Column(Modifier.padding(vertical = s.m), verticalArrangement = Arrangement.spacedBy(s.xs)) {
-            Text(
-                stringResource(R.string.filter_tray_title),
-                style = StampTheme.type.cardTitle,
-                color = c.textHigh,
-                modifier = Modifier.padding(horizontal = s.m),
-            )
-            FilterPicker(
+        Column(Modifier.padding(vertical = s.s), verticalArrangement = Arrangement.spacedBy(s.xxs)) {
+            LookPicker(
                 photo = filter.thumbnail,
                 selected = filter.selected,
-                isPro = isPro,
-                onPick = onPick,
+                access = filter.access,
+                onPickFilter = onPickFilter,
+                onPickEdge = onPickEdge,
                 contentPadding = PaddingValues(horizontal = s.m),
             )
             if (filter.tryingPro) {
-                HandNote(
-                    stringResource(R.string.filter_try_note),
-                    style = StampTheme.type.noteSmall,
-                    strength = InkStrength.Soft,
-                    modifier = Modifier.padding(horizontal = s.m),
-                )
+                // Side by side; at large font sizes the ad chip moves under instead of being squeezed.
+                FlowRow(
+                    Modifier.padding(horizontal = s.m),
+                    horizontalArrangement = Arrangement.spacedBy(s.xs),
+                    itemVerticalAlignment = Alignment.CenterVertically,
+                ) {
+                    HandNote(
+                        stringResource(if (filter.edgeAdOffered) R.string.edge_try_note else R.string.filter_try_note),
+                        style = StampTheme.type.noteSmall,
+                        strength = InkStrength.Soft,
+                    )
+                    if (filter.edgeAdOffered) {
+                        AdChip(stringResource(R.string.edge_ad), loading = filter.ad == AdOffer.Loading, onClick = onWatchAd)
+                    }
+                }
+                if (filter.edgeAdOffered && filter.ad == AdOffer.Unavailable) {
+                    Text(
+                        stringResource(R.string.ad_unavailable),
+                        style = StampTheme.type.label,
+                        color = c.textMedium,
+                        modifier = Modifier.padding(horizontal = s.m),
+                    )
+                }
             }
             Row(Modifier.padding(horizontal = s.m).padding(top = s.xs), horizontalArrangement = Arrangement.spacedBy(s.s)) {
                 if (filter.tryingPro) {
                     PillButton(
-                        stringResource(R.string.filter_keep_with_pro, stringResource(filter.selected.label)),
+                        keepLookLabel(filter),
                         onClick = onKeep,
                         style = PillStyle.Red,
                         modifier = Modifier.weight(1.6f),

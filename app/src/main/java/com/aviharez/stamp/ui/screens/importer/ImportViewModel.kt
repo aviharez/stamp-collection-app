@@ -8,6 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.aviharez.stamp.data.billing.EdgeAccess
 import com.aviharez.stamp.data.image.ImportedPhoto
 import com.aviharez.stamp.data.image.NormRect
 import com.aviharez.stamp.data.image.PhotoImporter
@@ -31,6 +32,7 @@ import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -71,6 +73,7 @@ class ImportViewModel @Inject constructor(
     private val stamps: StampRepository,
     private val places: PlaceProvider,
     private val clock: Clock,
+    private val edges: EdgeAccess,
     @param:AppScope private val appScope: CoroutineScope,
 ) : ViewModel() {
 
@@ -152,6 +155,7 @@ class ImportViewModel @Inject constructor(
                 photo = preview.asImageBitmap(),
                 shape = savedShape() ?: initialShape(imported.width, imported.height),
                 quarterTurns = savedState[KeyTurns] ?: 0,
+                perforation = edges.edgeForNewStamps.first(),
                 day = day,
             )
         }
@@ -216,7 +220,7 @@ class ImportViewModel @Inject constructor(
                     )
                 }
                 if (reframeId != null) {
-                    stamps.replaceImage(reframeId, rendered, reframeFilter)
+                    stamps.replaceImage(reframeId, rendered, reframeFilter, snapshot.perforation)
                     _state.update { it.copy(saving = false, saved = reframeId) }
                     return@launch
                 }

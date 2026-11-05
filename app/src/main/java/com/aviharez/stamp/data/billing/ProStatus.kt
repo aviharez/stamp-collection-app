@@ -17,6 +17,9 @@ object ProRules {
     /** Free users can keep this many albums (more with Pro). CLAUDE.md §4. */
     const val FreeAlbumLimit = 3
 
+    /** A Pro edge earned with a short ad stays usable this long. CLAUDE.md §4. */
+    const val EdgeTrialHours = 24L
+
     /** Free users get [FreeAlbumLimit] albums, plus one per watched "+1 album" ad. */
     fun canCreateAlbum(isPro: Boolean, albumCount: Int, bonusAlbums: Int): Boolean =
         isPro || albumCount < FreeAlbumLimit + bonusAlbums
