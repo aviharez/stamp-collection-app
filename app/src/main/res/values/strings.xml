@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Postmory</string>
+    <string name="app_name" translatable="false">Postmory</string>
 
     <!-- Nav bar -->
     <string name="nav_album">Album</string>
@@ -10,13 +10,13 @@
     <!-- Common -->
     <string name="cd_back">Back</string>
     <string name="cd_close">Close</string>
-    <!-- Date patterns (java.time). Kept here so they can be localised. -->
-    <string name="pattern_overline_date" translatable="false">EEE · dd MMM</string>
-    <string name="pattern_short_date" translatable="false">d MMM</string>
-    <string name="pattern_weekday" translatable="false">EEEE</string>
-    <string name="pattern_postmark_day" translatable="false">dd MMM</string>
-    <string name="pattern_postmark_year" translatable="false">yyyy</string>
-    <string name="pattern_postmark_date" translatable="false">dd MMM yy</string>
+    <!-- Date patterns (java.time), localised per language (e.g. ja: "M月d日"). -->
+    <string name="pattern_overline_date">EEE · dd MMM</string>
+    <string name="pattern_short_date">d MMM</string>
+    <string name="pattern_weekday">EEEE</string>
+    <string name="pattern_postmark_day">dd MMM</string>
+    <string name="pattern_postmark_year">yyyy</string>
+    <string name="pattern_postmark_date">dd MMM yy</string>
     <!-- Shown on a tab whose screen isn't built yet (Map) -->
 
     <!-- Postmark: city, date -->
@@ -177,10 +177,10 @@
     <string name="album_default_name">Everyday</string>
 
     <!-- Calendar -->
-    <string name="pattern_month" translatable="false">LLLL</string>
-    <string name="pattern_day_title" translatable="false">EEE d MMM</string>
-    <string name="pattern_day_cd" translatable="false">EEEE d MMMM</string>
-    <string name="pattern_detail_date" translatable="false">EEE d MMM yyyy</string>
+    <string name="pattern_month">LLLL</string>
+    <string name="pattern_day_title">EEE d MMM</string>
+    <string name="pattern_day_cd">EEEE d MMMM</string>
+    <string name="pattern_detail_date">EEE d MMM yyyy</string>
     <!-- Overline above the month: %1$s = year -->
     <string name="calendar_overline">Calendar · %1$s</string>
     <string name="calendar_prev">Previous month</string>
@@ -300,7 +300,7 @@
     <!-- Profile: passport on top, settings as perforated stamps below -->
     <string name="profile_passport">Stamp passport</string>
     <string name="profile_passport_since">Stamp passport · since %1$s</string>
-    <string name="pattern_passport_since" translatable="false">d MMM yyyy</string>
+    <string name="pattern_passport_since">d MMM yyyy</string>
     <string name="profile_stamps">Stamps</string>
     <string name="profile_albums_places">Albums · places</string>
     <string name="profile_albums_places_value">%1$d · %2$d</string>

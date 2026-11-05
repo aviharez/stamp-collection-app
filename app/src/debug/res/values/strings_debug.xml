@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Debug-only sample copy for the theme specimen / component gallery. Not shipped in release. -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation,Typos">
     <string name="debug_specimen_title">Your stamp album</string>
     <string name="debug_specimen_card_title">Today\'s stamp is waiting</string>
     <string name="debug_specimen_album">Japan trip</string>

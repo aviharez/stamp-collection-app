@@ -1,0 +1,626 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- German ("du"). "Briefmarke" for stamp, "Poststempel/Stempel" for postmark, "Serie" for streak. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Nav bar -->
+    <string name="nav_album">Album</string>
+    <string name="nav_calendar">Kalender</string>
+    <string name="nav_map">Karte</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Common -->
+    <string name="cd_back">Zurück</string>
+    <string name="cd_close">Schließen</string>
+    <string name="pattern_overline_date">EEE · d. MMM</string>
+    <string name="pattern_short_date">d. MMM</string>
+    <string name="pattern_weekday">EEEE</string>
+    <string name="pattern_postmark_day">dd MMM</string>
+    <string name="pattern_postmark_year">yyyy</string>
+    <string name="pattern_postmark_date">dd MMM yy</string>
+
+    <string name="postmark_description">Poststempel: %1$s, %2$s</string>
+
+    <!-- Home -->
+    <string name="home_title">Dein Markenalbum</string>
+    <string name="home_all_albums">Alle Alben</string>
+    <string name="home_empty_page">hier kommen deine Marken hin</string>
+    <string name="home_today_title">Die Marke von heute wartet</string>
+    <string name="home_today_body">Halte einen Moment von diesem %1$s fest.</string>
+    <string name="home_stamp_it">Stempeln</string>
+    <string name="home_page_label">%1$s · S.%2$d</string>
+    <string name="home_page_cd">Neueste Seite von %1$s. Öffnet das Album.</string>
+    <string name="home_today_done_title">Die Marke von heute ist da</string>
+    <string name="home_today_done_body">Eingeklebt in %1$s.</string>
+    <string name="home_stamp_another">Noch eine Marke</string>
+
+    <!-- Collections -->
+    <string name="collections_overline">Meine Alben</string>
+    <string name="collections_title">Sammlungen</string>
+    <string name="collections_filter_all">Alle</string>
+    <string name="collections_stats">%1$s · %2$s</string>
+    <plurals name="collections_album_count">
+        <item quantity="one">%d Album</item>
+        <item quantity="other">%d Alben</item>
+    </plurals>
+    <string name="collections_cover_note">%1$s · %2$s</string>
+    <string name="collections_updated_today">heute ergänzt</string>
+    <string name="collections_updated_yesterday">gestern ergänzt</string>
+    <string name="collections_updated_on">ergänzt am %1$s</string>
+    <string name="collections_empty_cover">noch leer</string>
+    <string name="collections_empty_filter">hier ist noch nichts</string>
+
+    <!-- Album page -->
+    <string name="album_next_stamp">nächste Marke…</string>
+    <string name="album_share_page">Seite teilen</string>
+    <string name="album_page_of">Seite %1$d von %2$d</string>
+    <string name="album_stats">%1$s · %2$s</string>
+    <plurals name="album_day_count">
+        <item quantity="one">%d Tag</item>
+        <item quantity="other">%d Tage</item>
+    </plurals>
+    <string name="album_more_cd">Albumoptionen</string>
+    <string name="album_next_stamp_cd">Nächste Marke für dieses Album machen</string>
+    <string name="album_edit_title">Dieses Album</string>
+    <string name="album_edit_save">Speichern</string>
+    <string name="stamp_cd">Briefmarke, %1$s</string>
+    <string name="stamp_page_note">%1$s · %2$s</string>
+
+    <!-- Camera -->
+    <string name="camera_header_place">%1$s · %2$s</string>
+    <string name="camera_shutter">Foto für die Marke aufnehmen</string>
+    <string name="camera_flip">Kamera wechseln</string>
+    <string name="camera_mirror_on">Selfie spiegeln an. Speichert das Selfie wie in der Vorschau</string>
+    <string name="camera_mirror_off">Selfie spiegeln aus. Speichert das Selfie so, wie andere dich sehen</string>
+    <string name="camera_flash_off">Blitz aus</string>
+    <string name="camera_flash_auto">Blitz automatisch</string>
+    <string name="camera_flash_on">Blitz an</string>
+    <string name="camera_exposure">Belichtung</string>
+    <string name="camera_zoom_cd">%1$s-facher Zoom</string>
+    <string name="camera_high_res">50MP</string>
+    <string name="camera_high_res_cd">50-Megapixel-Modus</string>
+    <string name="camera_focus_cd">Kameravorschau. Tippen zum Fokussieren, mit zwei Fingern zoomen.</string>
+    <string name="camera_unavailable">Die Kamera ist gerade nicht verfügbar.</string>
+    <string name="camera_stamping">deine Marke entsteht…</string>
+    <string name="camera_capture_failed">Die hat nicht geklebt. Versuch es noch mal.</string>
+    <string name="storage_full">Dein Handy ist voll. Mach etwas Platz frei und versuch es noch mal.</string>
+    <string name="shape_portrait">Hochformat</string>
+    <string name="shape_landscape">Querformat</string>
+    <string name="shape_square">Quadrat</string>
+    <string name="shape_circle">Rund</string>
+
+    <!-- Camera permission pre-prompt -->
+    <string name="camera_permission_title">Lass uns eine Marke machen</string>
+    <string name="camera_permission_body">Die Kamera macht aus einem Moment eine Briefmarke. Deine Fotos bleiben auf deinem Handy.</string>
+    <string name="camera_permission_denied_body">Der Kamerazugriff ist aus. Du kannst ihn jederzeit in den Einstellungen einschalten.</string>
+    <string name="camera_permission_allow">Kamera erlauben</string>
+    <string name="camera_permission_settings">Einstellungen öffnen</string>
+    <string name="camera_permission_not_now">Nicht jetzt</string>
+
+    <!-- Stamped! -->
+    <string name="camera_gallery">Marke aus einem Foto deiner Galerie machen</string>
+    <string name="camera_permission_gallery">Foto verwenden</string>
+    <string name="import_make">Zur Marke machen</string>
+    <string name="import_rotate">Foto drehen</string>
+    <string name="import_pick_another">Anderes Foto wählen</string>
+    <string name="import_hint">zum Anpassen ziehen und zoomen</string>
+    <string name="import_loading">dein Foto wird geöffnet…</string>
+    <string name="import_saving">wird eingeklebt…</string>
+    <string name="import_failed">Das Foto ließ sich nicht öffnen.</string>
+    <string name="import_photo_cd">Dein Foto hinter dem Markenrahmen. Mit zwei Fingern zoomen, ziehen zum Verschieben.</string>
+    <string name="stamped_pick_another">Anderes</string>
+    <string name="stamped_title">Gestempelt!</string>
+    <string name="stamped_retake">Neu</string>
+    <string name="stamped_share">Teilen</string>
+    <string name="stamped_stick">Ins Album kleben</string>
+    <string name="stamped_subtitle_placeholder">Deine neueste Marke</string>
+    <string name="stamped_subtitle">Nr. %1$d in deinem Album %2$s</string>
+    <string name="stamped_change_album">Album wechseln</string>
+    <string name="stamped_caption_hint">schreib etwas auf die Rückseite…</string>
+    <string name="stamped_caption_label">Notiz auf der Rückseite</string>
+    <string name="stamped_stamp_cd">Deine neue Marke</string>
+    <string name="location_ask_title">Deine Stadt auf den Stempel?</string>
+    <string name="location_ask_body">Nur ein ungefährer Standort, für Stadt und Land. Ohne ihn zeigen Stempel das Datum.</string>
+    <string name="location_ask_allow">Erlauben</string>
+    <string name="location_ask_not_now">Nicht jetzt</string>
+
+    <!-- Albums -->
+    <plurals name="album_stamp_count">
+        <item quantity="one">%d Marke</item>
+        <item quantity="other">%d Marken</item>
+    </plurals>
+    <string name="album_picker_title">Einkleben in…</string>
+    <string name="album_new">Neues Album</string>
+    <string name="album_new_title">Ein neues Album</string>
+    <string name="album_new_name_hint">Gib ihm einen Namen, z. B. Japanreise</string>
+    <string name="album_new_category">Art</string>
+    <string name="album_new_cover">Einband</string>
+    <string name="album_new_create">Album anlegen</string>
+    <string name="album_category_trips">Reisen</string>
+    <string name="album_category_everyday">Alltag</string>
+    <string name="album_category_pets">Haustiere</string>
+    <string name="album_category_other">Sonstiges</string>
+    <string name="album_cover_ink">Tintenblau</string>
+    <string name="album_cover_kraft">Kraft</string>
+    <string name="album_cover_sage">Salbei</string>
+    <string name="album_cover_red">Luftpostrot</string>
+    <string name="album_cover_cobalt">Kobalt</string>
+    <string name="album_selected_cd">Aktuelles Album</string>
+
+    <!-- Streak -->
+    <plurals name="streak_days" tools:ignore="Typos">
+        <item quantity="one">%d Tag in Folge</item>
+        <item quantity="other">%d Tage in Folge</item>
+    </plurals>
+    <plurals name="streak_days_short">
+        <item quantity="one">%d Tag</item>
+        <item quantity="other">%d Tage</item>
+    </plurals>
+    <string name="streak_personal_best">%1$s · dein Rekord</string>
+    <string name="streak_day_one">Tag 1 deiner Serie</string>
+
+    <!-- Data -->
+    <string name="album_default_name">Alltag</string>
+
+    <!-- Calendar -->
+    <string name="pattern_month">LLLL</string>
+    <string name="pattern_day_title">EEE, d. MMM</string>
+    <string name="pattern_day_cd">EEEE, d. MMMM</string>
+    <string name="pattern_detail_date">EEE, d. MMM yyyy</string>
+    <string name="calendar_overline">Kalender · %1$s</string>
+    <string name="calendar_prev">Voriger Monat</string>
+    <string name="calendar_next">Nächster Monat</string>
+    <plurals name="calendar_streak_unit" tools:ignore="Typos">
+        <item quantity="one">Tag in Folge</item>
+        <item quantity="other">Tage in Folge</item>
+    </plurals>
+    <string name="calendar_streak_start">Mach heute eine Marke, um eine Serie zu starten</string>
+    <string name="calendar_streak_keep">Rekord %1$d · stempel heute, damit sie weiterläuft</string>
+    <string name="calendar_streak_tomorrow">komm morgen für Tag 2 wieder</string>
+    <string name="calendar_streak_best_now">dein bester bisher!</string>
+    <string name="calendar_streak_best">Rekord %1$d</string>
+    <string name="calendar_day_title">%1$s · %2$s</string>
+    <string name="calendar_empty_today">Heute noch keine Marke</string>
+    <string name="calendar_empty_day">keine Marken an diesem Tag</string>
+    <string name="calendar_pick_day">tippe auf einen gestempelten Tag</string>
+    <string name="calendar_more">+%1$d</string>
+    <string name="calendar_count">×%1$d</string>
+    <string name="calendar_day_cd">%1$s, %2$s</string>
+    <string name="calendar_no_stamps">keine Marken</string>
+    <string name="calendar_today_cd">Heute, %1$s</string>
+
+    <!-- Export / share sheet -->
+    <string name="export_title">Teile deine Marke</string>
+    <string name="export_background">Hintergrund</string>
+    <string name="export_bg_transparent">Transparent</string>
+    <string name="export_bg_paper">Papier</string>
+    <string name="export_postmark">Stempel</string>
+    <string name="export_on">An</string>
+    <string name="export_off">Aus</string>
+    <string name="export_watermark_note">kleiner „%1$s“-Schriftzug in der Ecke</string>
+    <string name="export_pro_note">volle Auflösung · ohne Wasserzeichen</string>
+    <string name="export_save">Speichern</string>
+    <string name="export_saving">Wird gespeichert…</string>
+    <string name="export_saved">Gespeichert</string>
+    <string name="export_share">Teilen</string>
+    <string name="export_failed">Das Bild ließ sich nicht erstellen. Versuch es noch mal.</string>
+    <string name="export_send_as">Senden als</string>
+    <string name="export_as_stamp">Marke</string>
+    <string name="postcard_envelope">Umschlag</string>
+    <string name="postcard_postcard">Postkarte</string>
+    <string name="postcard_card">Karte</string>
+    <string name="postcard_pro_tag">PRO</string>
+    <string name="postcard_pro_cd">%1$s, Pro</string>
+    <string name="postcard_send_with_pro">%1$s mit Pro senden</string>
+    <string name="postcard_pro_note">dieser Look gehört zu Pro · der Umschlag ist kostenlos</string>
+    <string name="postcard_to_hint">an… (Name)</string>
+    <string name="postcard_to_label">Für wen</string>
+    <string name="postcard_message_hint">ein paar Worte für diese Person…</string>
+    <string name="postcard_message_label">Text der Postkarte</string>
+    <string name="postcard_to">An %1$s</string>
+    <string name="postcard_par_avion" tools:ignore="Typos">Par avion · Luftpost</string>
+    <string name="postcard_post_card">Postkarte</string>
+    <string name="postcard_greetings_from">Grüße aus</string>
+    <string name="postcard_greetings">Eine Marke für dich</string>
+    <string name="postcard_made_with">gemacht mit %1$s</string>
+    <string name="export_preview_cd">Vorschau des Bildes, das du teilst</string>
+
+    <!-- Paywall (Pro) -->
+    <string name="paywall_close">Schließen</string>
+    <string name="paywall_restore">Wiederherstellen</string>
+    <string name="paywall_overline">Pro · die ganze Sammlung</string>
+    <plurals name="paywall_overline_albums">
+        <item quantity="one">Gratis-Album: %1$d von %1$d belegt</item>
+        <item quantity="other">Gratis-Alben: %1$d von %1$d belegt</item>
+    </plurals>
+    <string name="paywall_overline_watermark">Pro · ohne Wasserzeichen</string>
+    <string name="paywall_overline_widget">Pro · Startbildschirm-Widgets</string>
+    <string name="paywall_overline_filters">Pro · alle Filter</string>
+    <string name="paywall_overline_edges">Pro · alle Zähnungen</string>
+    <string name="paywall_overline_postcards">Pro · Postkarten und Karten</string>
+    <string name="paywall_overline_scrapbook">Pro · diese Scrapbook-Seite behalten</string>
+    <string name="paywall_title">Vervollständige deine Sammlung</string>
+    <string name="paywall_perk_albums">Unbegrenzte Alben</string>
+    <string name="paywall_perk_no_mark">Exporte ohne Wasserzeichen</string>
+    <string name="paywall_perk_edges">Alle Zähnungen</string>
+    <string name="paywall_perk_filters">Alle 9 Fotofilter</string>
+    <string name="paywall_perk_postcards">Postkarten und Karten</string>
+    <string name="paywall_perk_scrapbook">Scrapbook-Seiten und Sticker</string>
+    <string name="paywall_perk_widget">Startbildschirm-Widget</string>
+    <string name="paywall_soon">bald</string>
+    <string name="paywall_soon_note">die gestrichelten kommen noch · Pro enthält sie</string>
+    <string name="paywall_perk_soon_cd">%1$s, kommt bald</string>
+    <string name="paywall_plan_lifetime">Dauerhaft</string>
+    <string name="paywall_plan_yearly">Jährlich</string>
+    <string name="paywall_per_lifetime">einmalig</string>
+    <string name="paywall_per_yearly">pro Jahr</string>
+    <string name="paywall_best_value">Bester Preis</string>
+    <string name="paywall_price_missing">–</string>
+    <string name="paywall_plan_cd">%1$s, %2$s %3$s</string>
+    <string name="paywall_plan_loading_cd">%1$s, Preis wird geladen</string>
+    <string name="paywall_selected_cd">Ausgewählt</string>
+    <string name="paywall_buy_lifetime">Pro für immer</string>
+    <string name="paywall_buy_yearly">Pro jährlich starten</string>
+    <string name="paywall_yearly_terms">Verlängert sich jährlich · jederzeit in Google Play kündbar</string>
+    <string name="paywall_free_note">deine eigenen Fotos bleiben immer kostenlos</string>
+    <string name="paywall_loading">Preise werden bei Google Play abgefragt…</string>
+    <string name="paywall_unavailable">Google Play ist gerade nicht erreichbar. Prüf deine Verbindung und versuch es noch mal.</string>
+    <string name="paywall_retry">Noch mal versuchen</string>
+    <string name="paywall_pending">Zahlung ausstehend. Pro wird aktiviert, sobald Google Play sie bestätigt.</string>
+    <string name="paywall_failed">Der Kauf wurde nicht abgeschlossen. Dir wurde nichts berechnet.</string>
+    <string name="paywall_nothing_to_restore">Kein Pro-Kauf in diesem Google-Konto.</string>
+    <string name="paywall_restore_failed">Google Play war zum Wiederherstellen nicht erreichbar. Versuch es später.</string>
+
+    <!-- Pro entry points -->
+    <string name="export_remove_with_pro">Mit Pro entfernen</string>
+    <string name="profile_get_pro">Pro holen</string>
+
+    <!-- Profile -->
+    <string name="profile_passport">Markenpass</string>
+    <string name="profile_passport_since">Markenpass · seit %1$s</string>
+    <string name="pattern_passport_since">d. MMM yyyy</string>
+    <string name="profile_stamps">Marken</string>
+    <string name="profile_albums_places">Alben · Orte</string>
+    <string name="profile_albums_places_value">%1$d · %2$d</string>
+    <string name="profile_best_streak">Beste Serie</string>
+    <plurals name="profile_days">
+        <item quantity="one">%d Tag</item>
+        <item quantity="other">%d Tage</item>
+    </plurals>
+    <string name="profile_newest_stamp">Deine neueste Marke</string>
+    <string name="profile_first_stamp_slot">hier kommt deine erste Marke hin</string>
+    <string name="profile_pro_postmark">Pro</string>
+    <string name="profile_pro_postmark_date">danke</string>
+    <string name="profile_pro_title">Pro</string>
+    <string name="profile_pro_perks">unbegrenzte Alben · alle Looks · kein Wasserzeichen</string>
+    <string name="profile_restore_prompt">Schon gekauft?</string>
+    <string name="profile_restoring">Google Play wird gefragt…</string>
+    <string name="profile_section_reminder">Serien-Erinnerung</string>
+    <string name="profile_section_backup">Sicherung</string>
+    <string name="profile_section_camera">Kamera</string>
+    <string name="profile_mirror_selfies">Selfies spiegeln</string>
+    <string name="profile_mirror_note">speichert Selfies wie in der Vorschau</string>
+    <string name="profile_postmark_place">Ort auf Stempeln</string>
+    <string name="profile_place_on_note">nur die Stadt, nie der genaue Ort</string>
+    <string name="profile_place_off_note">Stempel zeigen nur das Datum</string>
+    <string name="profile_place_blocked_note">der Standort ist für diese App aus, daher zeigen Stempel nur das Datum</string>
+    <string name="profile_open_settings">Einstellungen öffnen</string>
+    <string name="profile_rate">App bewerten</string>
+    <string name="profile_feedback">Feedback senden</string>
+    <string name="profile_feedback_subject">%1$s-Feedback · Version %2$s</string>
+    <string name="profile_privacy">Datenschutzerklärung</string>
+    <string name="profile_credits">Danksagungen</string>
+    <string name="credits_title">Danksagungen</string>
+    <string name="credits_note">damit gemacht, danke</string>
+    <string name="credits_section_fonts">Schriften</string>
+    <string name="credits_section_map">Karte</string>
+    <string name="credits_section_code">Code</string>
+    <string name="credits_licence_ofl">SIL OFL 1.1</string>
+    <string name="credits_licence_apache">Apache 2.0</string>
+    <string name="credits_licence_public_domain">Gemeinfrei</string>
+    <string name="credits_licence_google">Google-Bedingungen</string>
+    <string name="credits_footer">tippe auf einen Eintrag, um die Lizenz zu lesen</string>
+    <string name="profile_version">Version %1$s</string>
+
+    <!-- Rewarded ads -->
+    <string name="ad_loading">Werbung wird geladen…</string>
+    <string name="ad_unavailable">Gerade keine Werbung verfügbar. Versuch es später.</string>
+    <string name="export_remove_once">Einmal · kurze Werbung</string>
+    <string name="export_unlocked_note">kein Wasserzeichen auf dieser Marke · danke fürs Anschauen</string>
+    <string name="paywall_ad_album_note">brauchst du nur ein Album mehr?</string>
+    <string name="paywall_ad_album">+1 Album · kurze Werbung</string>
+    <string name="profile_ad_privacy">Datenschutz bei Werbung</string>
+
+    <!-- Streak reminder -->
+    <string name="reminder_turn_on">Erinnere mich ans Stempeln</string>
+    <string name="reminder_off_note">ein Hinweis am Abend, nur wenn heute noch keine Marke da ist</string>
+    <string name="reminder_on_note">Erinnerung um %1$s · bleibt still, wenn heute schon gestempelt ist</string>
+    <string name="reminder_time_label">Erinnern um %1$s</string>
+    <string name="reminder_blocked_note">Benachrichtigungen sind für diese App aus, daher kann die Erinnerung nicht erscheinen</string>
+    <string name="reminder_open_settings">Einstellungen öffnen</string>
+    <string name="reminder_channel_name">Serien-Erinnerung</string>
+    <string name="reminder_channel_desc">Ein Hinweis am Abend, nur an Tagen, an denen du noch keine Marke gemacht hast.</string>
+    <plurals name="reminder_title_streak">
+        <item quantity="one">Bleib dran: Tag 2 wartet</item>
+        <item quantity="other">Halte deine %1$d-Tage-Serie am Laufen</item>
+    </plurals>
+    <string name="reminder_body_streak">Ein Foto vor Mitternacht hält sie am Leben.</string>
+    <string name="reminder_title_start">Die Marke von heute wartet</string>
+    <string name="reminder_body_start">Ein Foto macht aus heute eine Marke.</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_create">In einer Datei sichern</string>
+    <string name="backup_restore">Aus einer Datei wiederherstellen</string>
+    <string name="backup_never">noch keine Sicherung · deine Marken sind nur auf diesem Handy</string>
+    <string name="backup_last">letzte Sicherung · %1$s</string>
+    <string name="backup_writing">wird gesichert…</string>
+    <string name="backup_writing_progress">wird gesichert… %1$d von %2$d</string>
+    <string name="backup_reading">Sicherung wird gelesen…</string>
+    <string name="backup_restoring_progress">wird wiederhergestellt… %1$d von %2$d</string>
+    <plurals name="backup_done">
+        <item quantity="one">%1$d Marke gesichert · bewahre die Datei gut auf</item>
+        <item quantity="other">%1$d Marken gesichert · bewahre die Datei gut auf</item>
+    </plurals>
+    <plurals name="backup_restored_stamps">
+        <item quantity="one">%1$d Marke zurück</item>
+        <item quantity="other">%1$d Marken zurück</item>
+    </plurals>
+    <plurals name="backup_restored_albums">
+        <item quantity="one">%1$d neues Album</item>
+        <item quantity="other">%1$d neue Alben</item>
+    </plurals>
+    <plurals name="backup_already_here">
+        <item quantity="one">%1$d war schon da</item>
+        <item quantity="other">%1$d waren schon da</item>
+    </plurals>
+    <string name="backup_restored_nothing">nichts Neues in dieser Sicherung</string>
+    <string name="backup_not_a_backup">Diese Datei ist keine Markensicherung.</string>
+    <string name="backup_newer">Diese Sicherung stammt aus einer neueren App-Version. Aktualisiere die App und versuch es noch mal.</string>
+    <string name="backup_failed">Die Sicherung ließ sich nicht schreiben. Prüf den freien Speicher und versuch es noch mal.</string>
+    <string name="backup_restore_failed">Die Wiederherstellung brach ab. Versuch es noch mal: Bereits zurückgeholte Marken bleiben und werden nicht doppelt.</string>
+
+    <!-- First run -->
+    <string name="welcome_skip">Überspringen</string>
+    <string name="welcome_title">Mach aus heute eine Marke</string>
+    <string name="welcome_body">Mach ein Foto, und es wird zur Briefmarke, gestempelt mit deiner Stadt und dem Datum, eingeklebt in ein Album. Eine am Tag hält deine Serie am Laufen.</string>
+    <string name="welcome_step_1">unten tippen</string>
+    <string name="welcome_step_2">Foto machen</string>
+    <string name="welcome_step_3">einkleben</string>
+    <string name="welcome_from_photos">Aus meinen Fotos</string>
+    <string name="welcome_make_stamp">Meine erste Marke machen</string>
+    <string name="welcome_postmark_city">HALLO</string>
+    <string name="welcome_art_description">Drei Beispielmarken, eine heute gestempelt</string>
+
+    <!-- Album page export -->
+    <string name="page_export_title">Seite teilen</string>
+    <string name="page_export_watermark_note">kleiner „%1$s“-Schriftzug am Seitenende</string>
+    <string name="page_export_unlocked_note">kein Wasserzeichen in diesem Album · danke fürs Anschauen</string>
+
+    <!-- Stamp detail -->
+    <string name="album_open_stamp">Marke öffnen</string>
+    <string name="detail_number">Nr. %1$d in %2$s</string>
+    <string name="detail_more_cd">Weitere Optionen</string>
+    <string name="detail_title_hint">Gib ihr einen Titel</string>
+    <string name="detail_title_label">Titel der Marke</string>
+    <string name="detail_when_where">%1$s · %2$s</string>
+    <string name="detail_reframe">Neu zuschneiden</string>
+    <string name="detail_move">In ein anderes Album</string>
+    <string name="detail_delete">Marke löschen</string>
+    <string name="detail_delete_title">Diese Marke löschen?</string>
+    <string name="detail_delete_note">Marke und Foto verschwinden für immer aus der App (ein Foto aus deiner Galerie bleibt dort)</string>
+    <string name="detail_keep">Behalten</string>
+    <string name="detail_delete_confirm">Löschen</string>
+
+    <!-- Home-screen widgets -->
+    <string name="widget_name_stamp">Marke des Tages</string>
+    <string name="widget_desc_stamp">Die Marke von heute, lose auf deinem Startbildschirm</string>
+    <string name="widget_name_envelope">Luftpostumschlag</string>
+    <string name="widget_desc_envelope">Die Marke von heute und deine Serie auf einem Luftpostumschlag</string>
+    <string name="widget_name_strip">Albumstreifen</string>
+    <string name="widget_desc_strip">Die Marken deiner letzten Tage auf einem Streifen Albumseite</string>
+    <string name="widget_today_slot">Marke von heute…</string>
+    <string name="widget_stamp_today">Heute stempeln</string>
+    <string name="widget_waiting">Die Marke von heute wartet</string>
+    <string name="widget_stamped">Gestempelt!</string>
+    <string name="widget_stamp_it">Stempeln</string>
+    <string name="widget_today">heute</string>
+    <string name="widget_start">heute starten</string>
+    <string name="widget_pro">Pro</string>
+    <plurals name="widget_days">
+        <item quantity="one">Tag</item>
+        <item quantity="other">Tage</item>
+    </plurals>
+    <plurals name="widget_days_in_row" tools:ignore="Typos">
+        <item quantity="one">Tag in Folge</item>
+        <item quantity="other">Tage in Folge</item>
+    </plurals>
+    <string name="widget_cd_waiting">Die Marke von heute wartet. Öffnet die Kamera</string>
+    <string name="widget_cd_stamped">Marke von heute, %1$s. Öffnet sie in ihrem Album</string>
+    <string name="widget_cd_locked">Widgets gehören zu Pro. Öffnet Pro</string>
+
+    <!-- Filters -->
+    <string name="filter_original">Original</string>
+    <string name="filter_postcard">Postkarte</string>
+    <string name="filter_engraved">Gravur</string>
+    <string name="filter_sepia">Sepia</string>
+    <string name="filter_vivid">Kräftig</string>
+    <string name="filter_faded">Verblasst</string>
+    <string name="filter_red_ink">Rote Tinte</string>
+    <string name="filter_blue_ink">Blaue Tinte</string>
+    <string name="filter_green_ink">Grüne Tinte</string>
+    <string name="filter_pro_tag">PRO</string>
+    <string name="filter_pro_cd">%1$s, Pro-Filter</string>
+    <string name="filter_keep_with_pro">%1$s mit Pro behalten</string>
+    <string name="filter_button">Look</string>
+    <string name="filter_done">Fertig</string>
+    <string name="filter_try_note">Nur zum Ausprobieren: deine Marke behält ihren gespeicherten Look</string>
+    <string name="look_tab_filters">Filter</string>
+    <string name="look_tab_edges">Zähnung</string>
+    <string name="look_keep_with_pro">Diesen Look mit Pro behalten</string>
+    <string name="edge_classic">Klassisch</string>
+    <string name="edge_fine">Fein</string>
+    <string name="edge_bold">Grob</string>
+    <string name="edge_scallop">Bogen</string>
+    <string name="edge_pro_cd">Zähnung %1$s, Pro</string>
+    <string name="edge_trial_tag">24H</string>
+    <string name="edge_trial_cd">Zähnung %1$s, einen Tag lang deine</string>
+    <string name="edge_keep_with_pro">Zähnung %1$s mit Pro behalten</string>
+    <string name="edge_ad">24 Std. · kurze Werbung</string>
+    <string name="edge_try_note">Nur zum Ausprobieren · oder einen Tag lang behalten</string>
+
+    <!-- Scrapbook pages -->
+    <string name="album_scrapbook">Scrapbook-Seite</string>
+    <string name="album_open_scrapbook">diese Seite bearbeiten</string>
+    <string name="scrap_title_new">Neue Scrapbook-Seite</string>
+    <string name="scrap_title_edit">Scrapbook-Seite</string>
+    <string name="scrap_close_cd">Schließen</string>
+    <string name="scrap_delete_cd">Diese Seite löschen</string>
+    <string name="scrap_save_cd">Seite speichern</string>
+    <string name="scrap_tab_layouts">Layouts</string>
+    <string name="scrap_tab_stamps">Marken</string>
+    <string name="scrap_tab_stickers">Sticker</string>
+    <string name="scrap_tab_write">Schreiben</string>
+    <string name="scrap_layout_diary">Tagebuch</string>
+    <string name="scrap_layout_collage">Collage</string>
+    <string name="scrap_layout_postcard">Postkarte</string>
+    <string name="scrap_layout_big">eine große</string>
+    <string name="scrap_write_note">Notiz hinzufügen</string>
+    <string name="scrap_write_title">Titel hinzufügen</string>
+    <string name="scrap_write_done_cd">Fertig geschrieben</string>
+    <string name="scrap_note_placeholder">schreib etwas…</string>
+    <string name="scrap_title_placeholder">Ein Titel</string>
+    <string name="scrap_no_stamps">noch keine Marken in diesem Album…</string>
+    <string name="scrap_add_cd">zur Seite hinzufügen</string>
+    <string name="scrap_hint">alles auf der Seite lässt sich ziehen, zoomen und drehen</string>
+    <string name="scrap_hint_pro">probier alles aus · Speichern gehört zu Pro</string>
+    <string name="scrap_hint_full">die Seite ist voll · nimm etwas weg, um mehr hinzuzufügen</string>
+    <string name="scrap_tool_write">Text ändern</string>
+    <string name="scrap_tool_smaller">Kleiner</string>
+    <string name="scrap_tool_bigger">Größer</string>
+    <string name="scrap_tool_turn">Drehen</string>
+    <string name="scrap_tool_front">Nach vorne</string>
+    <string name="scrap_tool_remove">Von der Seite nehmen</string>
+    <string name="scrap_leave_question">Ohne Speichern verlassen?</string>
+    <string name="scrap_leave">Verlassen</string>
+    <string name="scrap_keep_editing">Weiter bearbeiten</string>
+    <string name="scrap_delete_question">Diese Scrapbook-Seite löschen? Deine Marken bleiben im Album.</string>
+    <string name="scrap_delete">Löschen</string>
+    <string name="scrap_keep_page">Behalten</string>
+    <string name="scrap_sticker_par_avion" tools:ignore="Typos">Par-avion-Etikett</string>
+    <string name="scrap_sticker_received">„Erhalten“-Stempel</string>
+    <string name="scrap_sticker_fragile">„Zerbrechlich“-Stempel</string>
+    <string name="scrap_sticker_wax_seal">Wachssiegel</string>
+    <string name="scrap_sticker_ticket">Ticket</string>
+    <string name="scrap_sticker_heart">Herz</string>
+    <string name="scrap_sticker_star">Stern</string>
+    <string name="scrap_sticker_postmark">Poststempel</string>
+    <string name="scrap_sticker_tape_red">Rotes Klebeband</string>
+    <string name="scrap_sticker_tape_cobalt">Blaues Klebeband</string>
+    <string name="scrap_sticker_tape_sage">Grünes Klebeband</string>
+    <string name="scrap_par_avion" tools:ignore="Typos">PAR AVION</string>
+    <string name="scrap_by_air_mail">mit Luftpost</string>
+    <string name="scrap_rubber_received">ERHALTEN</string>
+    <string name="scrap_rubber_fragile">VORSICHT</string>
+    <string name="scrap_admit_one">EINTRITT</string>
+    <string name="scrap_sample_ticket">HEUTE</string>
+    <string name="scrap_sample_postmark">HEUTE\nVERSANDT</string>
+
+    <!-- Map tab -->
+    <string name="map_title">Deine Welt</string>
+    <string name="map_stats">%1$s · %2$s · %3$s</string>
+    <plurals name="map_country_count">
+        <item quantity="one">%d Land</item>
+        <item quantity="other">%d Länder</item>
+    </plurals>
+    <plurals name="map_place_count">
+        <item quantity="one">%d Ort</item>
+        <item quantity="other">%d Orte</item>
+    </plurals>
+    <string name="map_tab_countries">Länder</string>
+    <string name="map_tab_places">Orte</string>
+    <string name="map_empty">Marken, die wissen, wo sie entstanden sind, landen hier</string>
+    <string name="map_empty_place_off">Ort auf Stempeln ist aus, daher erscheinen neue Marken nicht auf der Karte. Du kannst es im Profil einschalten.</string>
+    <plurals name="map_unplaced">
+        <item quantity="one">%d Marke hat keinen Ort im Stempel und ist daher nicht auf der Karte</item>
+        <item quantity="other">%d Marken haben keinen Ort im Stempel und sind daher nicht auf der Karte</item>
+    </plurals>
+    <string name="map_somewhere_in">Irgendwo in %1$s</string>
+    <string name="map_since">seit %1$s</string>
+    <string name="map_place_line">%1$s · seit %2$s</string>
+    <string name="map_count_note">×%1$d</string>
+    <string name="map_row_cd">%1$s, %2$s</string>
+    <string name="map_cd">Weltkarte. Gestempelt in %1$s</string>
+    <string name="map_cd_empty">Weltkarte, noch ohne Marken</string>
+    <string name="map_country_cd">Karte: %1$s</string>
+    <string name="map_rename_cd">%1$s umbenennen</string>
+    <string name="map_rename_title">Diesen Ort umbenennen</string>
+    <string name="map_rename_hint">Stadt</string>
+    <plurals name="map_rename_note">
+        <item quantity="one">ändert den Stempel seiner Marke</item>
+        <item quantity="other">ändert den Stempel seiner %1$d Marken</item>
+    </plurals>
+    <string name="map_rename_empty_note">leer gelassen heißt er „Irgendwo in %1$s“</string>
+    <string name="map_rename_save">Namen speichern</string>
+    <string name="map_country_gone">keine Marken mehr von hier</string>
+    <string name="visa_first">Erste Marke %1$s</string>
+    <string name="visa_cd">Visum für %1$s. Erste Marke %2$s. %3$s, %4$s.</string>
+    <string name="map_share_cd">Deine Karte teilen</string>
+    <string name="map_export_title">Teile deine Welt</string>
+    <string name="map_export_world">Welt</string>
+    <string name="map_export_passport">Reisepass</string>
+    <string name="map_export_overline">Meine Welt · %1$s</string>
+    <plurals name="map_export_headline">
+        <item quantity="one">Gestempelt in %d Land</item>
+        <item quantity="other">Gestempelt in %d Ländern</item>
+    </plurals>
+    <plurals name="map_export_stat_countries">
+        <item quantity="one">Land</item>
+        <item quantity="other">Länder</item>
+    </plurals>
+    <plurals name="map_export_stat_places">
+        <item quantity="one">Ort</item>
+        <item quantity="other">Orte</item>
+    </plurals>
+    <plurals name="map_export_stat_stamps">
+        <item quantity="one">Marke</item>
+        <item quantity="other">Marken</item>
+    </plurals>
+    <string name="map_export_country">%1$s ×%2$d</string>
+    <string name="map_export_more">+%1$d weitere</string>
+    <string name="map_export_counts">%1$s · %2$s</string>
+    <string name="map_export_passport_overline">Reisepass · Visa</string>
+    <string name="map_export_watermark_note">kleiner „%1$s“-Schriftzug am unteren Rand</string>
+    <string name="map_export_unlocked_note">kein Wasserzeichen, solange die Karte offen ist · danke fürs Anschauen</string>
+
+    <!-- Sticker sheets -->
+    <string name="album_print_stickers">Sticker drucken</string>
+    <string name="stickers_title">Sticker drucken</string>
+    <string name="stickers_overline">Album · %1$s</string>
+    <plurals name="stickers_page_count">
+        <item quantity="one">%d Seite</item>
+        <item quantity="other">%d Seiten</item>
+    </plurals>
+    <string name="stickers_counts">%1$s · %2$s</string>
+    <string name="stickers_look">Look</string>
+    <string name="stickers_look_grid">Raster</string>
+    <string name="stickers_look_mix">Mix</string>
+    <string name="stickers_size">Größe</string>
+    <string name="stickers_size_small">Klein</string>
+    <string name="stickers_size_medium">Mittel</string>
+    <string name="stickers_size_large">Groß</string>
+    <string name="stickers_paper">Papier</string>
+    <string name="stickers_paper_a4">A4</string>
+    <string name="stickers_paper_letter">US Letter</string>
+    <string name="stickers_postmarks">Stempel auf den Marken</string>
+    <string name="stickers_cut_hint">entlang der gestrichelten Linien ausschneiden</string>
+    <string name="stickers_page_of">Seite %1$d von %2$d</string>
+    <string name="stickers_page_number">%1$d / %2$d</string>
+    <string name="stickers_print">Drucken oder als PDF speichern</string>
+    <string name="stickers_print_pro">Mit Pro drucken</string>
+    <string name="stickers_pro_note">Stickerbögen gehören zu Pro · probier hier vorher alle Looks aus</string>
+    <string name="stickers_preparing">Seite %1$d von %2$d wird vorbereitet…</string>
+    <string name="stickers_failed">Das PDF ließ sich nicht erstellen. Versuch es noch mal.</string>
+    <string name="stickers_empty">noch keine Marken in diesem Album · mach ein paar und komm wieder</string>
+    <string name="stickers_job">%1$s-Sticker</string>
+    <string name="stickers_page_cd">Stickerbogen, Seite %1$d von %2$d, %3$s</string>
+    <string name="paywall_overline_stickers">Pro · Stickerbögen zum Drucken</string>
+    <string name="paywall_perk_stickers">Stickerbögen zum Drucken</string>
+</resources>

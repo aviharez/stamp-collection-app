@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Japanese (friendly plain style). 切手 = stamp, 消印 = postmark, 連続記録 = streak.
+     The bundled fonts have no CJK glyphs, so Japanese text uses the system font. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Nav bar -->
+    <string name="nav_album">アルバム</string>
+    <string name="nav_calendar">カレンダー</string>
+    <string name="nav_map">マップ</string>
+    <string name="nav_profile">プロフィール</string>
+
+    <!-- Common -->
+    <string name="cd_back">戻る</string>
+    <string name="cd_close">閉じる</string>
+    <string name="pattern_overline_date">M月d日(E)</string>
+    <string name="pattern_short_date">M月d日</string>
+    <string name="pattern_weekday">EEEE</string>
+    <string name="pattern_postmark_day">MM.dd</string>
+    <string name="pattern_postmark_year">yyyy</string>
+    <string name="pattern_postmark_date">yy.MM.dd</string>
+
+    <string name="postmark_description">消印：%1$s、%2$s</string>
+
+    <!-- Home -->
+    <string name="home_title">切手アルバム</string>
+    <string name="home_all_albums">すべてのアルバム</string>
+    <string name="home_empty_page">切手はここに貼られます</string>
+    <string name="home_today_title">今日の切手が待っています</string>
+    <string name="home_today_body">この%1$sのひとこまを残そう。</string>
+    <string name="home_stamp_it">切手にする</string>
+    <string name="home_page_label">%1$s · %2$dページ</string>
+    <string name="home_page_cd">%1$sの最新ページ。アルバムを開きます。</string>
+    <string name="home_today_done_title">今日の切手、完成！</string>
+    <string name="home_today_done_body">%1$sに貼りました。</string>
+    <string name="home_stamp_another">もう1枚つくる</string>
+
+    <!-- Collections -->
+    <string name="collections_overline">マイアルバム</string>
+    <string name="collections_title">コレクション</string>
+    <string name="collections_filter_all">すべて</string>
+    <string name="collections_stats">%1$s · %2$s</string>
+    <plurals name="collections_album_count">
+        <item quantity="other">%d冊のアルバム</item>
+    </plurals>
+    <string name="collections_cover_note">%1$s · %2$s</string>
+    <string name="collections_updated_today">今日更新</string>
+    <string name="collections_updated_yesterday">昨日更新</string>
+    <string name="collections_updated_on">%1$s更新</string>
+    <string name="collections_empty_cover">まだ空っぽ</string>
+    <string name="collections_empty_filter">まだ何もありません</string>
+
+    <!-- Album page -->
+    <string name="album_next_stamp">次の切手…</string>
+    <string name="album_share_page">このページをシェア</string>
+    <string name="album_page_of">%1$d / %2$dページ</string>
+    <string name="album_stats">%1$s · %2$s</string>
+    <plurals name="album_day_count">
+        <item quantity="other">%d日</item>
+    </plurals>
+    <string name="album_more_cd">アルバムのオプション</string>
+    <string name="album_next_stamp_cd">このアルバムの次の切手をつくる</string>
+    <string name="album_edit_title">このアルバム</string>
+    <string name="album_edit_save">変更を保存</string>
+    <string name="stamp_cd">切手、%1$s</string>
+    <string name="stamp_page_note">%1$s · %2$s</string>
+
+    <!-- Camera -->
+    <string name="camera_header_place">%1$s · %2$s</string>
+    <string name="camera_shutter">切手の写真を撮る</string>
+    <string name="camera_flip">カメラを切り替え</string>
+    <string name="camera_mirror_on">自撮りの反転：オン。プレビューのとおりに保存します</string>
+    <string name="camera_mirror_off">自撮りの反転：オフ。人から見えるとおりに保存します</string>
+    <string name="camera_flash_off">フラッシュ オフ</string>
+    <string name="camera_flash_auto">フラッシュ 自動</string>
+    <string name="camera_flash_on">フラッシュ オン</string>
+    <string name="camera_exposure">露出</string>
+    <string name="camera_zoom_cd">%1$s倍ズーム</string>
+    <string name="camera_high_res">50MP</string>
+    <string name="camera_high_res_cd">5000万画素モード</string>
+    <string name="camera_focus_cd">カメラのプレビュー。タップでピント合わせ、ピンチでズーム。</string>
+    <string name="camera_unavailable">今はカメラを使えません。</string>
+    <string name="camera_stamping">切手をつくっています…</string>
+    <string name="camera_capture_failed">うまく貼れませんでした。もう一度どうぞ。</string>
+    <string name="storage_full">スマホの容量がいっぱいです。空きを作ってからもう一度どうぞ。</string>
+    <string name="shape_portrait">縦長</string>
+    <string name="shape_landscape">横長</string>
+    <string name="shape_square">正方形</string>
+    <string name="shape_circle">丸</string>
+
+    <!-- Camera permission pre-prompt -->
+    <string name="camera_permission_title">切手をつくろう</string>
+    <string name="camera_permission_body">カメラでひとこまを切手にします。写真はあなたのスマホの中だけに残ります。</string>
+    <string name="camera_permission_denied_body">カメラへのアクセスがオフになっています。いつでも設定でオンにできます。</string>
+    <string name="camera_permission_allow">カメラを許可</string>
+    <string name="camera_permission_settings">設定を開く</string>
+    <string name="camera_permission_not_now">今はしない</string>
+
+    <!-- Stamped! -->
+    <string name="camera_gallery">ギャラリーの写真から切手をつくる</string>
+    <string name="camera_permission_gallery">写真を使う</string>
+    <string name="import_make">切手にする</string>
+    <string name="import_rotate">写真を回転</string>
+    <string name="import_pick_another">別の写真を選ぶ</string>
+    <string name="import_hint">ピンチとドラッグで調整</string>
+    <string name="import_loading">写真を開いています…</string>
+    <string name="import_saving">貼っています…</string>
+    <string name="import_failed">この写真は開けませんでした。</string>
+    <string name="import_photo_cd">切手の枠の後ろにあなたの写真。ピンチでズーム、ドラッグで移動。</string>
+    <string name="stamped_pick_another">別のを選ぶ</string>
+    <string name="stamped_title">ポン！</string>
+    <string name="stamped_retake">撮り直す</string>
+    <string name="stamped_share">シェア</string>
+    <string name="stamped_stick">アルバムに貼る</string>
+    <string name="stamped_subtitle_placeholder">いちばん新しい切手</string>
+    <string name="stamped_subtitle">%2$sアルバムの%1$d枚目</string>
+    <string name="stamped_change_album">アルバムを変更</string>
+    <string name="stamped_caption_hint">裏にひとこと…</string>
+    <string name="stamped_caption_label">切手の裏のメモ</string>
+    <string name="stamped_stamp_cd">新しい切手</string>
+    <string name="location_ask_title">消印にあなたの街を入れる？</string>
+    <string name="location_ask_body">市区町村と国のための大まかな位置だけ。なしでも消印に日付が入ります。</string>
+    <string name="location_ask_allow">許可する</string>
+    <string name="location_ask_not_now">今はしない</string>
+
+    <!-- Albums -->
+    <plurals name="album_stamp_count">
+        <item quantity="other">%d枚</item>
+    </plurals>
+    <string name="album_picker_title">貼る場所…</string>
+    <string name="album_new">新しいアルバム</string>
+    <string name="album_new_title">新しいアルバム</string>
+    <string name="album_new_name_hint">名前をつけよう（例：日本旅行）</string>
+    <string name="album_new_category">種類</string>
+    <string name="album_new_cover">表紙</string>
+    <string name="album_new_create">アルバムをつくる</string>
+    <string name="album_category_trips">旅行</string>
+    <string name="album_category_everyday">日常</string>
+    <string name="album_category_pets">ペット</string>
+    <string name="album_category_other">その他</string>
+    <string name="album_cover_ink">インクブルー</string>
+    <string name="album_cover_kraft">クラフト</string>
+    <string name="album_cover_sage">セージ</string>
+    <string name="album_cover_red">エアメールレッド</string>
+    <string name="album_cover_cobalt">コバルト</string>
+    <string name="album_selected_cd">今のアルバム</string>
+
+    <!-- Streak -->
+    <plurals name="streak_days">
+        <item quantity="other">%d日連続</item>
+    </plurals>
+    <plurals name="streak_days_short">
+        <item quantity="other">%d日</item>
+    </plurals>
+    <string name="streak_personal_best">%1$s · 自己ベスト</string>
+    <string name="streak_day_one">連続記録の1日目</string>
+
+    <!-- Data -->
+    <string name="album_default_name">日常</string>
+
+    <!-- Calendar -->
+    <string name="pattern_month">LLLL</string>
+    <string name="pattern_day_title">M月d日(E)</string>
+    <string name="pattern_day_cd">M月d日 EEEE</string>
+    <string name="pattern_detail_date">yyyy年M月d日(E)</string>
+    <string name="calendar_overline">カレンダー · %1$s</string>
+    <string name="calendar_prev">前の月</string>
+    <string name="calendar_next">次の月</string>
+    <plurals name="calendar_streak_unit">
+        <item quantity="other">日連続</item>
+    </plurals>
+    <string name="calendar_streak_start">今日切手をつくって連続記録をはじめよう</string>
+    <string name="calendar_streak_keep">ベスト%1$d日 · 今日つくって記録を伸ばそう</string>
+    <string name="calendar_streak_tomorrow">明日また来て2日目へ</string>
+    <string name="calendar_streak_best_now">自己ベスト更新中！</string>
+    <string name="calendar_streak_best">ベスト%1$d日</string>
+    <string name="calendar_day_title">%1$s · %2$s</string>
+    <string name="calendar_empty_today">今日の切手はまだです</string>
+    <string name="calendar_empty_day">この日の切手はありません</string>
+    <string name="calendar_pick_day">切手のある日をタップして見よう</string>
+    <string name="calendar_more">+%1$d</string>
+    <string name="calendar_count">×%1$d</string>
+    <string name="calendar_day_cd">%1$s、%2$s</string>
+    <string name="calendar_no_stamps">切手なし</string>
+    <string name="calendar_today_cd">今日、%1$s</string>
+
+    <!-- Export / share sheet -->
+    <string name="export_title">切手をシェア</string>
+    <string name="export_background">背景</string>
+    <string name="export_bg_transparent">透明</string>
+    <string name="export_bg_paper">紙</string>
+    <string name="export_postmark">消印</string>
+    <string name="export_on">あり</string>
+    <string name="export_off">なし</string>
+    <string name="export_watermark_note">隅に小さく「%1$s」</string>
+    <string name="export_pro_note">フル解像度 · 透かしなし</string>
+    <string name="export_save">保存</string>
+    <string name="export_saving">保存中…</string>
+    <string name="export_saved">保存しました</string>
+    <string name="export_share">シェア</string>
+    <string name="export_failed">画像をつくれませんでした。もう一度どうぞ。</string>
+    <string name="export_send_as">送る形</string>
+    <string name="export_as_stamp">切手</string>
+    <string name="postcard_envelope">封筒</string>
+    <string name="postcard_postcard">ポストカード</string>
+    <string name="postcard_card">カード</string>
+    <string name="postcard_pro_tag">PRO</string>
+    <string name="postcard_pro_cd">%1$s、Pro</string>
+    <string name="postcard_send_with_pro">Proで%1$sを送る</string>
+    <string name="postcard_pro_note">このデザインはPro · 封筒は無料</string>
+    <string name="postcard_to_hint">宛名…</string>
+    <string name="postcard_to_label">誰に送る？</string>
+    <string name="postcard_message_hint">その人へひとこと…</string>
+    <string name="postcard_message_label">ポストカードのメッセージ</string>
+    <string name="postcard_to">%1$sへ</string>
+    <string name="postcard_par_avion" tools:ignore="Typos">Par avion · 航空便</string>
+    <string name="postcard_post_card">POST CARD</string>
+    <string name="postcard_greetings_from">旅先からのたより</string>
+    <string name="postcard_greetings">あなたに切手を</string>
+    <string name="postcard_made_with">%1$sでつくりました</string>
+    <string name="export_preview_cd">シェアする画像のプレビュー</string>
+
+    <!-- Paywall (Pro) -->
+    <string name="paywall_close">閉じる</string>
+    <string name="paywall_restore">復元</string>
+    <string name="paywall_overline">Pro · すべてそろうコレクション</string>
+    <plurals name="paywall_overline_albums">
+        <item quantity="other">無料アルバム：%1$d冊中%1$d冊使用</item>
+    </plurals>
+    <string name="paywall_overline_watermark">Pro · 透かしなし</string>
+    <string name="paywall_overline_widget">Pro · ホーム画面ウィジェット</string>
+    <string name="paywall_overline_filters">Pro · すべてのフィルター</string>
+    <string name="paywall_overline_edges">Pro · すべての目打ち</string>
+    <string name="paywall_overline_postcards">Pro · ポストカードとカード</string>
+    <string name="paywall_overline_scrapbook">Pro · このスクラップページを保存</string>
+    <string name="paywall_title">コレクションを完成させよう</string>
+    <string name="paywall_perk_albums">アルバム無制限</string>
+    <string name="paywall_perk_no_mark">透かしなしで書き出し</string>
+    <string name="paywall_perk_edges">すべての目打ち</string>
+    <string name="paywall_perk_filters">9種類の写真フィルター</string>
+    <string name="paywall_perk_postcards">ポストカードとカード</string>
+    <string name="paywall_perk_scrapbook">スクラップページとステッカー</string>
+    <string name="paywall_perk_widget">ホーム画面ウィジェット</string>
+    <string name="paywall_soon">近日</string>
+    <string name="paywall_soon_note">点線のものは準備中 · Proに含まれます</string>
+    <string name="paywall_perk_soon_cd">%1$s、近日公開</string>
+    <string name="paywall_plan_lifetime">買い切り</string>
+    <string name="paywall_plan_yearly">年額</string>
+    <string name="paywall_per_lifetime">1回のみ</string>
+    <string name="paywall_per_yearly">1年あたり</string>
+    <string name="paywall_best_value">おすすめ</string>
+    <string name="paywall_price_missing">–</string>
+    <string name="paywall_plan_cd">%1$s、%2$s %3$s</string>
+    <string name="paywall_plan_loading_cd">%1$s、価格を読み込み中</string>
+    <string name="paywall_selected_cd">選択中</string>
+    <string name="paywall_buy_lifetime">ずっとProにする</string>
+    <string name="paywall_buy_yearly">年額Proをはじめる</string>
+    <string name="paywall_yearly_terms">毎年自動更新 · Google Playでいつでも解約できます</string>
+    <string name="paywall_free_note">自分の写真はいつまでも無料</string>
+    <string name="paywall_loading">Google Playに価格を問い合わせ中…</string>
+    <string name="paywall_unavailable">今はGoogle Playにつながりません。接続を確認してもう一度どうぞ。</string>
+    <string name="paywall_retry">もう一度</string>
+    <string name="paywall_pending">支払い処理中です。Google Playで確認されしだいProになります。</string>
+    <string name="paywall_failed">購入は完了しませんでした。料金はかかっていません。</string>
+    <string name="paywall_nothing_to_restore">このGoogleアカウントにProの購入はありません。</string>
+    <string name="paywall_restore_failed">復元のためにGoogle Playにつながりませんでした。あとでもう一度どうぞ。</string>
+
+    <!-- Pro entry points -->
+    <string name="export_remove_with_pro">Proで消す</string>
+    <string name="profile_get_pro">Proにする</string>
+
+    <!-- Profile -->
+    <string name="profile_passport">切手パスポート</string>
+    <string name="profile_passport_since">切手パスポート · %1$sから</string>
+    <string name="pattern_passport_since">yyyy年M月d日</string>
+    <string name="profile_stamps">切手</string>
+    <string name="profile_albums_places">アルバム · 場所</string>
+    <string name="profile_albums_places_value">%1$d · %2$d</string>
+    <string name="profile_best_streak">最長連続記録</string>
+    <plurals name="profile_days">
+        <item quantity="other">%d日</item>
+    </plurals>
+    <string name="profile_newest_stamp">いちばん新しい切手</string>
+    <string name="profile_first_stamp_slot">最初の切手はここに</string>
+    <string name="profile_pro_postmark">Pro</string>
+    <string name="profile_pro_postmark_date">ありがとう</string>
+    <string name="profile_pro_title">Pro</string>
+    <string name="profile_pro_perks">アルバム無制限 · すべてのデザイン · 透かしなし</string>
+    <string name="profile_restore_prompt">購入済みですか？</string>
+    <string name="profile_restoring">Google Playに確認中…</string>
+    <string name="profile_section_reminder">連続記録のリマインダー</string>
+    <string name="profile_section_backup">バックアップ</string>
+    <string name="profile_section_camera">カメラ</string>
+    <string name="profile_mirror_selfies">自撮りを反転</string>
+    <string name="profile_mirror_note">自撮りをプレビューのとおりに保存</string>
+    <string name="profile_postmark_place">消印に場所を入れる</string>
+    <string name="profile_place_on_note">市区町村だけで、正確な場所は入りません</string>
+    <string name="profile_place_off_note">消印は日付だけになります</string>
+    <string name="profile_place_blocked_note">このアプリの位置情報がオフなので、消印は日付だけになります</string>
+    <string name="profile_open_settings">設定を開く</string>
+    <string name="profile_rate">アプリを評価</string>
+    <string name="profile_feedback">フィードバックを送る</string>
+    <string name="profile_feedback_subject">%1$sへのフィードバック · バージョン %2$s</string>
+    <string name="profile_privacy">プライバシーポリシー</string>
+    <string name="profile_credits">クレジット</string>
+    <string name="credits_title">クレジット</string>
+    <string name="credits_note">これらを使ってつくりました、感謝</string>
+    <string name="credits_section_fonts">フォント</string>
+    <string name="credits_section_map">地図</string>
+    <string name="credits_section_code">コード</string>
+    <string name="credits_licence_ofl">SIL OFL 1.1</string>
+    <string name="credits_licence_apache">Apache 2.0</string>
+    <string name="credits_licence_public_domain">パブリックドメイン</string>
+    <string name="credits_licence_google">Googleの規約</string>
+    <string name="credits_footer">タップするとライセンスを読めます</string>
+    <string name="profile_version">バージョン %1$s</string>
+
+    <!-- Rewarded ads -->
+    <string name="ad_loading">広告を読み込み中…</string>
+    <string name="ad_unavailable">今は表示できる広告がありません。あとでもう一度どうぞ。</string>
+    <string name="export_remove_once">今回だけ · 短い広告</string>
+    <string name="export_unlocked_note">この切手は透かしなし · 見てくれてありがとう</string>
+    <string name="paywall_ad_album_note">アルバムがあと1冊だけ欲しい？</string>
+    <string name="paywall_ad_album">+1冊 · 短い広告</string>
+    <string name="profile_ad_privacy">広告のプライバシー設定</string>
+
+    <!-- Streak reminder -->
+    <string name="reminder_turn_on">切手づくりをリマインド</string>
+    <string name="reminder_off_note">夜に一度お知らせ、今日の切手がまだのときだけ</string>
+    <string name="reminder_on_note">%1$sにリマインド · 今日つくっていれば鳴りません</string>
+    <string name="reminder_time_label">%1$sにリマインド</string>
+    <string name="reminder_blocked_note">このアプリの通知がオフなので、リマインダーを表示できません</string>
+    <string name="reminder_open_settings">設定を開く</string>
+    <string name="reminder_channel_name">連続記録のリマインダー</string>
+    <string name="reminder_channel_desc">まだ切手をつくっていない日だけ、夜に一度お知らせします。</string>
+    <plurals name="reminder_title_streak">
+        <item quantity="other">%1$d日連続の記録を続けよう</item>
+    </plurals>
+    <string name="reminder_body_streak">真夜中までに1枚撮れば記録がつながります。</string>
+    <string name="reminder_title_start">今日の切手が待っています</string>
+    <string name="reminder_body_start">1枚の写真で今日が切手になります。</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_create">ファイルにバックアップ</string>
+    <string name="backup_restore">ファイルから復元</string>
+    <string name="backup_never">バックアップはまだありません · 切手はこのスマホの中だけです</string>
+    <string name="backup_last">前回のバックアップ · %1$s</string>
+    <string name="backup_writing">バックアップ中…</string>
+    <string name="backup_writing_progress">バックアップ中… %1$d / %2$d</string>
+    <string name="backup_reading">バックアップを読み込み中…</string>
+    <string name="backup_restoring_progress">復元中… %1$d / %2$d</string>
+    <plurals name="backup_done">
+        <item quantity="other">%1$d枚を保存しました · ファイルは大切に保管してね</item>
+    </plurals>
+    <plurals name="backup_restored_stamps">
+        <item quantity="other">%1$d枚が戻りました</item>
+    </plurals>
+    <plurals name="backup_restored_albums">
+        <item quantity="other">新しいアルバム%1$d冊</item>
+    </plurals>
+    <plurals name="backup_already_here">
+        <item quantity="other">%1$d枚はすでにありました</item>
+    </plurals>
+    <string name="backup_restored_nothing">このバックアップに新しいものはありません</string>
+    <string name="backup_not_a_backup">このファイルは切手のバックアップではありません。</string>
+    <string name="backup_newer">このバックアップは新しいバージョンのアプリで作られています。アプリを更新してもう一度どうぞ。</string>
+    <string name="backup_failed">バックアップを書き込めませんでした。空き容量を確認してもう一度どうぞ。</string>
+    <string name="backup_restore_failed">復元が途中で止まりました。もう一度どうぞ。戻った切手はそのままで、重複はしません。</string>
+
+    <!-- First run -->
+    <string name="welcome_skip">スキップ</string>
+    <string name="welcome_title">今日を切手にしよう</string>
+    <string name="welcome_body">写真を撮ると、街と日付の消印が押された切手になって、アルバムに貼られます。1日1枚で連続記録が続きます。</string>
+    <string name="welcome_step_1">下をタップ</string>
+    <string name="welcome_step_2">撮る</string>
+    <string name="welcome_step_3">貼る</string>
+    <string name="welcome_from_photos">写真から</string>
+    <string name="welcome_make_stamp">最初の切手をつくる</string>
+    <string name="welcome_postmark_city">ようこそ</string>
+    <string name="welcome_art_description">見本の切手3枚、1枚は今日の消印つき</string>
+
+    <!-- Album page export -->
+    <string name="page_export_title">このページをシェア</string>
+    <string name="page_export_watermark_note">ページの下に小さく「%1$s」</string>
+    <string name="page_export_unlocked_note">このアルバムは透かしなし · 見てくれてありがとう</string>
+
+    <!-- Stamp detail -->
+    <string name="album_open_stamp">切手を開く</string>
+    <string name="detail_number">%2$sの%1$d枚目</string>
+    <string name="detail_more_cd">切手のその他のオプション</string>
+    <string name="detail_title_hint">タイトルをつけよう</string>
+    <string name="detail_title_label">切手のタイトル</string>
+    <string name="detail_when_where">%1$s · %2$s</string>
+    <string name="detail_reframe">枠を調整</string>
+    <string name="detail_move">別のアルバムへ移動</string>
+    <string name="detail_delete">切手を削除</string>
+    <string name="detail_delete_title">この切手を削除しますか？</string>
+    <string name="detail_delete_note">切手と写真はアプリから完全に消えます（ギャラリーから選んだ写真はギャラリーに残ります）</string>
+    <string name="detail_keep">残す</string>
+    <string name="detail_delete_confirm">削除</string>
+
+    <!-- Home-screen widgets -->
+    <string name="widget_name_stamp">今日の切手</string>
+    <string name="widget_desc_stamp">今日の切手をホーム画面にそのまま</string>
+    <string name="widget_name_envelope">エアメール封筒</string>
+    <string name="widget_desc_envelope">今日の切手と連続記録をエアメール封筒に</string>
+    <string name="widget_name_strip">アルバムの帯</string>
+    <string name="widget_desc_strip">ここ数日の切手をアルバムページの帯に</string>
+    <string name="widget_today_slot">今日の切手…</string>
+    <string name="widget_stamp_today">今日を切手に</string>
+    <string name="widget_waiting">今日の切手が待っています</string>
+    <string name="widget_stamped">ポン！</string>
+    <string name="widget_stamp_it">切手にする</string>
+    <string name="widget_today">今日</string>
+    <string name="widget_start">今日からはじめよう</string>
+    <string name="widget_pro">Pro</string>
+    <plurals name="widget_days">
+        <item quantity="other">日</item>
+    </plurals>
+    <plurals name="widget_days_in_row">
+        <item quantity="other">日連続</item>
+    </plurals>
+    <string name="widget_cd_waiting">今日の切手が待っています。カメラを開きます</string>
+    <string name="widget_cd_stamped">今日の切手、%1$s。アルバムで開きます</string>
+    <string name="widget_cd_locked">ウィジェットはProの機能です。Proを開きます</string>
+
+    <!-- Filters -->
+    <string name="filter_original">オリジナル</string>
+    <string name="filter_postcard">絵はがき</string>
+    <string name="filter_engraved">彫刻</string>
+    <string name="filter_sepia">セピア</string>
+    <string name="filter_vivid">ビビッド</string>
+    <string name="filter_faded">色あせ</string>
+    <string name="filter_red_ink">赤インク</string>
+    <string name="filter_blue_ink">青インク</string>
+    <string name="filter_green_ink">緑インク</string>
+    <string name="filter_pro_tag">PRO</string>
+    <string name="filter_pro_cd">%1$s、Proフィルター</string>
+    <string name="filter_keep_with_pro">Proで%1$sを使う</string>
+    <string name="filter_button">見た目</string>
+    <string name="filter_done">完了</string>
+    <string name="filter_try_note">お試し中：切手は保存された見た目のままです</string>
+    <string name="look_tab_filters">フィルター</string>
+    <string name="look_tab_edges">目打ち</string>
+    <string name="look_keep_with_pro">Proでこの見た目にする</string>
+    <string name="edge_classic">クラシック</string>
+    <string name="edge_fine">細かい</string>
+    <string name="edge_bold">太い</string>
+    <string name="edge_scallop">波形</string>
+    <string name="edge_pro_cd">%1$sの目打ち、Pro</string>
+    <string name="edge_trial_tag">24H</string>
+    <string name="edge_trial_cd">%1$sの目打ち、1日だけ使えます</string>
+    <string name="edge_keep_with_pro">Proで%1$sの目打ちを使う</string>
+    <string name="edge_ad">24時間 · 短い広告</string>
+    <string name="edge_try_note">お試し中 · または1日だけ使う</string>
+
+    <!-- Scrapbook pages -->
+    <string name="album_scrapbook">スクラップページ</string>
+    <string name="album_open_scrapbook">このページを編集</string>
+    <string name="scrap_title_new">新しいスクラップページ</string>
+    <string name="scrap_title_edit">スクラップページ</string>
+    <string name="scrap_close_cd">閉じる</string>
+    <string name="scrap_delete_cd">このページを削除</string>
+    <string name="scrap_save_cd">ページを保存</string>
+    <string name="scrap_tab_layouts">レイアウト</string>
+    <string name="scrap_tab_stamps">切手</string>
+    <string name="scrap_tab_stickers">ステッカー</string>
+    <string name="scrap_tab_write">書く</string>
+    <string name="scrap_layout_diary">日記</string>
+    <string name="scrap_layout_collage">コラージュ</string>
+    <string name="scrap_layout_postcard">はがき</string>
+    <string name="scrap_layout_big">大きく1枚</string>
+    <string name="scrap_write_note">メモを追加</string>
+    <string name="scrap_write_title">タイトルを追加</string>
+    <string name="scrap_write_done_cd">書き終える</string>
+    <string name="scrap_note_placeholder">何か書こう…</string>
+    <string name="scrap_title_placeholder">タイトル</string>
+    <string name="scrap_no_stamps">このアルバムにはまだ切手がありません…</string>
+    <string name="scrap_add_cd">ページに追加</string>
+    <string name="scrap_hint">ページの上のものは何でもドラッグ、ピンチ、回転できます</string>
+    <string name="scrap_hint_pro">何でも試せます · 保存はProで</string>
+    <string name="scrap_hint_full">ページがいっぱいです · 何か外すと追加できます</string>
+    <string name="scrap_tool_write">文字を変更</string>
+    <string name="scrap_tool_smaller">小さく</string>
+    <string name="scrap_tool_bigger">大きく</string>
+    <string name="scrap_tool_turn">回転</string>
+    <string name="scrap_tool_front">前面へ</string>
+    <string name="scrap_tool_remove">ページから外す</string>
+    <string name="scrap_leave_question">変更を保存せずに閉じますか？</string>
+    <string name="scrap_leave">閉じる</string>
+    <string name="scrap_keep_editing">編集を続ける</string>
+    <string name="scrap_delete_question">このスクラップページを削除しますか？切手はアルバムに残ります。</string>
+    <string name="scrap_delete">削除</string>
+    <string name="scrap_keep_page">残す</string>
+    <string name="scrap_sticker_par_avion">エアメールラベル</string>
+    <string name="scrap_sticker_received">「受領」スタンプ</string>
+    <string name="scrap_sticker_fragile">「ワレモノ」スタンプ</string>
+    <string name="scrap_sticker_wax_seal">シーリングワックス</string>
+    <string name="scrap_sticker_ticket">チケット</string>
+    <string name="scrap_sticker_heart">ハート</string>
+    <string name="scrap_sticker_star">星</string>
+    <string name="scrap_sticker_postmark">消印</string>
+    <string name="scrap_sticker_tape_red">赤いマステ</string>
+    <string name="scrap_sticker_tape_cobalt">青いマステ</string>
+    <string name="scrap_sticker_tape_sage">緑のマステ</string>
+    <string name="scrap_par_avion" tools:ignore="Typos">PAR AVION</string>
+    <string name="scrap_by_air_mail">航空便</string>
+    <string name="scrap_rubber_received">受領</string>
+    <string name="scrap_rubber_fragile">ワレモノ</string>
+    <string name="scrap_admit_one">入場券</string>
+    <string name="scrap_sample_ticket">今日</string>
+    <string name="scrap_sample_postmark">今日\n発送</string>
+
+    <!-- Map tab -->
+    <string name="map_title">あなたの世界</string>
+    <string name="map_stats">%1$s · %2$s · %3$s</string>
+    <plurals name="map_country_count">
+        <item quantity="other">%dか国</item>
+    </plurals>
+    <plurals name="map_place_count">
+        <item quantity="other">%dか所</item>
+    </plurals>
+    <string name="map_tab_countries">国</string>
+    <string name="map_tab_places">場所</string>
+    <string name="map_empty">撮った場所がわかる切手がここに表示されます</string>
+    <string name="map_empty_place_off">「消印に場所を入れる」がオフなので、新しい切手は地図に出ません。プロフィールでオンにできます。</string>
+    <plurals name="map_unplaced">
+        <item quantity="other">%d枚の切手は消印に場所がないため、地図に出ていません</item>
+    </plurals>
+    <string name="map_somewhere_in">%1$sのどこか</string>
+    <string name="map_since">%1$sから</string>
+    <string name="map_place_line">%1$s · %2$sから</string>
+    <string name="map_count_note">×%1$d</string>
+    <string name="map_row_cd">%1$s、%2$s</string>
+    <string name="map_cd">世界地図。%1$sで切手</string>
+    <string name="map_cd_empty">世界地図、まだ切手はありません</string>
+    <string name="map_country_cd">%1$sの地図</string>
+    <string name="map_rename_cd">%1$sの名前を変更</string>
+    <string name="map_rename_title">この場所の名前を変更</string>
+    <string name="map_rename_hint">市区町村</string>
+    <plurals name="map_rename_note">
+        <item quantity="other">%1$d枚の切手の消印が変わります</item>
+    </plurals>
+    <string name="map_rename_empty_note">空にすると「%1$sのどこか」になります</string>
+    <string name="map_rename_save">名前を保存</string>
+    <string name="map_country_gone">ここの切手はもうありません</string>
+    <string name="visa_first">最初の切手 %1$s</string>
+    <string name="visa_cd">%1$sのビザ。最初の切手 %2$s。%3$s、%4$s。</string>
+    <string name="map_share_cd">地図をシェア</string>
+    <string name="map_export_title">あなたの世界をシェア</string>
+    <string name="map_export_world">世界</string>
+    <string name="map_export_passport">パスポート</string>
+    <string name="map_export_overline">わたしの世界 · %1$s</string>
+    <plurals name="map_export_headline">
+        <item quantity="other">%dか国で切手</item>
+    </plurals>
+    <plurals name="map_export_stat_countries">
+        <item quantity="other">か国</item>
+    </plurals>
+    <plurals name="map_export_stat_places">
+        <item quantity="other">か所</item>
+    </plurals>
+    <plurals name="map_export_stat_stamps">
+        <item quantity="other">枚</item>
+    </plurals>
+    <string name="map_export_country">%1$s ×%2$d</string>
+    <string name="map_export_more">ほか%1$d</string>
+    <string name="map_export_counts">%1$s · %2$s</string>
+    <string name="map_export_passport_overline">パスポート · ビザ</string>
+    <string name="map_export_watermark_note">下に小さく「%1$s」</string>
+    <string name="map_export_unlocked_note">地図を開いている間は透かしなし · 見てくれてありがとう</string>
+
+    <!-- Sticker sheets -->
+    <string name="album_print_stickers">ステッカーを印刷</string>
+    <string name="stickers_title">ステッカーを印刷</string>
+    <string name="stickers_overline">アルバム · %1$s</string>
+    <plurals name="stickers_page_count">
+        <item quantity="other">%dページ</item>
+    </plurals>
+    <string name="stickers_counts">%1$s · %2$s</string>
+    <string name="stickers_look">デザイン</string>
+    <string name="stickers_look_grid">グリッド</string>
+    <string name="stickers_look_mix">ミックス</string>
+    <string name="stickers_size">サイズ</string>
+    <string name="stickers_size_small">小</string>
+    <string name="stickers_size_medium">中</string>
+    <string name="stickers_size_large">大</string>
+    <string name="stickers_paper">用紙</string>
+    <string name="stickers_paper_a4">A4</string>
+    <string name="stickers_paper_letter">レター</string>
+    <string name="stickers_postmarks">切手に消印をつける</string>
+    <string name="stickers_cut_hint">点線にそって切り取ってね</string>
+    <string name="stickers_page_of">%1$d / %2$dページ</string>
+    <string name="stickers_page_number">%1$d / %2$d</string>
+    <string name="stickers_print">印刷またはPDFで保存</string>
+    <string name="stickers_print_pro">Proで印刷</string>
+    <string name="stickers_pro_note">ステッカーシートはPro · まずはここで全デザインを試せます</string>
+    <string name="stickers_preparing">%1$d / %2$dページを準備中…</string>
+    <string name="stickers_failed">PDFをつくれませんでした。もう一度どうぞ。</string>
+    <string name="stickers_empty">このアルバムにはまだ切手がありません · いくつかつくってからまた来てね</string>
+    <string name="stickers_job">%1$sのステッカー</string>
+    <string name="stickers_page_cd">ステッカーシート %1$d / %2$dページ、%3$s</string>
+    <string name="paywall_overline_stickers">Pro · 印刷できるステッカーシート</string>
+    <string name="paywall_perk_stickers">印刷できるステッカーシート</string>
+</resources>

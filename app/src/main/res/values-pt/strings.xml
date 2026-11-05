@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Portuguese (Brazilian, "você"; also used for pt-PT). "Selo" for stamp, "carimbo" for postmark,
+     "sequência" for streak. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Nav bar -->
+    <string name="nav_album">Álbum</string>
+    <string name="nav_calendar">Calendário</string>
+    <string name="nav_map">Mapa</string>
+    <string name="nav_profile">Perfil</string>
+
+    <!-- Common -->
+    <string name="cd_back">Voltar</string>
+    <string name="cd_close">Fechar</string>
+    <string name="pattern_overline_date">EEE · d MMM</string>
+    <string name="pattern_short_date">d MMM</string>
+    <string name="pattern_weekday">EEEE</string>
+    <string name="pattern_postmark_day">dd MMM</string>
+    <string name="pattern_postmark_year">yyyy</string>
+    <string name="pattern_postmark_date">dd MMM yy</string>
+
+    <string name="postmark_description">Carimbo: %1$s, %2$s</string>
+
+    <!-- Home -->
+    <string name="home_title">Seu álbum de selos</string>
+    <string name="home_all_albums">Todos os álbuns</string>
+    <string name="home_empty_page">seus selos ficam colados aqui</string>
+    <string name="home_today_title">O selo de hoje está esperando</string>
+    <string name="home_today_body">Guarde um momento de hoje, %1$s.</string>
+    <string name="home_stamp_it">Carimbar</string>
+    <string name="home_page_label">%1$s · p.%2$d</string>
+    <string name="home_page_cd">Última página de %1$s. Abre o álbum.</string>
+    <string name="home_today_done_title">O selo de hoje já está aqui</string>
+    <string name="home_today_done_body">Colado em %1$s.</string>
+    <string name="home_stamp_another">Mais um selo</string>
+
+    <!-- Collections -->
+    <string name="collections_overline">Meus álbuns</string>
+    <string name="collections_title">Coleções</string>
+    <string name="collections_filter_all">Todos</string>
+    <string name="collections_stats">%1$s · %2$s</string>
+    <plurals name="collections_album_count">
+        <item quantity="one">%d álbum</item>
+        <item quantity="many">%d álbuns</item>
+        <item quantity="other">%d álbuns</item>
+    </plurals>
+    <string name="collections_cover_note">%1$s · %2$s</string>
+    <string name="collections_updated_today">atualizado hoje</string>
+    <string name="collections_updated_yesterday">atualizado ontem</string>
+    <string name="collections_updated_on">atualizado em %1$s</string>
+    <string name="collections_empty_cover">vazio, por enquanto</string>
+    <string name="collections_empty_filter">ainda não tem nada aqui</string>
+
+    <!-- Album page -->
+    <string name="album_next_stamp">próximo selo…</string>
+    <string name="album_share_page">Compartilhar esta página</string>
+    <string name="album_page_of">Página %1$d de %2$d</string>
+    <string name="album_stats">%1$s · %2$s</string>
+    <plurals name="album_day_count">
+        <item quantity="one">%d dia</item>
+        <item quantity="many">%d dias</item>
+        <item quantity="other">%d dias</item>
+    </plurals>
+    <string name="album_more_cd">Opções do álbum</string>
+    <string name="album_next_stamp_cd">Fazer o próximo selo deste álbum</string>
+    <string name="album_edit_title">Este álbum</string>
+    <string name="album_edit_save">Salvar alterações</string>
+    <string name="stamp_cd">Selo, %1$s</string>
+    <string name="stamp_page_note">%1$s · %2$s</string>
+
+    <!-- Camera -->
+    <string name="camera_header_place">%1$s · %2$s</string>
+    <string name="camera_shutter">Tirar a foto do selo</string>
+    <string name="camera_flip">Trocar de câmera</string>
+    <string name="camera_mirror_on">Selfie espelhada: ativada. Salva a selfie como aparece na prévia</string>
+    <string name="camera_mirror_off">Selfie espelhada: desativada. Salva a selfie como os outros veem você</string>
+    <string name="camera_flash_off">Flash desligado</string>
+    <string name="camera_flash_auto">Flash automático</string>
+    <string name="camera_flash_on">Flash ligado</string>
+    <string name="camera_exposure">Exposição</string>
+    <string name="camera_zoom_cd">Zoom de %1$s vezes</string>
+    <string name="camera_high_res">50MP</string>
+    <string name="camera_high_res_cd">Modo de 50 megapixels</string>
+    <string name="camera_focus_cd">Prévia da câmera. Toque para focar, faça pinça para dar zoom.</string>
+    <string name="camera_unavailable">A câmera não está disponível agora.</string>
+    <string name="camera_stamping">fazendo seu selo…</string>
+    <string name="camera_capture_failed">Esse não colou. Tente de novo.</string>
+    <string name="storage_full">Seu celular está cheio. Libere um pouco de espaço e tente de novo.</string>
+    <string name="shape_portrait">Retrato</string>
+    <string name="shape_landscape">Paisagem</string>
+    <string name="shape_square">Quadrado</string>
+    <string name="shape_circle">Círculo</string>
+
+    <!-- Camera permission pre-prompt -->
+    <string name="camera_permission_title">Vamos fazer um selo</string>
+    <string name="camera_permission_body">A câmera transforma um momento em selo. Suas fotos ficam no seu celular.</string>
+    <string name="camera_permission_denied_body">O acesso à câmera está desativado. Você pode ativá-lo nas Configurações quando quiser.</string>
+    <string name="camera_permission_allow">Permitir câmera</string>
+    <string name="camera_permission_settings">Abrir configurações</string>
+    <string name="camera_permission_not_now">Agora não</string>
+
+    <!-- Stamped! -->
+    <string name="camera_gallery">Fazer um selo com uma foto da sua galeria</string>
+    <string name="camera_permission_gallery">Usar uma foto</string>
+    <string name="import_make">Transformar em selo</string>
+    <string name="import_rotate">Girar foto</string>
+    <string name="import_pick_another">Escolher outra foto</string>
+    <string name="import_hint">faça pinça e arraste para ajustar</string>
+    <string name="import_loading">abrindo sua foto…</string>
+    <string name="import_saving">colando…</string>
+    <string name="import_failed">Não foi possível abrir essa foto.</string>
+    <string name="import_photo_cd">Sua foto atrás da moldura do selo. Faça pinça para dar zoom, arraste para mover.</string>
+    <string name="stamped_pick_another">Escolher outra</string>
+    <string name="stamped_title">Carimbado!</string>
+    <string name="stamped_retake">Refazer</string>
+    <string name="stamped_share">Compartilhar</string>
+    <string name="stamped_stick">Colar no álbum</string>
+    <string name="stamped_subtitle_placeholder">Seu selo mais novo</string>
+    <string name="stamped_subtitle">Nº %1$d do seu álbum %2$s</string>
+    <string name="stamped_change_album">Trocar de álbum</string>
+    <string name="stamped_caption_hint">escreva algo no verso…</string>
+    <string name="stamped_caption_label">Nota no verso do selo</string>
+    <string name="stamped_stamp_cd">Seu selo novo</string>
+    <string name="location_ask_title">Colocar sua cidade no carimbo?</string>
+    <string name="location_ask_body">Só uma localização aproximada, para a cidade e o país. Sem ela, os carimbos mostram a data.</string>
+    <string name="location_ask_allow">Permitir</string>
+    <string name="location_ask_not_now">Agora não</string>
+
+    <!-- Albums -->
+    <plurals name="album_stamp_count">
+        <item quantity="one">%d selo</item>
+        <item quantity="many">%d selos</item>
+        <item quantity="other">%d selos</item>
+    </plurals>
+    <string name="album_picker_title">Colar em…</string>
+    <string name="album_new">Novo álbum</string>
+    <string name="album_new_title">Um álbum novo</string>
+    <string name="album_new_name_hint">Dê um nome, ex.: Viagem ao Japão</string>
+    <string name="album_new_category">Tipo</string>
+    <string name="album_new_cover">Capa</string>
+    <string name="album_new_create">Criar álbum</string>
+    <string name="album_category_trips">Viagens</string>
+    <string name="album_category_everyday">Dia a dia</string>
+    <string name="album_category_pets">Pets</string>
+    <string name="album_category_other">Outros</string>
+    <string name="album_cover_ink">Azul tinta</string>
+    <string name="album_cover_kraft">Kraft</string>
+    <string name="album_cover_sage">Sálvia</string>
+    <string name="album_cover_red">Vermelho correio aéreo</string>
+    <string name="album_cover_cobalt">Cobalto</string>
+    <string name="album_selected_cd">Álbum atual</string>
+
+    <!-- Streak -->
+    <plurals name="streak_days">
+        <item quantity="one">%d dia seguido</item>
+        <item quantity="many">%d dias seguidos</item>
+        <item quantity="other">%d dias seguidos</item>
+    </plurals>
+    <plurals name="streak_days_short">
+        <item quantity="one">%d dia</item>
+        <item quantity="many">%d dias</item>
+        <item quantity="other">%d dias</item>
+    </plurals>
+    <string name="streak_personal_best">%1$s · seu recorde</string>
+    <string name="streak_day_one">Primeiro dia da sua sequência</string>
+
+    <!-- Data -->
+    <string name="album_default_name">Dia a dia</string>
+
+    <!-- Calendar -->
+    <string name="pattern_month">LLLL</string>
+    <string name="pattern_day_title">EEE d MMM</string>
+    <string name="pattern_day_cd">EEEE, d \'de\' MMMM</string>
+    <string name="pattern_detail_date">EEE d MMM yyyy</string>
+    <string name="calendar_overline">Calendário · %1$s</string>
+    <string name="calendar_prev">Mês anterior</string>
+    <string name="calendar_next">Próximo mês</string>
+    <plurals name="calendar_streak_unit" tools:ignore="ImpliedQuantity">
+        <item quantity="one">dia seguido</item>
+        <item quantity="many">dias seguidos</item>
+        <item quantity="other">dias seguidos</item>
+    </plurals>
+    <string name="calendar_streak_start">Faça um selo hoje para começar uma sequência</string>
+    <string name="calendar_streak_keep">recorde %1$d · faça um selo hoje para continuar</string>
+    <string name="calendar_streak_tomorrow">volte amanhã para o dia 2</string>
+    <string name="calendar_streak_best_now">seu melhor até agora!</string>
+    <string name="calendar_streak_best">recorde %1$d</string>
+    <string name="calendar_day_title">%1$s · %2$s</string>
+    <string name="calendar_empty_today">Nenhum selo hoje ainda</string>
+    <string name="calendar_empty_day">nenhum selo neste dia</string>
+    <string name="calendar_pick_day">toque em um dia com selo para ver</string>
+    <string name="calendar_more">+%1$d</string>
+    <string name="calendar_count">×%1$d</string>
+    <string name="calendar_day_cd">%1$s, %2$s</string>
+    <string name="calendar_no_stamps">nenhum selo</string>
+    <string name="calendar_today_cd">Hoje, %1$s</string>
+
+    <!-- Export / share sheet -->
+    <string name="export_title">Compartilhe seu selo</string>
+    <string name="export_background">Fundo</string>
+    <string name="export_bg_transparent">Transparente</string>
+    <string name="export_bg_paper">Papel</string>
+    <string name="export_postmark">Carimbo</string>
+    <string name="export_on">Sim</string>
+    <string name="export_off">Não</string>
+    <string name="export_watermark_note">pequena marca “%1$s” no canto</string>
+    <string name="export_pro_note">resolução total · sem marca d’água</string>
+    <string name="export_save">Salvar</string>
+    <string name="export_saving">Salvando…</string>
+    <string name="export_saved">Salvo</string>
+    <string name="export_share">Compartilhar</string>
+    <string name="export_failed">Não foi possível criar a imagem. Tente de novo.</string>
+    <string name="export_send_as">Enviar como</string>
+    <string name="export_as_stamp">Selo</string>
+    <string name="postcard_envelope">Envelope</string>
+    <string name="postcard_postcard">Cartão-postal</string>
+    <string name="postcard_card">Cartão</string>
+    <string name="postcard_pro_tag">PRO</string>
+    <string name="postcard_pro_cd">%1$s, Pro</string>
+    <string name="postcard_send_with_pro">Enviar %1$s com Pro</string>
+    <string name="postcard_pro_note">este visual vem com Pro · o Envelope é grátis</string>
+    <string name="postcard_to_hint">para… (o nome)</string>
+    <string name="postcard_to_label">Para quem é</string>
+    <string name="postcard_message_hint">umas palavras para essa pessoa…</string>
+    <string name="postcard_message_label">Mensagem do cartão-postal</string>
+    <string name="postcard_to">Para %1$s</string>
+    <string name="postcard_par_avion" tools:ignore="Typos">Par avion · via aérea</string>
+    <string name="postcard_post_card">Cartão-postal</string>
+    <string name="postcard_greetings_from">Lembranças de</string>
+    <string name="postcard_greetings">Um selo para você</string>
+    <string name="postcard_made_with">feito com %1$s</string>
+    <string name="export_preview_cd">Prévia da imagem que você vai compartilhar</string>
+
+    <!-- Paywall (Pro) -->
+    <string name="paywall_close">Fechar</string>
+    <string name="paywall_restore">Restaurar</string>
+    <string name="paywall_overline">Pro · a coleção completa</string>
+    <plurals name="paywall_overline_albums">
+        <item quantity="one">Álbum grátis: %1$d de %1$d usado</item>
+        <item quantity="many">Álbuns grátis: %1$d de %1$d usados</item>
+        <item quantity="other">Álbuns grátis: %1$d de %1$d usados</item>
+    </plurals>
+    <string name="paywall_overline_watermark">Pro · sem marca d’água</string>
+    <string name="paywall_overline_widget">Pro · widgets na tela inicial</string>
+    <string name="paywall_overline_filters">Pro · todos os filtros</string>
+    <string name="paywall_overline_edges">Pro · todas as bordas</string>
+    <string name="paywall_overline_postcards">Pro · cartões-postais e cartões</string>
+    <string name="paywall_overline_scrapbook">Pro · salvar esta página de scrapbook</string>
+    <string name="paywall_title">Complete sua coleção</string>
+    <string name="paywall_perk_albums">Álbuns ilimitados</string>
+    <string name="paywall_perk_no_mark">Exportar sem marca d’água</string>
+    <string name="paywall_perk_edges">Todas as bordas</string>
+    <string name="paywall_perk_filters">Os 9 filtros de foto</string>
+    <string name="paywall_perk_postcards">Cartões-postais e cartões</string>
+    <string name="paywall_perk_scrapbook">Páginas de scrapbook e adesivos</string>
+    <string name="paywall_perk_widget">Widget na tela inicial</string>
+    <string name="paywall_soon">em breve</string>
+    <string name="paywall_soon_note">os tracejados estão chegando · o Pro já inclui</string>
+    <string name="paywall_perk_soon_cd">%1$s, em breve</string>
+    <string name="paywall_plan_lifetime">Vitalício</string>
+    <string name="paywall_plan_yearly">Anual</string>
+    <string name="paywall_per_lifetime">uma vez</string>
+    <string name="paywall_per_yearly">por ano</string>
+    <string name="paywall_best_value">Melhor custo</string>
+    <string name="paywall_price_missing">–</string>
+    <string name="paywall_plan_cd">%1$s, %2$s %3$s</string>
+    <string name="paywall_plan_loading_cd">%1$s, carregando o preço</string>
+    <string name="paywall_selected_cd">Selecionado</string>
+    <string name="paywall_buy_lifetime">Pro para sempre</string>
+    <string name="paywall_buy_yearly">Começar o Pro anual</string>
+    <string name="paywall_yearly_terms">Renova todo ano · cancele quando quiser no Google Play</string>
+    <string name="paywall_free_note">suas próprias fotos continuam grátis, sempre</string>
+    <string name="paywall_loading">Pedindo os preços ao Google Play…</string>
+    <string name="paywall_unavailable">Não foi possível falar com o Google Play agora. Verifique sua conexão e tente de novo.</string>
+    <string name="paywall_retry">Tentar de novo</string>
+    <string name="paywall_pending">Pagamento pendente. O Pro é ativado assim que o Google Play confirmar.</string>
+    <string name="paywall_failed">A compra não foi concluída. Você não foi cobrado.</string>
+    <string name="paywall_nothing_to_restore">Nenhuma compra do Pro nesta conta do Google.</string>
+    <string name="paywall_restore_failed">Não foi possível falar com o Google Play para restaurar. Tente mais tarde.</string>
+
+    <!-- Pro entry points -->
+    <string name="export_remove_with_pro">Remover com Pro</string>
+    <string name="profile_get_pro">Assinar Pro</string>
+
+    <!-- Profile -->
+    <string name="profile_passport">Passaporte de selos</string>
+    <string name="profile_passport_since">Passaporte de selos · desde %1$s</string>
+    <string name="pattern_passport_since">d MMM yyyy</string>
+    <string name="profile_stamps">Selos</string>
+    <string name="profile_albums_places">Álbuns · lugares</string>
+    <string name="profile_albums_places_value">%1$d · %2$d</string>
+    <string name="profile_best_streak">Melhor sequência</string>
+    <plurals name="profile_days">
+        <item quantity="one">%d dia</item>
+        <item quantity="many">%d dias</item>
+        <item quantity="other">%d dias</item>
+    </plurals>
+    <string name="profile_newest_stamp">Seu selo mais novo</string>
+    <string name="profile_first_stamp_slot">seu primeiro selo vai aqui</string>
+    <string name="profile_pro_postmark">Pro</string>
+    <string name="profile_pro_postmark_date">obrigado</string>
+    <string name="profile_pro_title">Pro</string>
+    <string name="profile_pro_perks">álbuns ilimitados · todos os visuais · sem marca d’água</string>
+    <string name="profile_restore_prompt">Já comprou?</string>
+    <string name="profile_restoring">Consultando o Google Play…</string>
+    <string name="profile_section_reminder">Lembrete da sequência</string>
+    <string name="profile_section_backup">Backup</string>
+    <string name="profile_section_camera">Câmera</string>
+    <string name="profile_mirror_selfies">Selfies espelhadas</string>
+    <string name="profile_mirror_note">salva as selfies como aparecem na prévia</string>
+    <string name="profile_postmark_place">Lugar nos carimbos</string>
+    <string name="profile_place_on_note">só a cidade, nunca o lugar exato</string>
+    <string name="profile_place_off_note">os carimbos mostram só a data</string>
+    <string name="profile_place_blocked_note">a localização está desativada para este app, então os carimbos mostram só a data</string>
+    <string name="profile_open_settings">Abrir configurações</string>
+    <string name="profile_rate">Avaliar o app</string>
+    <string name="profile_feedback">Enviar feedback</string>
+    <string name="profile_feedback_subject">Feedback do %1$s · versão %2$s</string>
+    <string name="profile_privacy">Política de privacidade</string>
+    <string name="profile_credits">Créditos</string>
+    <string name="credits_title">Créditos</string>
+    <string name="credits_note">feito com isto, obrigado</string>
+    <string name="credits_section_fonts">Fontes</string>
+    <string name="credits_section_map">Mapa</string>
+    <string name="credits_section_code">Código</string>
+    <string name="credits_licence_ofl">SIL OFL 1.1</string>
+    <string name="credits_licence_apache">Apache 2.0</string>
+    <string name="credits_licence_public_domain">Domínio público</string>
+    <string name="credits_licence_google">Termos do Google</string>
+    <string name="credits_footer">toque em um para ler a licença</string>
+    <string name="profile_version">versão %1$s</string>
+
+    <!-- Rewarded ads -->
+    <string name="ad_loading">Carregando anúncio…</string>
+    <string name="ad_unavailable">Nenhum anúncio disponível agora. Tente mais tarde.</string>
+    <string name="export_remove_once">Uma vez · anúncio curto</string>
+    <string name="export_unlocked_note">sem marca d’água neste selo · obrigado por assistir</string>
+    <string name="paywall_ad_album_note">só precisa de mais um álbum?</string>
+    <string name="paywall_ad_album">+1 álbum · anúncio curto</string>
+    <string name="profile_ad_privacy">Opções de privacidade de anúncios</string>
+
+    <!-- Streak reminder -->
+    <string name="reminder_turn_on">Me lembre de fazer um selo</string>
+    <string name="reminder_off_note">um aviso à noite, só se hoje ainda não tiver selo</string>
+    <string name="reminder_on_note">lembrete às %1$s · fica quieto quando hoje já tem selo</string>
+    <string name="reminder_time_label">Lembrar às %1$s</string>
+    <string name="reminder_blocked_note">as notificações estão desativadas para este app, então o lembrete não pode aparecer</string>
+    <string name="reminder_open_settings">Abrir configurações</string>
+    <string name="reminder_channel_name">Lembrete da sequência</string>
+    <string name="reminder_channel_desc">Um aviso à noite, só nos dias em que você ainda não fez um selo.</string>
+    <plurals name="reminder_title_streak" tools:ignore="ImpliedQuantity">
+        <item quantity="one">Continue sua sequência: o dia 2 está esperando</item>
+        <item quantity="many">Continue sua sequência de %1$d dias</item>
+        <item quantity="other">Continue sua sequência de %1$d dias</item>
+    </plurals>
+    <string name="reminder_body_streak">Uma foto antes da meia-noite mantém ela viva.</string>
+    <string name="reminder_title_start">O selo de hoje está esperando</string>
+    <string name="reminder_body_start">Uma foto transforma o dia de hoje em selo.</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_create">Fazer backup em um arquivo</string>
+    <string name="backup_restore">Restaurar de um arquivo</string>
+    <string name="backup_never">nenhum backup ainda · seus selos estão só neste celular</string>
+    <string name="backup_last">último backup · %1$s</string>
+    <string name="backup_writing">fazendo backup…</string>
+    <string name="backup_writing_progress">fazendo backup… %1$d de %2$d</string>
+    <string name="backup_reading">lendo o backup…</string>
+    <string name="backup_restoring_progress">restaurando… %1$d de %2$d</string>
+    <plurals name="backup_done">
+        <item quantity="one">%1$d selo salvo · guarde o arquivo em um lugar seguro</item>
+        <item quantity="many">%1$d selos salvos · guarde o arquivo em um lugar seguro</item>
+        <item quantity="other">%1$d selos salvos · guarde o arquivo em um lugar seguro</item>
+    </plurals>
+    <plurals name="backup_restored_stamps">
+        <item quantity="one">%1$d selo de volta</item>
+        <item quantity="many">%1$d selos de volta</item>
+        <item quantity="other">%1$d selos de volta</item>
+    </plurals>
+    <plurals name="backup_restored_albums">
+        <item quantity="one">%1$d álbum novo</item>
+        <item quantity="many">%1$d álbuns novos</item>
+        <item quantity="other">%1$d álbuns novos</item>
+    </plurals>
+    <plurals name="backup_already_here">
+        <item quantity="one">%1$d já estava aqui</item>
+        <item quantity="many">%1$d já estavam aqui</item>
+        <item quantity="other">%1$d já estavam aqui</item>
+    </plurals>
+    <string name="backup_restored_nothing">nada de novo nesse backup</string>
+    <string name="backup_not_a_backup">Esse arquivo não é um backup de selos.</string>
+    <string name="backup_newer">Esse backup é de uma versão mais nova do app. Atualize o app e tente de novo.</string>
+    <string name="backup_failed">Não foi possível gravar o backup. Veja se há espaço livre e tente de novo.</string>
+    <string name="backup_restore_failed">A restauração parou no meio. Tente de novo: os selos que já voltaram ficam e não serão duplicados.</string>
+
+    <!-- First run -->
+    <string name="welcome_skip">Pular</string>
+    <string name="welcome_title">Transforme o dia de hoje em selo</string>
+    <string name="welcome_body">Tire uma foto e ela vira um selo postal, carimbado com sua cidade e a data, colado em um álbum. Um por dia mantém a sequência.</string>
+    <string name="welcome_step_1">toque abaixo</string>
+    <string name="welcome_step_2">tire a foto</string>
+    <string name="welcome_step_3">cole no álbum</string>
+    <string name="welcome_from_photos">Das minhas fotos</string>
+    <string name="welcome_make_stamp">Fazer meu primeiro selo</string>
+    <string name="welcome_postmark_city">OLÁ</string>
+    <string name="welcome_art_description">Três selos de exemplo, um carimbado hoje</string>
+
+    <!-- Album page export -->
+    <string name="page_export_title">Compartilhar esta página</string>
+    <string name="page_export_watermark_note">pequena marca “%1$s” no pé da página</string>
+    <string name="page_export_unlocked_note">sem marca d’água neste álbum · obrigado por assistir</string>
+
+    <!-- Stamp detail -->
+    <string name="album_open_stamp">Abrir selo</string>
+    <string name="detail_number">Nº %1$d em %2$s</string>
+    <string name="detail_more_cd">Mais opções do selo</string>
+    <string name="detail_title_hint">Dê um título</string>
+    <string name="detail_title_label">Título do selo</string>
+    <string name="detail_when_where">%1$s · %2$s</string>
+    <string name="detail_reframe">Reenquadrar</string>
+    <string name="detail_move">Mover para outro álbum</string>
+    <string name="detail_delete">Excluir selo</string>
+    <string name="detail_delete_title">Excluir este selo?</string>
+    <string name="detail_delete_note">o selo e a foto saem do app para sempre (uma foto escolhida da galeria continua lá)</string>
+    <string name="detail_keep">Manter</string>
+    <string name="detail_delete_confirm">Excluir</string>
+
+    <!-- Home-screen widgets -->
+    <string name="widget_name_stamp">Selo de hoje</string>
+    <string name="widget_desc_stamp">O selo de hoje, solto na sua tela inicial</string>
+    <string name="widget_name_envelope">Envelope de correio aéreo</string>
+    <string name="widget_desc_envelope">O selo de hoje e sua sequência, num envelope de correio aéreo</string>
+    <string name="widget_name_strip">Tira do álbum</string>
+    <string name="widget_desc_strip">Os selos dos seus últimos dias numa tira de página de álbum</string>
+    <string name="widget_today_slot">selo de hoje…</string>
+    <string name="widget_stamp_today">Carimbar hoje</string>
+    <string name="widget_waiting">O selo de hoje está esperando</string>
+    <string name="widget_stamped">Carimbado!</string>
+    <string name="widget_stamp_it">Carimbar</string>
+    <string name="widget_today">hoje</string>
+    <string name="widget_start">comece hoje</string>
+    <string name="widget_pro">Pro</string>
+    <plurals name="widget_days" tools:ignore="ImpliedQuantity">
+        <item quantity="one">dia</item>
+        <item quantity="many">dias</item>
+        <item quantity="other">dias</item>
+    </plurals>
+    <plurals name="widget_days_in_row" tools:ignore="ImpliedQuantity">
+        <item quantity="one">dia seguido</item>
+        <item quantity="many">dias seguidos</item>
+        <item quantity="other">dias seguidos</item>
+    </plurals>
+    <string name="widget_cd_waiting">O selo de hoje está esperando. Abre a câmera</string>
+    <string name="widget_cd_stamped">Selo de hoje, %1$s. Abre no álbum dele</string>
+    <string name="widget_cd_locked">Os widgets fazem parte do Pro. Abre o Pro</string>
+
+    <!-- Filters -->
+    <string name="filter_original">Original</string>
+    <string name="filter_postcard">Postal</string>
+    <string name="filter_engraved">Gravura</string>
+    <string name="filter_sepia">Sépia</string>
+    <string name="filter_vivid">Vivo</string>
+    <string name="filter_faded">Desbotado</string>
+    <string name="filter_red_ink">Tinta vermelha</string>
+    <string name="filter_blue_ink">Tinta azul</string>
+    <string name="filter_green_ink">Tinta verde</string>
+    <string name="filter_pro_tag">PRO</string>
+    <string name="filter_pro_cd">%1$s, filtro Pro</string>
+    <string name="filter_keep_with_pro">Manter %1$s com Pro</string>
+    <string name="filter_button">Visual</string>
+    <string name="filter_done">Pronto</string>
+    <string name="filter_try_note">Só experimentando: seu selo mantém o visual salvo</string>
+    <string name="look_tab_filters">Filtros</string>
+    <string name="look_tab_edges">Bordas</string>
+    <string name="look_keep_with_pro">Manter este visual com Pro</string>
+    <string name="edge_classic">Clássica</string>
+    <string name="edge_fine">Fina</string>
+    <string name="edge_bold">Grossa</string>
+    <string name="edge_scallop">Ondulada</string>
+    <string name="edge_pro_cd">Borda %1$s, Pro</string>
+    <string name="edge_trial_tag">24H</string>
+    <string name="edge_trial_cd">Borda %1$s, sua por um dia</string>
+    <string name="edge_keep_with_pro">Manter a borda %1$s com Pro</string>
+    <string name="edge_ad">24 h · anúncio curto</string>
+    <string name="edge_try_note">Só experimentando · ou fique com ela por um dia</string>
+
+    <!-- Scrapbook pages -->
+    <string name="album_scrapbook">Página de scrapbook</string>
+    <string name="album_open_scrapbook">editar esta página</string>
+    <string name="scrap_title_new">Nova página de scrapbook</string>
+    <string name="scrap_title_edit">Página de scrapbook</string>
+    <string name="scrap_close_cd">Fechar</string>
+    <string name="scrap_delete_cd">Excluir esta página</string>
+    <string name="scrap_save_cd">Salvar página</string>
+    <string name="scrap_tab_layouts">Layouts</string>
+    <string name="scrap_tab_stamps">Selos</string>
+    <string name="scrap_tab_stickers">Adesivos</string>
+    <string name="scrap_tab_write">Escrever</string>
+    <string name="scrap_layout_diary">diário</string>
+    <string name="scrap_layout_collage">colagem</string>
+    <string name="scrap_layout_postcard">postal</string>
+    <string name="scrap_layout_big">um grande</string>
+    <string name="scrap_write_note">Adicionar nota</string>
+    <string name="scrap_write_title">Adicionar título</string>
+    <string name="scrap_write_done_cd">Terminar de escrever</string>
+    <string name="scrap_note_placeholder">escreva algo…</string>
+    <string name="scrap_title_placeholder">Um título</string>
+    <string name="scrap_no_stamps">ainda não há selos neste álbum…</string>
+    <string name="scrap_add_cd">adicionar à página</string>
+    <string name="scrap_hint">arraste, faça pinça e gire o que quiser na página</string>
+    <string name="scrap_hint_pro">experimente tudo · salvar a página vem com Pro</string>
+    <string name="scrap_hint_full">a página está cheia · tire algo para adicionar mais</string>
+    <string name="scrap_tool_write">Mudar o texto</string>
+    <string name="scrap_tool_smaller">Menor</string>
+    <string name="scrap_tool_bigger">Maior</string>
+    <string name="scrap_tool_turn">Girar</string>
+    <string name="scrap_tool_front">Trazer para a frente</string>
+    <string name="scrap_tool_remove">Tirar da página</string>
+    <string name="scrap_leave_question">Sair sem salvar as alterações?</string>
+    <string name="scrap_leave">Sair</string>
+    <string name="scrap_keep_editing">Continuar editando</string>
+    <string name="scrap_delete_question">Excluir esta página de scrapbook? Seus selos continuam no álbum.</string>
+    <string name="scrap_delete">Excluir</string>
+    <string name="scrap_keep_page">Manter</string>
+    <string name="scrap_sticker_par_avion" tools:ignore="Typos">Etiqueta par avion</string>
+    <string name="scrap_sticker_received">Carimbo “recebido”</string>
+    <string name="scrap_sticker_fragile">Carimbo “frágil”</string>
+    <string name="scrap_sticker_wax_seal">Selo de cera</string>
+    <string name="scrap_sticker_ticket">Ingresso</string>
+    <string name="scrap_sticker_heart">Coração</string>
+    <string name="scrap_sticker_star">Estrela</string>
+    <string name="scrap_sticker_postmark">Carimbo postal</string>
+    <string name="scrap_sticker_tape_red">Fita vermelha</string>
+    <string name="scrap_sticker_tape_cobalt">Fita azul</string>
+    <string name="scrap_sticker_tape_sage">Fita verde</string>
+    <string name="scrap_par_avion" tools:ignore="Typos">PAR AVION</string>
+    <string name="scrap_by_air_mail">via aérea</string>
+    <string name="scrap_rubber_received">RECEBIDO</string>
+    <string name="scrap_rubber_fragile">FRÁGIL</string>
+    <string name="scrap_admit_one">INGRESSO</string>
+    <string name="scrap_sample_ticket">HOJE</string>
+    <string name="scrap_sample_postmark">HOJE\nENVIADO</string>
+
+    <!-- Map tab -->
+    <string name="map_title">Seu mundo</string>
+    <string name="map_stats">%1$s · %2$s · %3$s</string>
+    <plurals name="map_country_count">
+        <item quantity="one">%d país</item>
+        <item quantity="many">%d países</item>
+        <item quantity="other">%d países</item>
+    </plurals>
+    <plurals name="map_place_count">
+        <item quantity="one">%d lugar</item>
+        <item quantity="many">%d lugares</item>
+        <item quantity="other">%d lugares</item>
+    </plurals>
+    <string name="map_tab_countries">Países</string>
+    <string name="map_tab_places">Lugares</string>
+    <string name="map_empty">selos que sabem onde foram feitos aparecem aqui</string>
+    <string name="map_empty_place_off">Lugar nos carimbos está desativado, então os selos novos não aparecem no mapa. Você pode ativar em Perfil.</string>
+    <plurals name="map_unplaced">
+        <item quantity="one">%d selo não tem lugar no carimbo, então não está no mapa</item>
+        <item quantity="many">%d selos não têm lugar no carimbo, então não estão no mapa</item>
+        <item quantity="other">%d selos não têm lugar no carimbo, então não estão no mapa</item>
+    </plurals>
+    <string name="map_somewhere_in">Algum lugar · %1$s</string>
+    <string name="map_since">desde %1$s</string>
+    <string name="map_place_line">%1$s · desde %2$s</string>
+    <string name="map_count_note">×%1$d</string>
+    <string name="map_row_cd">%1$s, %2$s</string>
+    <string name="map_cd">Mapa-múndi. Carimbado em %1$s</string>
+    <string name="map_cd_empty">Mapa-múndi, ainda sem selos</string>
+    <string name="map_country_cd">Mapa de %1$s</string>
+    <string name="map_rename_cd">Renomear %1$s</string>
+    <string name="map_rename_title">Renomear este lugar</string>
+    <string name="map_rename_hint">Cidade</string>
+    <plurals name="map_rename_note" tools:ignore="ImpliedQuantity">
+        <item quantity="one">muda o carimbo do selo dele</item>
+        <item quantity="many">muda o carimbo dos %1$d selos dele</item>
+        <item quantity="other">muda o carimbo dos %1$d selos dele</item>
+    </plurals>
+    <string name="map_rename_empty_note">se ficar vazio, vira “Algum lugar · %1$s”</string>
+    <string name="map_rename_save">Salvar nome</string>
+    <string name="map_country_gone">não há mais selos daqui</string>
+    <string name="visa_first">Primeiro selo %1$s</string>
+    <string name="visa_cd">Visto de %1$s. Primeiro selo %2$s. %3$s, %4$s.</string>
+    <string name="map_share_cd">Compartilhar seu mapa</string>
+    <string name="map_export_title">Compartilhe seu mundo</string>
+    <string name="map_export_world">Mundo</string>
+    <string name="map_export_passport">Passaporte</string>
+    <string name="map_export_overline">Meu mundo · %1$s</string>
+    <plurals name="map_export_headline">
+        <item quantity="one">Selos em %d país</item>
+        <item quantity="many">Selos em %d países</item>
+        <item quantity="other">Selos em %d países</item>
+    </plurals>
+    <plurals name="map_export_stat_countries" tools:ignore="ImpliedQuantity">
+        <item quantity="one">país</item>
+        <item quantity="many">países</item>
+        <item quantity="other">países</item>
+    </plurals>
+    <plurals name="map_export_stat_places" tools:ignore="ImpliedQuantity">
+        <item quantity="one">lugar</item>
+        <item quantity="many">lugares</item>
+        <item quantity="other">lugares</item>
+    </plurals>
+    <plurals name="map_export_stat_stamps" tools:ignore="ImpliedQuantity">
+        <item quantity="one">selo</item>
+        <item quantity="many">selos</item>
+        <item quantity="other">selos</item>
+    </plurals>
+    <string name="map_export_country">%1$s ×%2$d</string>
+    <string name="map_export_more">+%1$d a mais</string>
+    <string name="map_export_counts">%1$s · %2$s</string>
+    <string name="map_export_passport_overline">Passaporte · vistos</string>
+    <string name="map_export_watermark_note">pequena marca “%1$s” no pé da imagem</string>
+    <string name="map_export_unlocked_note">sem marca d’água enquanto o mapa estiver aberto · obrigado por assistir</string>
+
+    <!-- Sticker sheets -->
+    <string name="album_print_stickers">Imprimir adesivos</string>
+    <string name="stickers_title">Imprimir adesivos</string>
+    <string name="stickers_overline">Álbum · %1$s</string>
+    <plurals name="stickers_page_count">
+        <item quantity="one">%d página</item>
+        <item quantity="many">%d páginas</item>
+        <item quantity="other">%d páginas</item>
+    </plurals>
+    <string name="stickers_counts">%1$s · %2$s</string>
+    <string name="stickers_look">Visual</string>
+    <string name="stickers_look_grid">Grade</string>
+    <string name="stickers_look_mix">Mistura</string>
+    <string name="stickers_size">Tamanho</string>
+    <string name="stickers_size_small">Pequeno</string>
+    <string name="stickers_size_medium">Médio</string>
+    <string name="stickers_size_large">Grande</string>
+    <string name="stickers_paper">Papel</string>
+    <string name="stickers_paper_a4">A4</string>
+    <string name="stickers_paper_letter">Carta</string>
+    <string name="stickers_postmarks">Carimbos nos selos</string>
+    <string name="stickers_cut_hint">recorte nas linhas tracejadas</string>
+    <string name="stickers_page_of">Página %1$d de %2$d</string>
+    <string name="stickers_page_number">%1$d / %2$d</string>
+    <string name="stickers_print">Imprimir ou salvar PDF</string>
+    <string name="stickers_print_pro">Imprimir com Pro</string>
+    <string name="stickers_pro_note">as folhas de adesivos vêm com Pro · experimente todos os visuais aqui antes</string>
+    <string name="stickers_preparing">Preparando a página %1$d de %2$d…</string>
+    <string name="stickers_failed">Não foi possível criar o PDF. Tente de novo.</string>
+    <string name="stickers_empty">ainda não há selos neste álbum · faça alguns e volte</string>
+    <string name="stickers_job">Adesivos de %1$s</string>
+    <string name="stickers_page_cd">Folha de adesivos, página %1$d de %2$d, %3$s</string>
+    <string name="paywall_overline_stickers">Pro · folhas de adesivos para imprimir</string>
+    <string name="paywall_perk_stickers">Folhas de adesivos para imprimir</string>
+</resources>

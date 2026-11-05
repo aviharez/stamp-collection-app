@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Indonesian (Bahasa Indonesia). Casual "kamu". "Prangko" for stamp, "cap pos" for postmark,
+     "runtunan" for streak. -->
+<resources>
+    <!-- Nav bar -->
+    <string name="nav_album">Album</string>
+    <string name="nav_calendar">Kalender</string>
+    <string name="nav_map">Peta</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Common -->
+    <string name="cd_back">Kembali</string>
+    <string name="cd_close">Tutup</string>
+    <string name="pattern_overline_date">EEE · dd MMM</string>
+    <string name="pattern_short_date">d MMM</string>
+    <string name="pattern_weekday">EEEE</string>
+    <string name="pattern_postmark_day">dd MMM</string>
+    <string name="pattern_postmark_year">yyyy</string>
+    <string name="pattern_postmark_date">dd MMM yy</string>
+
+    <string name="postmark_description">Cap pos: %1$s, %2$s</string>
+
+    <!-- Home -->
+    <string name="home_title">Album prangkomu</string>
+    <string name="home_all_albums">Semua album</string>
+    <string name="home_empty_page">prangkomu akan menempel di sini</string>
+    <string name="home_today_title">Prangko hari ini menunggu</string>
+    <string name="home_today_body">Simpan satu momen dari hari %1$s.</string>
+    <string name="home_stamp_it">Buat prangko</string>
+    <string name="home_page_label">%1$s · hlm.%2$d</string>
+    <string name="home_page_cd">Halaman terbaru %1$s. Membuka albumnya.</string>
+    <string name="home_today_done_title">Prangko hari ini sudah ada</string>
+    <string name="home_today_done_body">Ditempel di %1$s.</string>
+    <string name="home_stamp_another">Buat lagi</string>
+
+    <!-- Collections -->
+    <string name="collections_overline">Album saya</string>
+    <string name="collections_title">Koleksi</string>
+    <string name="collections_filter_all">Semua</string>
+    <string name="collections_stats">%1$s · %2$s</string>
+    <plurals name="collections_album_count">
+        <item quantity="other">%d album</item>
+    </plurals>
+    <string name="collections_cover_note">%1$s · %2$s</string>
+    <string name="collections_updated_today">diperbarui hari ini</string>
+    <string name="collections_updated_yesterday">diperbarui kemarin</string>
+    <string name="collections_updated_on">diperbarui %1$s</string>
+    <string name="collections_empty_cover">masih kosong</string>
+    <string name="collections_empty_filter">belum ada apa-apa di sini</string>
+
+    <!-- Album page -->
+    <string name="album_next_stamp">prangko berikutnya…</string>
+    <string name="album_share_page">Bagikan halaman ini</string>
+    <string name="album_page_of">Halaman %1$d dari %2$d</string>
+    <string name="album_stats">%1$s · %2$s</string>
+    <plurals name="album_day_count">
+        <item quantity="other">%d hari</item>
+    </plurals>
+    <string name="album_more_cd">Opsi album</string>
+    <string name="album_next_stamp_cd">Ambil prangko berikutnya untuk album ini</string>
+    <string name="album_edit_title">Album ini</string>
+    <string name="album_edit_save">Simpan perubahan</string>
+    <string name="stamp_cd">Prangko, %1$s</string>
+    <string name="stamp_page_note">%1$s · %2$s</string>
+
+    <!-- Camera -->
+    <string name="camera_header_place">%1$s · %2$s</string>
+    <string name="camera_shutter">Ambil foto prangko</string>
+    <string name="camera_flip">Ganti kamera</string>
+    <string name="camera_mirror_on">Cermin selfie: aktif. Selfie disimpan seperti di pratinjau</string>
+    <string name="camera_mirror_off">Cermin selfie: mati. Selfie disimpan seperti orang lain melihatmu</string>
+    <string name="camera_flash_off">Flash mati</string>
+    <string name="camera_flash_auto">Flash otomatis</string>
+    <string name="camera_flash_on">Flash nyala</string>
+    <string name="camera_exposure">Eksposur</string>
+    <string name="camera_zoom_cd">Zoom %1$s kali</string>
+    <string name="camera_high_res">50MP</string>
+    <string name="camera_high_res_cd">Mode 50 megapiksel</string>
+    <string name="camera_focus_cd">Pratinjau kamera. Ketuk untuk fokus, cubit untuk zoom.</string>
+    <string name="camera_unavailable">Kamera sedang tidak tersedia.</string>
+    <string name="camera_stamping">membuat prangkomu…</string>
+    <string name="camera_capture_failed">Yang itu tidak menempel. Coba lagi.</string>
+    <string name="storage_full">Memori ponselmu penuh. Kosongkan sedikit ruang, lalu coba lagi.</string>
+    <string name="shape_portrait">Potret</string>
+    <string name="shape_landscape">Lanskap</string>
+    <string name="shape_square">Persegi</string>
+    <string name="shape_circle">Lingkaran</string>
+
+    <!-- Camera permission pre-prompt -->
+    <string name="camera_permission_title">Ayo bikin prangko</string>
+    <string name="camera_permission_body">Kamera mengubah momen jadi prangko. Fotomu tetap di ponselmu.</string>
+    <string name="camera_permission_denied_body">Akses kamera mati. Kamu bisa menyalakannya di Setelan kapan saja.</string>
+    <string name="camera_permission_allow">Izinkan kamera</string>
+    <string name="camera_permission_settings">Buka setelan</string>
+    <string name="camera_permission_not_now">Nanti saja</string>
+
+    <!-- Stamped! -->
+    <string name="camera_gallery">Buat prangko dari foto di galerimu</string>
+    <string name="camera_permission_gallery">Pakai foto saja</string>
+    <string name="import_make">Jadikan prangko</string>
+    <string name="import_rotate">Putar foto</string>
+    <string name="import_pick_another">Pilih foto lain</string>
+    <string name="import_hint">cubit &amp; geser agar pas</string>
+    <string name="import_loading">membuka fotomu…</string>
+    <string name="import_saving">menempelkannya…</string>
+    <string name="import_failed">Foto itu tidak bisa dibuka.</string>
+    <string name="import_photo_cd">Fotomu di balik bingkai prangko. Cubit untuk zoom, geser untuk memindahkan.</string>
+    <string name="stamped_pick_another">Pilih lain</string>
+    <string name="stamped_title">Dicap!</string>
+    <string name="stamped_retake">Ulangi</string>
+    <string name="stamped_share">Bagikan</string>
+    <string name="stamped_stick">Tempel di album</string>
+    <string name="stamped_subtitle_placeholder">Prangko terbarumu</string>
+    <string name="stamped_subtitle">No. %1$d di album %2$s</string>
+    <string name="stamped_change_album">Ganti album</string>
+    <string name="stamped_caption_hint">tulis sesuatu di baliknya…</string>
+    <string name="stamped_caption_label">Catatan di balik prangko</string>
+    <string name="stamped_stamp_cd">Prangko barumu</string>
+    <string name="location_ask_title">Cantumkan kotamu di cap pos?</string>
+    <string name="location_ask_body">Hanya lokasi kasar, untuk kota dan negara saja. Tanpa itu, cap pos hanya menampilkan tanggal.</string>
+    <string name="location_ask_allow">Izinkan</string>
+    <string name="location_ask_not_now">Nanti saja</string>
+
+    <!-- Albums -->
+    <plurals name="album_stamp_count">
+        <item quantity="other">%d prangko</item>
+    </plurals>
+    <string name="album_picker_title">Tempel di…</string>
+    <string name="album_new">Album baru</string>
+    <string name="album_new_title">Album baru</string>
+    <string name="album_new_name_hint">Beri nama, misalnya Liburan ke Jepang</string>
+    <string name="album_new_category">Jenis</string>
+    <string name="album_new_cover">Sampul</string>
+    <string name="album_new_create">Buat album</string>
+    <string name="album_category_trips">Perjalanan</string>
+    <string name="album_category_everyday">Sehari-hari</string>
+    <string name="album_category_pets">Hewan</string>
+    <string name="album_category_other">Lainnya</string>
+    <string name="album_cover_ink">Biru tinta</string>
+    <string name="album_cover_kraft">Kraft</string>
+    <string name="album_cover_sage">Hijau sage</string>
+    <string name="album_cover_red">Merah pos udara</string>
+    <string name="album_cover_cobalt">Kobalt</string>
+    <string name="album_selected_cd">Album saat ini</string>
+
+    <!-- Streak -->
+    <plurals name="streak_days">
+        <item quantity="other">%d hari berturut-turut</item>
+    </plurals>
+    <plurals name="streak_days_short">
+        <item quantity="other">%d hari</item>
+    </plurals>
+    <string name="streak_personal_best">%1$s · rekor pribadi</string>
+    <string name="streak_day_one">Hari pertama runtunanmu</string>
+
+    <!-- Data -->
+    <string name="album_default_name">Sehari-hari</string>
+
+    <!-- Calendar -->
+    <string name="pattern_month">LLLL</string>
+    <string name="pattern_day_title">EEE d MMM</string>
+    <string name="pattern_day_cd">EEEE d MMMM</string>
+    <string name="pattern_detail_date">EEE d MMM yyyy</string>
+    <string name="calendar_overline">Kalender · %1$s</string>
+    <string name="calendar_prev">Bulan sebelumnya</string>
+    <string name="calendar_next">Bulan berikutnya</string>
+    <plurals name="calendar_streak_unit">
+        <item quantity="other">hari berturut-turut</item>
+    </plurals>
+    <string name="calendar_streak_start">Buat prangko hari ini untuk memulai runtunan</string>
+    <string name="calendar_streak_keep">terbaik %1$d · buat prangko hari ini agar tetap jalan</string>
+    <string name="calendar_streak_tomorrow">kembali besok untuk hari ke-2</string>
+    <string name="calendar_streak_best_now">rekor terbaikmu!</string>
+    <string name="calendar_streak_best">terbaik %1$d</string>
+    <string name="calendar_day_title">%1$s · %2$s</string>
+    <string name="calendar_empty_today">Belum ada prangko hari ini</string>
+    <string name="calendar_empty_day">tidak ada prangko di hari ini</string>
+    <string name="calendar_pick_day">ketuk hari yang ada prangkonya untuk melihatnya</string>
+    <string name="calendar_more">+%1$d</string>
+    <string name="calendar_count">×%1$d</string>
+    <string name="calendar_day_cd">%1$s, %2$s</string>
+    <string name="calendar_no_stamps">tidak ada prangko</string>
+    <string name="calendar_today_cd">Hari ini, %1$s</string>
+
+    <!-- Export / share sheet -->
+    <string name="export_title">Bagikan prangkomu</string>
+    <string name="export_background">Latar</string>
+    <string name="export_bg_transparent">Transparan</string>
+    <string name="export_bg_paper">Kertas</string>
+    <string name="export_postmark">Cap pos</string>
+    <string name="export_on">Nyala</string>
+    <string name="export_off">Mati</string>
+    <string name="export_watermark_note">tanda kecil “%1$s” di pojok</string>
+    <string name="export_pro_note">resolusi penuh · tanpa tanda air</string>
+    <string name="export_save">Simpan</string>
+    <string name="export_saving">Menyimpan…</string>
+    <string name="export_saved">Tersimpan</string>
+    <string name="export_share">Bagikan</string>
+    <string name="export_failed">Gambarnya gagal dibuat. Coba lagi.</string>
+    <string name="export_send_as">Kirim sebagai</string>
+    <string name="export_as_stamp">Prangko</string>
+    <string name="postcard_envelope">Amplop</string>
+    <string name="postcard_postcard">Kartu pos</string>
+    <string name="postcard_card">Kartu</string>
+    <string name="postcard_pro_tag">PRO</string>
+    <string name="postcard_pro_cd">%1$s, Pro</string>
+    <string name="postcard_send_with_pro">Kirim %1$s dengan Pro</string>
+    <string name="postcard_pro_note">tampilan ini bagian dari Pro · Amplop gratis</string>
+    <string name="postcard_to_hint">untuk… (namanya)</string>
+    <string name="postcard_to_label">Untuk siapa</string>
+    <string name="postcard_message_hint">beberapa kata untuknya…</string>
+    <string name="postcard_message_label">Pesan di kartu pos</string>
+    <string name="postcard_to">Untuk %1$s</string>
+    <string name="postcard_par_avion">Par avion · pos udara</string>
+    <string name="postcard_post_card">Kartu pos</string>
+    <string name="postcard_greetings_from">Salam dari</string>
+    <string name="postcard_greetings">Prangko untukmu</string>
+    <string name="postcard_made_with">dibuat dengan %1$s</string>
+    <string name="export_preview_cd">Pratinjau gambar yang akan kamu bagikan</string>
+
+    <!-- Paywall (Pro) -->
+    <string name="paywall_close">Tutup</string>
+    <string name="paywall_restore">Pulihkan</string>
+    <string name="paywall_overline">Pro · set lengkap</string>
+    <plurals name="paywall_overline_albums">
+        <item quantity="other">Album gratis: %1$d dari %1$d terpakai</item>
+    </plurals>
+    <string name="paywall_overline_watermark">Pro · tanpa tanda air</string>
+    <string name="paywall_overline_widget">Pro · widget layar utama</string>
+    <string name="paywall_overline_filters">Pro · semua filter</string>
+    <string name="paywall_overline_edges">Pro · semua gaya tepi</string>
+    <string name="paywall_overline_postcards">Pro · tampilan kartu pos &amp; kartu</string>
+    <string name="paywall_overline_scrapbook">Pro · simpan halaman scrapbook ini</string>
+    <string name="paywall_title">Lengkapi koleksimu</string>
+    <string name="paywall_perk_albums">Album tanpa batas</string>
+    <string name="paywall_perk_no_mark">Ekspor tanpa tanda air</string>
+    <string name="paywall_perk_edges">Semua gaya tepi</string>
+    <string name="paywall_perk_filters">Kesembilan filter foto</string>
+    <string name="paywall_perk_postcards">Tampilan kartu pos &amp; kartu</string>
+    <string name="paywall_perk_scrapbook">Halaman scrapbook &amp; stiker</string>
+    <string name="paywall_perk_widget">Widget layar utama</string>
+    <string name="paywall_soon">segera</string>
+    <string name="paywall_soon_note">yang bergaris putus segera hadir · sudah termasuk di Pro</string>
+    <string name="paywall_perk_soon_cd">%1$s, segera hadir</string>
+    <string name="paywall_plan_lifetime">Seumur hidup</string>
+    <string name="paywall_plan_yearly">Tahunan</string>
+    <string name="paywall_per_lifetime">sekali</string>
+    <string name="paywall_per_yearly">per tahun</string>
+    <string name="paywall_best_value">Paling hemat</string>
+    <string name="paywall_price_missing">–</string>
+    <string name="paywall_plan_cd">%1$s, %2$s %3$s</string>
+    <string name="paywall_plan_loading_cd">%1$s, memuat harga</string>
+    <string name="paywall_selected_cd">Dipilih</string>
+    <string name="paywall_buy_lifetime">Ambil Pro seumur hidup</string>
+    <string name="paywall_buy_yearly">Mulai Pro tahunan</string>
+    <string name="paywall_yearly_terms">Diperpanjang tiap tahun · batalkan kapan saja di Google Play</string>
+    <string name="paywall_free_note">fotomu sendiri tetap gratis, selamanya</string>
+    <string name="paywall_loading">Menanyakan harga ke Google Play…</string>
+    <string name="paywall_unavailable">Google Play sedang tidak bisa dihubungi. Periksa koneksimu dan coba lagi.</string>
+    <string name="paywall_retry">Coba lagi</string>
+    <string name="paywall_pending">Pembayaran tertunda. Pro aktif begitu Google Play mengonfirmasinya.</string>
+    <string name="paywall_failed">Pembelian tidak berhasil. Kamu tidak dikenai biaya.</string>
+    <string name="paywall_nothing_to_restore">Tidak ada pembelian Pro di akun Google ini.</string>
+    <string name="paywall_restore_failed">Tidak bisa menghubungi Google Play untuk memulihkan. Coba lagi nanti.</string>
+
+    <!-- Pro entry points -->
+    <string name="export_remove_with_pro">Hapus dengan Pro</string>
+    <string name="profile_get_pro">Dapatkan Pro</string>
+
+    <!-- Profile -->
+    <string name="profile_passport">Paspor prangko</string>
+    <string name="profile_passport_since">Paspor prangko · sejak %1$s</string>
+    <string name="pattern_passport_since">d MMM yyyy</string>
+    <string name="profile_stamps">Prangko</string>
+    <string name="profile_albums_places">Album · tempat</string>
+    <string name="profile_albums_places_value">%1$d · %2$d</string>
+    <string name="profile_best_streak">Runtunan terbaik</string>
+    <plurals name="profile_days">
+        <item quantity="other">%d hari</item>
+    </plurals>
+    <string name="profile_newest_stamp">Prangko terbarumu</string>
+    <string name="profile_first_stamp_slot">prangko pertamamu di sini</string>
+    <string name="profile_pro_postmark">Pro</string>
+    <string name="profile_pro_postmark_date">terima kasih</string>
+    <string name="profile_pro_title">Pro</string>
+    <string name="profile_pro_perks">album tanpa batas · semua tampilan · tanpa tanda air</string>
+    <string name="profile_restore_prompt">Sudah membeli?</string>
+    <string name="profile_restoring">Memeriksa Google Play…</string>
+    <string name="profile_section_reminder">Pengingat runtunan</string>
+    <string name="profile_section_backup">Cadangan</string>
+    <string name="profile_section_camera">Kamera</string>
+    <string name="profile_mirror_selfies">Cermin selfie</string>
+    <string name="profile_mirror_note">menyimpan selfie seperti di pratinjau</string>
+    <string name="profile_postmark_place">Tempat di cap pos</string>
+    <string name="profile_place_on_note">hanya kotanya, tidak pernah lokasi persismu</string>
+    <string name="profile_place_off_note">cap pos hanya menampilkan tanggal</string>
+    <string name="profile_place_blocked_note">lokasi mati untuk aplikasi ini, jadi cap pos hanya menampilkan tanggal</string>
+    <string name="profile_open_settings">Buka setelan</string>
+    <string name="profile_rate">Beri nilai aplikasi</string>
+    <string name="profile_feedback">Kirim masukan</string>
+    <string name="profile_feedback_subject">Masukan %1$s · versi %2$s</string>
+    <string name="profile_privacy">Kebijakan privasi</string>
+    <string name="profile_credits">Kredit</string>
+    <string name="credits_title">Kredit</string>
+    <string name="credits_note">dibuat dengan ini, terima kasih</string>
+    <string name="credits_section_fonts">Font</string>
+    <string name="credits_section_map">Peta</string>
+    <string name="credits_section_code">Kode</string>
+    <string name="credits_licence_ofl">SIL OFL 1.1</string>
+    <string name="credits_licence_apache">Apache 2.0</string>
+    <string name="credits_licence_public_domain">Domain publik</string>
+    <string name="credits_licence_google">Ketentuan Google</string>
+    <string name="credits_footer">ketuk salah satu untuk membaca lisensinya</string>
+    <string name="profile_version">versi %1$s</string>
+
+    <!-- Rewarded ads -->
+    <string name="ad_loading">Memuat iklan…</string>
+    <string name="ad_unavailable">Belum ada iklan saat ini. Coba lagi nanti.</string>
+    <string name="export_remove_once">Sekali · iklan singkat</string>
+    <string name="export_unlocked_note">tanda air mati untuk prangko ini · terima kasih sudah menonton</string>
+    <string name="paywall_ad_album_note">cuma butuh satu album lagi?</string>
+    <string name="paywall_ad_album">+1 album · iklan singkat</string>
+    <string name="profile_ad_privacy">Pilihan privasi iklan</string>
+
+    <!-- Streak reminder -->
+    <string name="reminder_turn_on">Ingatkan aku membuat prangko</string>
+    <string name="reminder_off_note">satu pesan di malam hari, hanya jika hari ini belum ada prangko</string>
+    <string name="reminder_on_note">pengingat pukul %1$s · diam begitu hari ini sudah ada prangko</string>
+    <string name="reminder_time_label">Ingatkan pukul %1$s</string>
+    <string name="reminder_blocked_note">notifikasi mati untuk aplikasi ini, jadi pengingat tidak bisa muncul</string>
+    <string name="reminder_open_settings">Buka setelan</string>
+    <string name="reminder_channel_name">Pengingat runtunan</string>
+    <string name="reminder_channel_desc">Satu pesan di malam hari, hanya di hari kamu belum membuat prangko.</string>
+    <plurals name="reminder_title_streak">
+        <item quantity="other">Jaga runtunan %1$d harimu</item>
+    </plurals>
+    <string name="reminder_body_streak">Satu foto sebelum tengah malam menjaganya tetap hidup.</string>
+    <string name="reminder_title_start">Prangko hari ini menunggu</string>
+    <string name="reminder_body_start">Satu foto mengubah hari ini jadi prangko.</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_create">Cadangkan ke file</string>
+    <string name="backup_restore">Pulihkan dari file</string>
+    <string name="backup_never">belum ada cadangan · prangkomu hanya ada di ponsel ini</string>
+    <string name="backup_last">cadangan terakhir · %1$s</string>
+    <string name="backup_writing">mencadangkan…</string>
+    <string name="backup_writing_progress">mencadangkan… %1$d dari %2$d</string>
+    <string name="backup_reading">membaca cadangan…</string>
+    <string name="backup_restoring_progress">memulihkan… %1$d dari %2$d</string>
+    <plurals name="backup_done">
+        <item quantity="other">%1$d prangko dicadangkan · simpan filenya di tempat aman</item>
+    </plurals>
+    <plurals name="backup_restored_stamps">
+        <item quantity="other">%1$d prangko kembali</item>
+    </plurals>
+    <plurals name="backup_restored_albums">
+        <item quantity="other">%1$d album baru</item>
+    </plurals>
+    <plurals name="backup_already_here">
+        <item quantity="other">%1$d sudah ada</item>
+    </plurals>
+    <string name="backup_restored_nothing">tidak ada yang baru di cadangan itu</string>
+    <string name="backup_not_a_backup">File itu bukan cadangan prangko.</string>
+    <string name="backup_newer">Cadangan itu dari versi aplikasi yang lebih baru. Perbarui aplikasinya, lalu coba lagi.</string>
+    <string name="backup_failed">Cadangan gagal ditulis. Pastikan ada ruang kosong, lalu coba lagi.</string>
+    <string name="backup_restore_failed">Pemulihan berhenti di tengah jalan. Coba lagi: prangko yang sudah kembali tetap ada dan tidak akan dobel.</string>
+
+    <!-- First run -->
+    <string name="welcome_skip">Lewati</string>
+    <string name="welcome_title">Jadikan hari ini prangko</string>
+    <string name="welcome_body">Ambil foto dan jadikan prangko, dicap dengan kota dan tanggalmu, lalu tempel di album. Satu sehari menjaga runtunanmu.</string>
+    <string name="welcome_step_1">ketuk di bawah</string>
+    <string name="welcome_step_2">jepret</string>
+    <string name="welcome_step_3">tempelkan</string>
+    <string name="welcome_from_photos">Dari fotoku</string>
+    <string name="welcome_make_stamp">Buat prangko pertamaku</string>
+    <string name="welcome_postmark_city">HALO</string>
+    <string name="welcome_art_description">Tiga contoh prangko, satu dicap hari ini</string>
+
+    <!-- Album page export -->
+    <string name="page_export_title">Bagikan halaman ini</string>
+    <string name="page_export_watermark_note">tanda kecil “%1$s” di kaki halaman</string>
+    <string name="page_export_unlocked_note">tanda air mati untuk album ini · terima kasih sudah menonton</string>
+
+    <!-- Stamp detail -->
+    <string name="album_open_stamp">Buka prangko</string>
+    <string name="detail_number">No. %1$d di %2$s</string>
+    <string name="detail_more_cd">Lainnya untuk prangko ini</string>
+    <string name="detail_title_hint">Beri judul</string>
+    <string name="detail_title_label">Judul prangko</string>
+    <string name="detail_when_where">%1$s · %2$s</string>
+    <string name="detail_reframe">Bingkai ulang</string>
+    <string name="detail_move">Pindahkan ke album lain</string>
+    <string name="detail_delete">Hapus prangko</string>
+    <string name="detail_delete_title">Hapus prangko ini?</string>
+    <string name="detail_delete_note">prangko dan fotonya hilang dari aplikasi untuk selamanya (foto yang kamu pilih dari galeri tetap ada di sana)</string>
+    <string name="detail_keep">Simpan saja</string>
+    <string name="detail_delete_confirm">Hapus</string>
+
+    <!-- Home-screen widgets -->
+    <string name="widget_name_stamp">Prangko hari ini</string>
+    <string name="widget_desc_stamp">Prangko hari ini, lepas di layar utamamu</string>
+    <string name="widget_name_envelope">Amplop pos udara</string>
+    <string name="widget_desc_envelope">Prangko hari ini dan runtunanmu, dalam amplop pos udara</string>
+    <string name="widget_name_strip">Potongan album</string>
+    <string name="widget_desc_strip">Prangko beberapa hari terakhirmu di potongan halaman album</string>
+    <string name="widget_today_slot">prangko hari ini…</string>
+    <string name="widget_stamp_today">Buat hari ini</string>
+    <string name="widget_waiting">Prangko hari ini menunggu</string>
+    <string name="widget_stamped">Dicap!</string>
+    <string name="widget_stamp_it">Buat prangko</string>
+    <string name="widget_today">hari ini</string>
+    <string name="widget_start">mulai hari ini</string>
+    <string name="widget_pro">Pro</string>
+    <plurals name="widget_days">
+        <item quantity="other">hari</item>
+    </plurals>
+    <plurals name="widget_days_in_row">
+        <item quantity="other">hari berturut-turut</item>
+    </plurals>
+    <string name="widget_cd_waiting">Prangko hari ini menunggu. Membuka kamera</string>
+    <string name="widget_cd_stamped">Prangko hari ini, %1$s. Membukanya di albumnya</string>
+    <string name="widget_cd_locked">Widget adalah bagian dari Pro. Membuka Pro</string>
+
+    <!-- Filters -->
+    <string name="filter_original">Asli</string>
+    <string name="filter_postcard">Kartu pos</string>
+    <string name="filter_engraved">Ukiran</string>
+    <string name="filter_sepia">Sepia</string>
+    <string name="filter_vivid">Cerah</string>
+    <string name="filter_faded">Pudar</string>
+    <string name="filter_red_ink">Tinta merah</string>
+    <string name="filter_blue_ink">Tinta biru</string>
+    <string name="filter_green_ink">Tinta hijau</string>
+    <string name="filter_pro_tag">PRO</string>
+    <string name="filter_pro_cd">%1$s, filter Pro</string>
+    <string name="filter_keep_with_pro">Simpan %1$s dengan Pro</string>
+    <string name="filter_button">Tampilan</string>
+    <string name="filter_done">Selesai</string>
+    <string name="filter_try_note">Cuma mencoba: prangkomu tetap dengan tampilan tersimpannya</string>
+    <string name="look_tab_filters">Filter</string>
+    <string name="look_tab_edges">Tepi</string>
+    <string name="look_keep_with_pro">Simpan tampilan ini dengan Pro</string>
+    <string name="edge_classic">Klasik</string>
+    <string name="edge_fine">Halus</string>
+    <string name="edge_bold">Tebal</string>
+    <string name="edge_scallop">Gelombang</string>
+    <string name="edge_pro_cd">Tepi %1$s, Pro</string>
+    <string name="edge_trial_tag">24J</string>
+    <string name="edge_trial_cd">Tepi %1$s, milikmu selama sehari</string>
+    <string name="edge_keep_with_pro">Simpan tepi %1$s dengan Pro</string>
+    <string name="edge_ad">24 jam · iklan singkat</string>
+    <string name="edge_try_note">Cuma mencoba · atau pakai selama sehari</string>
+
+    <!-- Scrapbook pages -->
+    <string name="album_scrapbook">Halaman scrapbook</string>
+    <string name="album_open_scrapbook">ubah halaman ini</string>
+    <string name="scrap_title_new">Halaman scrapbook baru</string>
+    <string name="scrap_title_edit">Halaman scrapbook</string>
+    <string name="scrap_close_cd">Tutup</string>
+    <string name="scrap_delete_cd">Hapus halaman ini</string>
+    <string name="scrap_save_cd">Simpan halaman</string>
+    <string name="scrap_tab_layouts">Tata letak</string>
+    <string name="scrap_tab_stamps">Prangko</string>
+    <string name="scrap_tab_stickers">Stiker</string>
+    <string name="scrap_tab_write">Tulis</string>
+    <string name="scrap_layout_diary">diari</string>
+    <string name="scrap_layout_collage">kolase</string>
+    <string name="scrap_layout_postcard">kartu pos</string>
+    <string name="scrap_layout_big">satu besar</string>
+    <string name="scrap_write_note">Tambah catatan</string>
+    <string name="scrap_write_title">Tambah judul</string>
+    <string name="scrap_write_done_cd">Selesai menulis</string>
+    <string name="scrap_note_placeholder">tulis sesuatu…</string>
+    <string name="scrap_title_placeholder">Sebuah judul</string>
+    <string name="scrap_no_stamps">belum ada prangko di album ini…</string>
+    <string name="scrap_add_cd">tambahkan ke halaman</string>
+    <string name="scrap_hint">geser, cubit, dan putar apa saja di halaman</string>
+    <string name="scrap_hint_pro">coba semuanya · menyimpan halaman adalah bagian dari Pro</string>
+    <string name="scrap_hint_full">halaman penuh · hapus sesuatu untuk menambah lagi</string>
+    <string name="scrap_tool_write">Ubah kata-katanya</string>
+    <string name="scrap_tool_smaller">Perkecil</string>
+    <string name="scrap_tool_bigger">Perbesar</string>
+    <string name="scrap_tool_turn">Putar</string>
+    <string name="scrap_tool_front">Bawa ke depan</string>
+    <string name="scrap_tool_remove">Hapus dari halaman</string>
+    <string name="scrap_leave_question">Keluar tanpa menyimpan perubahan?</string>
+    <string name="scrap_leave">Keluar</string>
+    <string name="scrap_keep_editing">Lanjut mengedit</string>
+    <string name="scrap_delete_question">Hapus halaman scrapbook ini? Prangkomu tetap ada di album.</string>
+    <string name="scrap_delete">Hapus</string>
+    <string name="scrap_keep_page">Simpan saja</string>
+    <string name="scrap_sticker_par_avion">Label par avion</string>
+    <string name="scrap_sticker_received">Stempel diterima</string>
+    <string name="scrap_sticker_fragile">Stempel mudah pecah</string>
+    <string name="scrap_sticker_wax_seal">Segel lilin</string>
+    <string name="scrap_sticker_ticket">Tiket</string>
+    <string name="scrap_sticker_heart">Hati</string>
+    <string name="scrap_sticker_star">Bintang</string>
+    <string name="scrap_sticker_postmark">Cap pos</string>
+    <string name="scrap_sticker_tape_red">Selotip merah</string>
+    <string name="scrap_sticker_tape_cobalt">Selotip biru</string>
+    <string name="scrap_sticker_tape_sage">Selotip hijau</string>
+    <string name="scrap_par_avion">PAR AVION</string>
+    <string name="scrap_by_air_mail">pos udara</string>
+    <string name="scrap_rubber_received">DITERIMA</string>
+    <string name="scrap_rubber_fragile">MUDAH PECAH</string>
+    <string name="scrap_admit_one">TIKET MASUK</string>
+    <string name="scrap_sample_ticket">HARI INI</string>
+    <string name="scrap_sample_postmark">HARI INI\nDIKIRIM</string>
+
+    <!-- Map tab -->
+    <string name="map_title">Duniamu</string>
+    <string name="map_stats">%1$s · %2$s · %3$s</string>
+    <plurals name="map_country_count">
+        <item quantity="other">%d negara</item>
+    </plurals>
+    <plurals name="map_place_count">
+        <item quantity="other">%d tempat</item>
+    </plurals>
+    <string name="map_tab_countries">Negara</string>
+    <string name="map_tab_places">Tempat</string>
+    <string name="map_empty">prangko yang tahu di mana ia diambil akan muncul di sini</string>
+    <string name="map_empty_place_off">Tempat di cap pos sedang mati, jadi prangko baru tidak muncul di peta. Kamu bisa menyalakannya di Profil.</string>
+    <plurals name="map_unplaced">
+        <item quantity="other">%d prangko tidak punya tempat di cap posnya, jadi tidak ada di peta</item>
+    </plurals>
+    <string name="map_somewhere_in">Di suatu tempat di %1$s</string>
+    <string name="map_since">sejak %1$s</string>
+    <string name="map_place_line">%1$s · sejak %2$s</string>
+    <string name="map_count_note">×%1$d</string>
+    <string name="map_row_cd">%1$s, %2$s</string>
+    <string name="map_cd">Peta dunia. Dicap di %1$s</string>
+    <string name="map_cd_empty">Peta dunia, belum ada prangko</string>
+    <string name="map_country_cd">Peta %1$s</string>
+    <string name="map_rename_cd">Ganti nama %1$s</string>
+    <string name="map_rename_title">Ganti nama tempat ini</string>
+    <string name="map_rename_hint">Kota</string>
+    <plurals name="map_rename_note">
+        <item quantity="other">mengubah cap pos di %1$d prangkonya</item>
+    </plurals>
+    <string name="map_rename_empty_note">jika dikosongkan, jadi “Di suatu tempat di %1$s”</string>
+    <string name="map_rename_save">Simpan nama</string>
+    <string name="map_country_gone">tidak ada prangko dari sini lagi</string>
+    <string name="visa_first">Prangko pertama %1$s</string>
+    <string name="visa_cd">Visa %1$s. Prangko pertama %2$s. %3$s, %4$s.</string>
+    <string name="map_share_cd">Bagikan petamu</string>
+    <string name="map_export_title">Bagikan duniamu</string>
+    <string name="map_export_world">Dunia</string>
+    <string name="map_export_passport">Paspor</string>
+    <string name="map_export_overline">Duniaku · %1$s</string>
+    <plurals name="map_export_headline">
+        <item quantity="other">Dicap di %d negara</item>
+    </plurals>
+    <plurals name="map_export_stat_countries">
+        <item quantity="other">negara</item>
+    </plurals>
+    <plurals name="map_export_stat_places">
+        <item quantity="other">tempat</item>
+    </plurals>
+    <plurals name="map_export_stat_stamps">
+        <item quantity="other">prangko</item>
+    </plurals>
+    <string name="map_export_country">%1$s ×%2$d</string>
+    <string name="map_export_more">+%1$d lagi</string>
+    <string name="map_export_counts">%1$s · %2$s</string>
+    <string name="map_export_passport_overline">Paspor · visa</string>
+    <string name="map_export_watermark_note">tanda kecil “%1$s” di kaki gambar</string>
+    <string name="map_export_unlocked_note">tanda air mati selama peta terbuka · terima kasih sudah menonton</string>
+
+    <!-- Sticker sheets -->
+    <string name="album_print_stickers">Cetak stiker</string>
+    <string name="stickers_title">Cetak stiker</string>
+    <string name="stickers_overline">Album · %1$s</string>
+    <plurals name="stickers_page_count">
+        <item quantity="other">%d halaman</item>
+    </plurals>
+    <string name="stickers_counts">%1$s · %2$s</string>
+    <string name="stickers_look">Tampilan</string>
+    <string name="stickers_look_grid">Kisi</string>
+    <string name="stickers_look_mix">Campur</string>
+    <string name="stickers_size">Ukuran</string>
+    <string name="stickers_size_small">Kecil</string>
+    <string name="stickers_size_medium">Sedang</string>
+    <string name="stickers_size_large">Besar</string>
+    <string name="stickers_paper">Kertas</string>
+    <string name="stickers_paper_a4">A4</string>
+    <string name="stickers_paper_letter">Letter</string>
+    <string name="stickers_postmarks">Cap pos di prangko</string>
+    <string name="stickers_cut_hint">gunting di sepanjang garis putus-putus</string>
+    <string name="stickers_page_of">Halaman %1$d dari %2$d</string>
+    <string name="stickers_page_number">%1$d / %2$d</string>
+    <string name="stickers_print">Cetak atau simpan PDF</string>
+    <string name="stickers_print_pro">Cetak dengan Pro</string>
+    <string name="stickers_pro_note">lembar stiker bagian dari Pro · coba semua tampilan di sini dulu</string>
+    <string name="stickers_preparing">Menyiapkan halaman %1$d dari %2$d…</string>
+    <string name="stickers_failed">PDF gagal dibuat. Coba lagi.</string>
+    <string name="stickers_empty">belum ada prangko di album ini · buat beberapa, lalu kembali lagi</string>
+    <string name="stickers_job">Stiker %1$s</string>
+    <string name="stickers_page_cd">Lembar stiker, halaman %1$d dari %2$d, %3$s</string>
+    <string name="paywall_overline_stickers">Pro · lembar stiker siap cetak</string>
+    <string name="paywall_perk_stickers">Lembar stiker siap cetak</string>
+</resources>

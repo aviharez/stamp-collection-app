@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- French ("tu"). "Timbre" for stamp, "cachet" for postmark, "série" for streak.
+     Apostrophes are typographic (’) so nothing needs escaping. -->
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Nav bar -->
+    <string name="nav_album">Album</string>
+    <string name="nav_calendar">Calendrier</string>
+    <string name="nav_map">Carte</string>
+    <string name="nav_profile">Profil</string>
+
+    <!-- Common -->
+    <string name="cd_back">Retour</string>
+    <string name="cd_close">Fermer</string>
+    <string name="pattern_overline_date">EEE · d MMM</string>
+    <string name="pattern_short_date">d MMM</string>
+    <string name="pattern_weekday">EEEE</string>
+    <string name="pattern_postmark_day">dd MMM</string>
+    <string name="pattern_postmark_year">yyyy</string>
+    <string name="pattern_postmark_date">dd MMM yy</string>
+
+    <string name="postmark_description">Cachet : %1$s, %2$s</string>
+
+    <!-- Home -->
+    <string name="home_title">Ton album de timbres</string>
+    <string name="home_all_albums">Tous les albums</string>
+    <string name="home_empty_page">tes timbres se collent ici</string>
+    <string name="home_today_title">Le timbre du jour t’attend</string>
+    <string name="home_today_body">Garde un moment de ce %1$s.</string>
+    <string name="home_stamp_it">Tamponner</string>
+    <string name="home_page_label">%1$s · p.%2$d</string>
+    <string name="home_page_cd">Dernière page de %1$s. Ouvre l’album.</string>
+    <string name="home_today_done_title">Le timbre du jour est là</string>
+    <string name="home_today_done_body">Collé dans %1$s.</string>
+    <string name="home_stamp_another">Un autre timbre</string>
+
+    <!-- Collections -->
+    <string name="collections_overline">Mes albums</string>
+    <string name="collections_title">Collections</string>
+    <string name="collections_filter_all">Tous</string>
+    <string name="collections_stats">%1$s · %2$s</string>
+    <plurals name="collections_album_count">
+        <item quantity="one">%d album</item>
+        <item quantity="many">%d albums</item>
+        <item quantity="other">%d albums</item>
+    </plurals>
+    <string name="collections_cover_note">%1$s · %2$s</string>
+    <string name="collections_updated_today">mis à jour aujourd’hui</string>
+    <string name="collections_updated_yesterday">mis à jour hier</string>
+    <string name="collections_updated_on">mis à jour le %1$s</string>
+    <string name="collections_empty_cover">vide, pour l’instant</string>
+    <string name="collections_empty_filter">rien ici pour l’instant</string>
+
+    <!-- Album page -->
+    <string name="album_next_stamp">prochain timbre…</string>
+    <string name="album_share_page">Partager cette page</string>
+    <string name="album_page_of">Page %1$d sur %2$d</string>
+    <string name="album_stats">%1$s · %2$s</string>
+    <plurals name="album_day_count">
+        <item quantity="one">%d jour</item>
+        <item quantity="many">%d jours</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
+    <string name="album_more_cd">Options de l’album</string>
+    <string name="album_next_stamp_cd">Faire le prochain timbre de cet album</string>
+    <string name="album_edit_title">Cet album</string>
+    <string name="album_edit_save">Enregistrer</string>
+    <string name="stamp_cd">Timbre, %1$s</string>
+    <string name="stamp_page_note">%1$s · %2$s</string>
+
+    <!-- Camera -->
+    <string name="camera_header_place">%1$s · %2$s</string>
+    <string name="camera_shutter">Prendre la photo du timbre</string>
+    <string name="camera_flip">Changer de caméra</string>
+    <string name="camera_mirror_on">Selfie miroir activé. Enregistre le selfie comme dans l’aperçu</string>
+    <string name="camera_mirror_off">Selfie miroir désactivé. Enregistre le selfie comme les autres te voient</string>
+    <string name="camera_flash_off">Flash désactivé</string>
+    <string name="camera_flash_auto">Flash auto</string>
+    <string name="camera_flash_on">Flash activé</string>
+    <string name="camera_exposure">Exposition</string>
+    <string name="camera_zoom_cd">Zoom %1$s fois</string>
+    <string name="camera_high_res">50MP</string>
+    <string name="camera_high_res_cd">Mode 50 mégapixels</string>
+    <string name="camera_focus_cd">Aperçu de la caméra. Touche pour faire la mise au point, pince pour zoomer.</string>
+    <string name="camera_unavailable">La caméra n’est pas disponible pour le moment.</string>
+    <string name="camera_stamping">ton timbre se prépare…</string>
+    <string name="camera_capture_failed">Celui-là n’a pas collé. Réessaie.</string>
+    <string name="storage_full">Ton téléphone est plein. Libère un peu d’espace et réessaie.</string>
+    <string name="shape_portrait">Portrait</string>
+    <string name="shape_landscape">Paysage</string>
+    <string name="shape_square">Carré</string>
+    <string name="shape_circle">Rond</string>
+
+    <!-- Camera permission pre-prompt -->
+    <string name="camera_permission_title">Faisons un timbre</string>
+    <string name="camera_permission_body">La caméra transforme un moment en timbre. Tes photos restent sur ton téléphone.</string>
+    <string name="camera_permission_denied_body">L’accès à la caméra est désactivé. Tu peux l’activer dans les Paramètres quand tu veux.</string>
+    <string name="camera_permission_allow">Autoriser la caméra</string>
+    <string name="camera_permission_settings">Ouvrir les paramètres</string>
+    <string name="camera_permission_not_now">Pas maintenant</string>
+
+    <!-- Stamped! -->
+    <string name="camera_gallery">Faire un timbre avec une photo de ta galerie</string>
+    <string name="camera_permission_gallery">Utiliser une photo</string>
+    <string name="import_make">En faire un timbre</string>
+    <string name="import_rotate">Faire pivoter la photo</string>
+    <string name="import_pick_another">Choisir une autre photo</string>
+    <string name="import_hint">pince et fais glisser pour ajuster</string>
+    <string name="import_loading">ouverture de ta photo…</string>
+    <string name="import_saving">on colle…</string>
+    <string name="import_failed">Impossible d’ouvrir cette photo.</string>
+    <string name="import_photo_cd">Ta photo derrière le cadre du timbre. Pince pour zoomer, fais glisser pour déplacer.</string>
+    <string name="stamped_pick_another">Une autre</string>
+    <string name="stamped_title">Tamponné !</string>
+    <string name="stamped_retake">Reprendre</string>
+    <string name="stamped_share">Partager</string>
+    <string name="stamped_stick">Coller dans l’album</string>
+    <string name="stamped_subtitle_placeholder">Ton timbre le plus récent</string>
+    <string name="stamped_subtitle">N° %1$d de ton album %2$s</string>
+    <string name="stamped_change_album">Changer d’album</string>
+    <string name="stamped_caption_hint">écris un mot au dos…</string>
+    <string name="stamped_caption_label">Mot au dos du timbre</string>
+    <string name="stamped_stamp_cd">Ton nouveau timbre</string>
+    <string name="location_ask_title">Mettre ta ville sur le cachet ?</string>
+    <string name="location_ask_body">Juste une position approximative, pour la ville et le pays. Sans elle, les cachets indiquent la date.</string>
+    <string name="location_ask_allow">Autoriser</string>
+    <string name="location_ask_not_now">Pas maintenant</string>
+
+    <!-- Albums -->
+    <plurals name="album_stamp_count">
+        <item quantity="one">%d timbre</item>
+        <item quantity="many">%d timbres</item>
+        <item quantity="other">%d timbres</item>
+    </plurals>
+    <string name="album_picker_title">Coller dans…</string>
+    <string name="album_new">Nouvel album</string>
+    <string name="album_new_title">Un nouvel album</string>
+    <string name="album_new_name_hint">Donne-lui un nom, ex. Voyage au Japon</string>
+    <string name="album_new_category">Type</string>
+    <string name="album_new_cover">Couverture</string>
+    <string name="album_new_create">Créer l’album</string>
+    <string name="album_category_trips">Voyages</string>
+    <string name="album_category_everyday">Quotidien</string>
+    <string name="album_category_pets">Animaux</string>
+    <string name="album_category_other">Autre</string>
+    <string name="album_cover_ink">Bleu encre</string>
+    <string name="album_cover_kraft">Kraft</string>
+    <string name="album_cover_sage">Sauge</string>
+    <string name="album_cover_red">Rouge par avion</string>
+    <string name="album_cover_cobalt">Cobalt</string>
+    <string name="album_selected_cd">Album actuel</string>
+
+    <!-- Streak -->
+    <plurals name="streak_days">
+        <item quantity="one">%d jour d’affilée</item>
+        <item quantity="many">%d jours d’affilée</item>
+        <item quantity="other">%d jours d’affilée</item>
+    </plurals>
+    <plurals name="streak_days_short">
+        <item quantity="one">%d jour</item>
+        <item quantity="many">%d jours</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
+    <string name="streak_personal_best">%1$s · ton record</string>
+    <string name="streak_day_one">Premier jour de ta série</string>
+
+    <!-- Data -->
+    <string name="album_default_name">Quotidien</string>
+
+    <!-- Calendar -->
+    <string name="pattern_month">LLLL</string>
+    <string name="pattern_day_title">EEE d MMM</string>
+    <string name="pattern_day_cd">EEEE d MMMM</string>
+    <string name="pattern_detail_date">EEE d MMM yyyy</string>
+    <string name="calendar_overline">Calendrier · %1$s</string>
+    <string name="calendar_prev">Mois précédent</string>
+    <string name="calendar_next">Mois suivant</string>
+    <plurals name="calendar_streak_unit" tools:ignore="ImpliedQuantity">
+        <item quantity="one">jour d’affilée</item>
+        <item quantity="many">jours d’affilée</item>
+        <item quantity="other">jours d’affilée</item>
+    </plurals>
+    <string name="calendar_streak_start">Fais un timbre aujourd’hui pour lancer une série</string>
+    <string name="calendar_streak_keep">record %1$d · un timbre aujourd’hui pour continuer</string>
+    <string name="calendar_streak_tomorrow">reviens demain pour le jour 2</string>
+    <string name="calendar_streak_best_now">ton meilleur score !</string>
+    <string name="calendar_streak_best">record %1$d</string>
+    <string name="calendar_day_title">%1$s · %2$s</string>
+    <string name="calendar_empty_today">Pas encore de timbre aujourd’hui</string>
+    <string name="calendar_empty_day">aucun timbre ce jour-là</string>
+    <string name="calendar_pick_day">touche un jour tamponné pour le voir</string>
+    <string name="calendar_more">+%1$d</string>
+    <string name="calendar_count">×%1$d</string>
+    <string name="calendar_day_cd">%1$s, %2$s</string>
+    <string name="calendar_no_stamps">aucun timbre</string>
+    <string name="calendar_today_cd">Aujourd’hui, %1$s</string>
+
+    <!-- Export / share sheet -->
+    <string name="export_title">Partage ton timbre</string>
+    <string name="export_background">Fond</string>
+    <string name="export_bg_transparent">Transparent</string>
+    <string name="export_bg_paper">Papier</string>
+    <string name="export_postmark">Cachet</string>
+    <string name="export_on">Oui</string>
+    <string name="export_off">Non</string>
+    <string name="export_watermark_note">petite mention « %1$s » dans le coin</string>
+    <string name="export_pro_note">pleine résolution · sans filigrane</string>
+    <string name="export_save">Enregistrer</string>
+    <string name="export_saving">Enregistrement…</string>
+    <string name="export_saved">Enregistré</string>
+    <string name="export_share">Partager</string>
+    <string name="export_failed">Impossible de créer l’image. Réessaie.</string>
+    <string name="export_send_as">Envoyer en</string>
+    <string name="export_as_stamp">Timbre</string>
+    <string name="postcard_envelope">Enveloppe</string>
+    <string name="postcard_postcard">Carte postale</string>
+    <string name="postcard_card">Carte</string>
+    <string name="postcard_pro_tag">PRO</string>
+    <string name="postcard_pro_cd">%1$s, Pro</string>
+    <string name="postcard_send_with_pro">Envoyer %1$s avec Pro</string>
+    <string name="postcard_pro_note">ce style vient avec Pro · l’Enveloppe est gratuite</string>
+    <string name="postcard_to_hint">pour… (son prénom)</string>
+    <string name="postcard_to_label">Pour qui</string>
+    <string name="postcard_message_hint">quelques mots pour cette personne…</string>
+    <string name="postcard_message_label">Message de la carte</string>
+    <string name="postcard_to">Pour %1$s</string>
+    <string name="postcard_par_avion">Par avion · by air mail</string>
+    <string name="postcard_post_card">Carte postale</string>
+    <string name="postcard_greetings_from">Bons baisers de</string>
+    <string name="postcard_greetings">Un timbre pour toi</string>
+    <string name="postcard_made_with">fait avec %1$s</string>
+    <string name="export_preview_cd">Aperçu de l’image que tu vas partager</string>
+
+    <!-- Paywall (Pro) -->
+    <string name="paywall_close">Fermer</string>
+    <string name="paywall_restore">Restaurer</string>
+    <string name="paywall_overline">Pro · la collection complète</string>
+    <plurals name="paywall_overline_albums">
+        <item quantity="one">Album gratuit : %1$d sur %1$d utilisé</item>
+        <item quantity="many">Albums gratuits : %1$d sur %1$d utilisés</item>
+        <item quantity="other">Albums gratuits : %1$d sur %1$d utilisés</item>
+    </plurals>
+    <string name="paywall_overline_watermark">Pro · sans filigrane</string>
+    <string name="paywall_overline_widget">Pro · widgets d’écran d’accueil</string>
+    <string name="paywall_overline_filters">Pro · tous les filtres</string>
+    <string name="paywall_overline_edges">Pro · toutes les dentelures</string>
+    <string name="paywall_overline_postcards">Pro · cartes postales et cartes</string>
+    <string name="paywall_overline_scrapbook">Pro · garder cette page de scrapbook</string>
+    <string name="paywall_title">Complète ta collection</string>
+    <string name="paywall_perk_albums">Albums illimités</string>
+    <string name="paywall_perk_no_mark">Exports sans filigrane</string>
+    <string name="paywall_perk_edges">Toutes les dentelures</string>
+    <string name="paywall_perk_filters">Les 9 filtres photo</string>
+    <string name="paywall_perk_postcards">Cartes postales et cartes</string>
+    <string name="paywall_perk_scrapbook">Pages de scrapbook et stickers</string>
+    <string name="paywall_perk_widget">Widget d’écran d’accueil</string>
+    <string name="paywall_soon">bientôt</string>
+    <string name="paywall_soon_note">ceux en pointillés arrivent · Pro les inclut</string>
+    <string name="paywall_perk_soon_cd">%1$s, bientôt</string>
+    <string name="paywall_plan_lifetime">À vie</string>
+    <string name="paywall_plan_yearly">Annuel</string>
+    <string name="paywall_per_lifetime">une fois</string>
+    <string name="paywall_per_yearly">par an</string>
+    <string name="paywall_best_value">Meilleure offre</string>
+    <string name="paywall_price_missing">–</string>
+    <string name="paywall_plan_cd">%1$s, %2$s %3$s</string>
+    <string name="paywall_plan_loading_cd">%1$s, chargement du prix</string>
+    <string name="paywall_selected_cd">Sélectionné</string>
+    <string name="paywall_buy_lifetime">Pro pour toujours</string>
+    <string name="paywall_buy_yearly">Démarrer Pro annuel</string>
+    <string name="paywall_yearly_terms">Renouvelé chaque année · résiliable à tout moment dans Google Play</string>
+    <string name="paywall_free_note">tes propres photos restent gratuites, toujours</string>
+    <string name="paywall_loading">Demande des prix à Google Play…</string>
+    <string name="paywall_unavailable">Impossible de joindre Google Play pour le moment. Vérifie ta connexion et réessaie.</string>
+    <string name="paywall_retry">Réessayer</string>
+    <string name="paywall_pending">Paiement en attente. Pro s’activera dès que Google Play le confirmera.</string>
+    <string name="paywall_failed">L’achat n’a pas abouti. Tu n’as pas été débité.</string>
+    <string name="paywall_nothing_to_restore">Aucun achat Pro sur ce compte Google.</string>
+    <string name="paywall_restore_failed">Impossible de joindre Google Play pour restaurer. Réessaie plus tard.</string>
+
+    <!-- Pro entry points -->
+    <string name="export_remove_with_pro">Retirer avec Pro</string>
+    <string name="profile_get_pro">Passer à Pro</string>
+
+    <!-- Profile -->
+    <string name="profile_passport">Passeport de timbres</string>
+    <string name="profile_passport_since">Passeport de timbres · depuis le %1$s</string>
+    <string name="pattern_passport_since">d MMM yyyy</string>
+    <string name="profile_stamps">Timbres</string>
+    <string name="profile_albums_places">Albums · lieux</string>
+    <string name="profile_albums_places_value">%1$d · %2$d</string>
+    <string name="profile_best_streak">Meilleure série</string>
+    <plurals name="profile_days">
+        <item quantity="one">%d jour</item>
+        <item quantity="many">%d jours</item>
+        <item quantity="other">%d jours</item>
+    </plurals>
+    <string name="profile_newest_stamp">Ton timbre le plus récent</string>
+    <string name="profile_first_stamp_slot">ton premier timbre ira ici</string>
+    <string name="profile_pro_postmark">Pro</string>
+    <string name="profile_pro_postmark_date">merci</string>
+    <string name="profile_pro_title">Pro</string>
+    <string name="profile_pro_perks">albums illimités · tous les styles · sans filigrane</string>
+    <string name="profile_restore_prompt">Déjà acheté ?</string>
+    <string name="profile_restoring">Vérification auprès de Google Play…</string>
+    <string name="profile_section_reminder">Rappel de série</string>
+    <string name="profile_section_backup">Sauvegarde</string>
+    <string name="profile_section_camera">Caméra</string>
+    <string name="profile_mirror_selfies">Selfies en miroir</string>
+    <string name="profile_mirror_note">enregistre les selfies comme dans l’aperçu</string>
+    <string name="profile_postmark_place">Lieu sur les cachets</string>
+    <string name="profile_place_on_note">seulement la ville, jamais l’endroit exact</string>
+    <string name="profile_place_off_note">les cachets n’indiquent que la date</string>
+    <string name="profile_place_blocked_note">la localisation est désactivée pour cette appli, les cachets n’indiquent donc que la date</string>
+    <string name="profile_open_settings">Ouvrir les paramètres</string>
+    <string name="profile_rate">Noter l’appli</string>
+    <string name="profile_feedback">Envoyer un avis</string>
+    <string name="profile_feedback_subject">Avis sur %1$s · version %2$s</string>
+    <string name="profile_privacy">Politique de confidentialité</string>
+    <string name="profile_credits">Crédits</string>
+    <string name="credits_title">Crédits</string>
+    <string name="credits_note">fait avec tout ça, merci</string>
+    <string name="credits_section_fonts">Polices</string>
+    <string name="credits_section_map">Carte</string>
+    <string name="credits_section_code">Code</string>
+    <string name="credits_licence_ofl">SIL OFL 1.1</string>
+    <string name="credits_licence_apache">Apache 2.0</string>
+    <string name="credits_licence_public_domain">Domaine public</string>
+    <string name="credits_licence_google">Conditions de Google</string>
+    <string name="credits_footer">touche une ligne pour lire sa licence</string>
+    <string name="profile_version">version %1$s</string>
+
+    <!-- Rewarded ads -->
+    <string name="ad_loading">Chargement de la pub…</string>
+    <string name="ad_unavailable">Aucune pub disponible pour le moment. Réessaie plus tard.</string>
+    <string name="export_remove_once">Une fois · courte pub</string>
+    <string name="export_unlocked_note">sans filigrane pour ce timbre · merci d’avoir regardé</string>
+    <string name="paywall_ad_album_note">juste besoin d’un album de plus ?</string>
+    <string name="paywall_ad_album">+1 album · courte pub</string>
+    <string name="profile_ad_privacy">Choix de confidentialité des pubs</string>
+
+    <!-- Streak reminder -->
+    <string name="reminder_turn_on">Me rappeler de faire un timbre</string>
+    <string name="reminder_off_note">une notification le soir, seulement s’il n’y a pas encore de timbre aujourd’hui</string>
+    <string name="reminder_on_note">rappel à %1$s · reste silencieux si aujourd’hui est déjà tamponné</string>
+    <string name="reminder_time_label">Rappel à %1$s</string>
+    <string name="reminder_blocked_note">les notifications sont désactivées pour cette appli, le rappel ne peut donc pas s’afficher</string>
+    <string name="reminder_open_settings">Ouvrir les paramètres</string>
+    <string name="reminder_channel_name">Rappel de série</string>
+    <string name="reminder_channel_desc">Une notification le soir, seulement les jours où tu n’as pas encore fait de timbre.</string>
+    <plurals name="reminder_title_streak" tools:ignore="ImpliedQuantity">
+        <item quantity="one">Continue ta série : le jour 2 t’attend</item>
+        <item quantity="many">Garde ta série de %1$d jours</item>
+        <item quantity="other">Garde ta série de %1$d jours</item>
+    </plurals>
+    <string name="reminder_body_streak">Une photo avant minuit la garde en vie.</string>
+    <string name="reminder_title_start">Le timbre du jour t’attend</string>
+    <string name="reminder_body_start">Une photo transforme aujourd’hui en timbre.</string>
+
+    <!-- Backup / restore -->
+    <string name="backup_create">Sauvegarder dans un fichier</string>
+    <string name="backup_restore">Restaurer depuis un fichier</string>
+    <string name="backup_never">pas encore de sauvegarde · tes timbres ne sont que sur ce téléphone</string>
+    <string name="backup_last">dernière sauvegarde · %1$s</string>
+    <string name="backup_writing">sauvegarde…</string>
+    <string name="backup_writing_progress">sauvegarde… %1$d sur %2$d</string>
+    <string name="backup_reading">lecture de la sauvegarde…</string>
+    <string name="backup_restoring_progress">restauration… %1$d sur %2$d</string>
+    <plurals name="backup_done">
+        <item quantity="one">%1$d timbre sauvegardé · garde le fichier en lieu sûr</item>
+        <item quantity="many">%1$d timbres sauvegardés · garde le fichier en lieu sûr</item>
+        <item quantity="other">%1$d timbres sauvegardés · garde le fichier en lieu sûr</item>
+    </plurals>
+    <plurals name="backup_restored_stamps">
+        <item quantity="one">%1$d timbre revenu</item>
+        <item quantity="many">%1$d timbres revenus</item>
+        <item quantity="other">%1$d timbres revenus</item>
+    </plurals>
+    <plurals name="backup_restored_albums">
+        <item quantity="one">%1$d nouvel album</item>
+        <item quantity="many">%1$d nouveaux albums</item>
+        <item quantity="other">%1$d nouveaux albums</item>
+    </plurals>
+    <plurals name="backup_already_here">
+        <item quantity="one">%1$d était déjà là</item>
+        <item quantity="many">%1$d étaient déjà là</item>
+        <item quantity="other">%1$d étaient déjà là</item>
+    </plurals>
+    <string name="backup_restored_nothing">rien de nouveau dans cette sauvegarde</string>
+    <string name="backup_not_a_backup">Ce fichier n’est pas une sauvegarde de timbres.</string>
+    <string name="backup_newer">Cette sauvegarde vient d’une version plus récente de l’appli. Mets l’appli à jour et réessaie.</string>
+    <string name="backup_failed">Impossible d’écrire la sauvegarde. Vérifie l’espace libre et réessaie.</string>
+    <string name="backup_restore_failed">La restauration s’est arrêtée en route. Réessaie : les timbres déjà revenus restent et ne seront pas doublés.</string>
+
+    <!-- First run -->
+    <string name="welcome_skip">Passer</string>
+    <string name="welcome_title">Fais d’aujourd’hui un timbre</string>
+    <string name="welcome_body">Prends une photo, elle devient un timbre-poste, oblitéré avec ta ville et la date, et collé dans un album. Un par jour entretient ta série.</string>
+    <string name="welcome_step_1">touche en bas</string>
+    <string name="welcome_step_2">prends la photo</string>
+    <string name="welcome_step_3">colle-la</string>
+    <string name="welcome_from_photos">Depuis mes photos</string>
+    <string name="welcome_make_stamp">Faire mon premier timbre</string>
+    <string name="welcome_postmark_city">BONJOUR</string>
+    <string name="welcome_art_description">Trois timbres d’exemple, dont un tamponné aujourd’hui</string>
+
+    <!-- Album page export -->
+    <string name="page_export_title">Partager cette page</string>
+    <string name="page_export_watermark_note">petite mention « %1$s » en bas de page</string>
+    <string name="page_export_unlocked_note">sans filigrane pour cet album · merci d’avoir regardé</string>
+
+    <!-- Stamp detail -->
+    <string name="album_open_stamp">Ouvrir le timbre</string>
+    <string name="detail_number">N° %1$d dans %2$s</string>
+    <string name="detail_more_cd">Plus d’options pour le timbre</string>
+    <string name="detail_title_hint">Donne-lui un titre</string>
+    <string name="detail_title_label">Titre du timbre</string>
+    <string name="detail_when_where">%1$s · %2$s</string>
+    <string name="detail_reframe">Recadrer</string>
+    <string name="detail_move">Déplacer vers un autre album</string>
+    <string name="detail_delete">Supprimer le timbre</string>
+    <string name="detail_delete_title">Supprimer ce timbre ?</string>
+    <string name="detail_delete_note">le timbre et sa photo quittent l’appli pour de bon (une photo choisie dans ta galerie y reste)</string>
+    <string name="detail_keep">Garder</string>
+    <string name="detail_delete_confirm">Supprimer</string>
+
+    <!-- Home-screen widgets -->
+    <string name="widget_name_stamp">Timbre du jour</string>
+    <string name="widget_desc_stamp">Le timbre du jour, posé sur ton écran d’accueil</string>
+    <string name="widget_name_envelope">Enveloppe par avion</string>
+    <string name="widget_desc_envelope">Le timbre du jour et ta série, sur une enveloppe par avion</string>
+    <string name="widget_name_strip">Bande d’album</string>
+    <string name="widget_desc_strip">Les timbres de tes derniers jours sur une bande de page d’album</string>
+    <string name="widget_today_slot">timbre du jour…</string>
+    <string name="widget_stamp_today">Tamponner aujourd’hui</string>
+    <string name="widget_waiting">Le timbre du jour t’attend</string>
+    <string name="widget_stamped">Tamponné !</string>
+    <string name="widget_stamp_it">Tamponner</string>
+    <string name="widget_today">aujourd’hui</string>
+    <string name="widget_start">commence aujourd’hui</string>
+    <string name="widget_pro">Pro</string>
+    <plurals name="widget_days" tools:ignore="ImpliedQuantity">
+        <item quantity="one">jour</item>
+        <item quantity="many">jours</item>
+        <item quantity="other">jours</item>
+    </plurals>
+    <plurals name="widget_days_in_row" tools:ignore="ImpliedQuantity">
+        <item quantity="one">jour d’affilée</item>
+        <item quantity="many">jours d’affilée</item>
+        <item quantity="other">jours d’affilée</item>
+    </plurals>
+    <string name="widget_cd_waiting">Le timbre du jour t’attend. Ouvre la caméra</string>
+    <string name="widget_cd_stamped">Timbre du jour, %1$s. L’ouvre dans son album</string>
+    <string name="widget_cd_locked">Les widgets font partie de Pro. Ouvre Pro</string>
+
+    <!-- Filters -->
+    <string name="filter_original">Original</string>
+    <string name="filter_postcard">Carte postale</string>
+    <string name="filter_engraved">Gravure</string>
+    <string name="filter_sepia">Sépia</string>
+    <string name="filter_vivid">Vif</string>
+    <string name="filter_faded">Délavé</string>
+    <string name="filter_red_ink">Encre rouge</string>
+    <string name="filter_blue_ink">Encre bleue</string>
+    <string name="filter_green_ink">Encre verte</string>
+    <string name="filter_pro_tag">PRO</string>
+    <string name="filter_pro_cd">%1$s, filtre Pro</string>
+    <string name="filter_keep_with_pro">Garder %1$s avec Pro</string>
+    <string name="filter_button">Style</string>
+    <string name="filter_done">OK</string>
+    <string name="filter_try_note">Juste un essai : ton timbre garde son style enregistré</string>
+    <string name="look_tab_filters">Filtres</string>
+    <string name="look_tab_edges">Dentelures</string>
+    <string name="look_keep_with_pro">Garder ce style avec Pro</string>
+    <string name="edge_classic">Classique</string>
+    <string name="edge_fine">Fine</string>
+    <string name="edge_bold">Large</string>
+    <string name="edge_scallop">Festonnée</string>
+    <string name="edge_pro_cd">Dentelure %1$s, Pro</string>
+    <string name="edge_trial_tag">24H</string>
+    <string name="edge_trial_cd">Dentelure %1$s, à toi pour une journée</string>
+    <string name="edge_keep_with_pro">Garder la dentelure %1$s avec Pro</string>
+    <string name="edge_ad">24 h · courte pub</string>
+    <string name="edge_try_note">Juste un essai · ou garde-la une journée</string>
+
+    <!-- Scrapbook pages -->
+    <string name="album_scrapbook">Page de scrapbook</string>
+    <string name="album_open_scrapbook">modifier cette page</string>
+    <string name="scrap_title_new">Nouvelle page de scrapbook</string>
+    <string name="scrap_title_edit">Page de scrapbook</string>
+    <string name="scrap_close_cd">Fermer</string>
+    <string name="scrap_delete_cd">Supprimer cette page</string>
+    <string name="scrap_save_cd">Enregistrer la page</string>
+    <string name="scrap_tab_layouts">Mises en page</string>
+    <string name="scrap_tab_stamps">Timbres</string>
+    <string name="scrap_tab_stickers">Stickers</string>
+    <string name="scrap_tab_write">Écrire</string>
+    <string name="scrap_layout_diary">journal</string>
+    <string name="scrap_layout_collage">collage</string>
+    <string name="scrap_layout_postcard">carte</string>
+    <string name="scrap_layout_big">un grand</string>
+    <string name="scrap_write_note">Ajouter une note</string>
+    <string name="scrap_write_title">Ajouter un titre</string>
+    <string name="scrap_write_done_cd">Terminer l’écriture</string>
+    <string name="scrap_note_placeholder">écris quelque chose…</string>
+    <string name="scrap_title_placeholder">Un titre</string>
+    <string name="scrap_no_stamps">pas encore de timbres dans cet album…</string>
+    <string name="scrap_add_cd">ajouter à la page</string>
+    <string name="scrap_hint">fais glisser, pince et tourne tout ce que tu veux sur la page</string>
+    <string name="scrap_hint_pro">essaie tout · garder la page vient avec Pro</string>
+    <string name="scrap_hint_full">la page est pleine · retire quelque chose pour en ajouter</string>
+    <string name="scrap_tool_write">Modifier le texte</string>
+    <string name="scrap_tool_smaller">Plus petit</string>
+    <string name="scrap_tool_bigger">Plus grand</string>
+    <string name="scrap_tool_turn">Tourner</string>
+    <string name="scrap_tool_front">Mettre devant</string>
+    <string name="scrap_tool_remove">Retirer de la page</string>
+    <string name="scrap_leave_question">Quitter sans enregistrer tes modifications ?</string>
+    <string name="scrap_leave">Quitter</string>
+    <string name="scrap_keep_editing">Continuer</string>
+    <string name="scrap_delete_question">Supprimer cette page de scrapbook ? Tes timbres restent dans l’album.</string>
+    <string name="scrap_delete">Supprimer</string>
+    <string name="scrap_keep_page">Garder</string>
+    <string name="scrap_sticker_par_avion">Étiquette par avion</string>
+    <string name="scrap_sticker_received">Tampon « reçu »</string>
+    <string name="scrap_sticker_fragile">Tampon « fragile »</string>
+    <string name="scrap_sticker_wax_seal">Cachet de cire</string>
+    <string name="scrap_sticker_ticket">Ticket</string>
+    <string name="scrap_sticker_heart">Cœur</string>
+    <string name="scrap_sticker_star">Étoile</string>
+    <string name="scrap_sticker_postmark">Cachet postal</string>
+    <string name="scrap_sticker_tape_red">Washi rouge</string>
+    <string name="scrap_sticker_tape_cobalt">Washi bleu</string>
+    <string name="scrap_sticker_tape_sage">Washi vert</string>
+    <string name="scrap_par_avion">PAR AVION</string>
+    <string name="scrap_by_air_mail">by air mail</string>
+    <string name="scrap_rubber_received">REÇU</string>
+    <string name="scrap_rubber_fragile">FRAGILE</string>
+    <string name="scrap_admit_one">ENTRÉE</string>
+    <string name="scrap_sample_ticket">AUJOURD’HUI</string>
+    <string name="scrap_sample_postmark">AUJOURD’HUI\nENVOYÉ</string>
+
+    <!-- Map tab -->
+    <string name="map_title">Ton monde</string>
+    <string name="map_stats">%1$s · %2$s · %3$s</string>
+    <plurals name="map_country_count">
+        <item quantity="one">%d pays</item>
+        <item quantity="many">%d pays</item>
+        <item quantity="other">%d pays</item>
+    </plurals>
+    <plurals name="map_place_count">
+        <item quantity="one">%d lieu</item>
+        <item quantity="many">%d lieux</item>
+        <item quantity="other">%d lieux</item>
+    </plurals>
+    <string name="map_tab_countries">Pays</string>
+    <string name="map_tab_places">Lieux</string>
+    <string name="map_empty">les timbres qui savent où ils ont été faits apparaissent ici</string>
+    <string name="map_empty_place_off">Lieu sur les cachets est désactivé, les nouveaux timbres n’apparaissent donc pas sur la carte. Tu peux l’activer dans Profil.</string>
+    <plurals name="map_unplaced">
+        <item quantity="one">%d timbre n’a pas de lieu sur son cachet, il n’est donc pas sur la carte</item>
+        <item quantity="many">%d timbres n’ont pas de lieu sur leur cachet, ils ne sont donc pas sur la carte</item>
+        <item quantity="other">%d timbres n’ont pas de lieu sur leur cachet, ils ne sont donc pas sur la carte</item>
+    </plurals>
+    <string name="map_somewhere_in">Quelque part · %1$s</string>
+    <string name="map_since">depuis le %1$s</string>
+    <string name="map_place_line">%1$s · depuis le %2$s</string>
+    <string name="map_count_note">×%1$d</string>
+    <string name="map_row_cd">%1$s, %2$s</string>
+    <string name="map_cd">Carte du monde. Tamponné dans %1$s</string>
+    <string name="map_cd_empty">Carte du monde, pas encore de timbres</string>
+    <string name="map_country_cd">Carte : %1$s</string>
+    <string name="map_rename_cd">Renommer %1$s</string>
+    <string name="map_rename_title">Renommer ce lieu</string>
+    <string name="map_rename_hint">Ville</string>
+    <plurals name="map_rename_note" tools:ignore="ImpliedQuantity">
+        <item quantity="one">change le cachet de son timbre</item>
+        <item quantity="many">change le cachet de ses %1$d timbres</item>
+        <item quantity="other">change le cachet de ses %1$d timbres</item>
+    </plurals>
+    <string name="map_rename_empty_note">laissé vide, il devient « Quelque part · %1$s »</string>
+    <string name="map_rename_save">Enregistrer le nom</string>
+    <string name="map_country_gone">plus aucun timbre d’ici</string>
+    <string name="visa_first">Premier timbre : %1$s</string>
+    <string name="visa_cd">Visa pour %1$s. Premier timbre %2$s. %3$s, %4$s.</string>
+    <string name="map_share_cd">Partager ta carte</string>
+    <string name="map_export_title">Partage ton monde</string>
+    <string name="map_export_world">Monde</string>
+    <string name="map_export_passport">Passeport</string>
+    <string name="map_export_overline">Mon monde · %1$s</string>
+    <plurals name="map_export_headline">
+        <item quantity="one">Tamponné dans %d pays</item>
+        <item quantity="many">Tamponné dans %d pays</item>
+        <item quantity="other">Tamponné dans %d pays</item>
+    </plurals>
+    <plurals name="map_export_stat_countries" tools:ignore="ImpliedQuantity">
+        <item quantity="one">pays</item>
+        <item quantity="many">pays</item>
+        <item quantity="other">pays</item>
+    </plurals>
+    <plurals name="map_export_stat_places" tools:ignore="ImpliedQuantity">
+        <item quantity="one">lieu</item>
+        <item quantity="many">lieux</item>
+        <item quantity="other">lieux</item>
+    </plurals>
+    <plurals name="map_export_stat_stamps" tools:ignore="ImpliedQuantity">
+        <item quantity="one">timbre</item>
+        <item quantity="many">timbres</item>
+        <item quantity="other">timbres</item>
+    </plurals>
+    <string name="map_export_country">%1$s ×%2$d</string>
+    <string name="map_export_more">+%1$d de plus</string>
+    <string name="map_export_counts">%1$s · %2$s</string>
+    <string name="map_export_passport_overline">Passeport · visas</string>
+    <string name="map_export_watermark_note">petite mention « %1$s » en bas</string>
+    <string name="map_export_unlocked_note">sans filigrane tant que la carte est ouverte · merci d’avoir regardé</string>
+
+    <!-- Sticker sheets -->
+    <string name="album_print_stickers">Imprimer des stickers</string>
+    <string name="stickers_title">Imprimer des stickers</string>
+    <string name="stickers_overline">Album · %1$s</string>
+    <plurals name="stickers_page_count">
+        <item quantity="one">%d page</item>
+        <item quantity="many">%d pages</item>
+        <item quantity="other">%d pages</item>
+    </plurals>
+    <string name="stickers_counts">%1$s · %2$s</string>
+    <string name="stickers_look">Style</string>
+    <string name="stickers_look_grid">Grille</string>
+    <string name="stickers_look_mix">Mélange</string>
+    <string name="stickers_size">Taille</string>
+    <string name="stickers_size_small">Petite</string>
+    <string name="stickers_size_medium">Moyenne</string>
+    <string name="stickers_size_large">Grande</string>
+    <string name="stickers_paper">Papier</string>
+    <string name="stickers_paper_a4">A4</string>
+    <string name="stickers_paper_letter">Lettre US</string>
+    <string name="stickers_postmarks">Cachets sur les timbres</string>
+    <string name="stickers_cut_hint">découpe le long des pointillés</string>
+    <string name="stickers_page_of">Page %1$d sur %2$d</string>
+    <string name="stickers_page_number">%1$d / %2$d</string>
+    <string name="stickers_print">Imprimer ou enregistrer en PDF</string>
+    <string name="stickers_print_pro">Imprimer avec Pro</string>
+    <string name="stickers_pro_note">les planches de stickers viennent avec Pro · essaie tous les styles ici d’abord</string>
+    <string name="stickers_preparing">Préparation de la page %1$d sur %2$d…</string>
+    <string name="stickers_failed">Impossible de créer le PDF. Réessaie.</string>
+    <string name="stickers_empty">pas encore de timbres dans cet album · fais-en quelques-uns et reviens</string>
+    <string name="stickers_job">Stickers %1$s</string>
+    <string name="stickers_page_cd">Planche de stickers, page %1$d sur %2$d, %3$s</string>
+    <string name="paywall_overline_stickers">Pro · planches de stickers à imprimer</string>
+    <string name="paywall_perk_stickers">Planches de stickers à imprimer</string>
+</resources>

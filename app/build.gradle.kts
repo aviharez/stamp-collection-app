@@ -82,6 +82,10 @@ android {
         compose = true
         resValues = true
     }
+    // Per-app language (Android 13+ Settings → Apps → Postmory → Language) from the values-xx folders.
+    androidResources {
+        generateLocaleConfig = true
+    }
 }
 
 room3 {
