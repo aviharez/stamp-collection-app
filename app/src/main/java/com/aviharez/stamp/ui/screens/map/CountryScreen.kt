@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -80,7 +83,8 @@ fun CountryContent(
             start = s.screen,
             end = s.screen,
             top = s.l,
-            bottom = contentPadding.calculateBottomPadding() + s.l,
+            // No nav bar on this page: clear the system gesture bar instead.
+            bottom = maxOf(contentPadding.calculateBottomPadding(), WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()) + s.l,
         ),
         horizontalArrangement = Arrangement.spacedBy(s.s),
         verticalArrangement = Arrangement.spacedBy(s.s),

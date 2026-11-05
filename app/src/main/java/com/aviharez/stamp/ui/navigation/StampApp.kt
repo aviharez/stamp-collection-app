@@ -327,7 +327,7 @@ private const val ScreenMillis = 240
 private fun NavDestination.tab(): NavTab? = when {
     isAny(HomeRoute::class, CollectionsRoute::class) -> NavTab.Album
     isAny(CalendarRoute::class) -> NavTab.Calendar
-    isAny(MapRoute::class, MapCountryRoute::class) -> NavTab.Map
+    isAny(MapRoute::class) -> NavTab.Map
     isAny(ProfileRoute::class) -> NavTab.Profile
     else -> null
 }
