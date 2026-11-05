@@ -44,6 +44,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable data object MapRoute
 
+/** Map tab: one country's visa, its places and stamps. [code] = ISO 3166 alpha-2, upper case. */
+@Serializable data class MapCountryRoute(val code: String)
+
 @Serializable data object ProfileRoute
 
 /** Debug builds only: component gallery. */

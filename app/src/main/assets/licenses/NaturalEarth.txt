@@ -1,0 +1,3 @@
+World map (world_50m.bin): country outlines from Natural Earth, 1:50m Admin 0 – Countries
+(https://www.naturalearthdata.com). Natural Earth data is in the public domain; no permission
+is needed to use it. Simplified and converted by tools/world_map.py.

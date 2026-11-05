@@ -78,6 +78,14 @@ interface StampDao {
     )
     fun observeTotals(): Flow<StampTotalsRow>
 
+    /** Stamps whose postmark names a country (the map), newest first. */
+    @Query("SELECT * FROM stamps WHERE TRIM(COALESCE(country_code, '')) != '' ORDER BY taken_at DESC")
+    fun observeWithCountry(): Flow<List<StampEntity>>
+
+    /** Stamps the map can't place (date-only postmarks). */
+    @Query("SELECT COUNT(*) FROM stamps WHERE TRIM(COALESCE(country_code, '')) = ''")
+    fun observeWithoutCountryCount(): Flow<Int>
+
     @Query("SELECT * FROM stamps WHERE id = :id")
     fun observe(id: String): Flow<StampEntity?>
 

@@ -43,7 +43,6 @@ import com.aviharez.stamp.ui.components.StampNavBar
 import com.aviharez.stamp.ui.debug.DebugGallery
 import com.aviharez.stamp.ui.debug.DebugGalleryEntry
 import com.aviharez.stamp.ui.debug.DebugProSwitch
-import com.aviharez.stamp.ui.screens.PlaceholderScreen
 import com.aviharez.stamp.ui.screens.album.AlbumPageScreen
 import com.aviharez.stamp.ui.screens.calendar.CalendarScreen
 import com.aviharez.stamp.ui.screens.camera.CameraScreen
@@ -51,6 +50,8 @@ import com.aviharez.stamp.ui.screens.collections.CollectionsScreen
 import com.aviharez.stamp.ui.screens.detail.StampDetailScreen
 import com.aviharez.stamp.ui.screens.home.HomeScreen
 import com.aviharez.stamp.ui.screens.importer.ImportScreen
+import com.aviharez.stamp.ui.screens.map.CountryScreen
+import com.aviharez.stamp.ui.screens.map.MapScreen
 import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
 import com.aviharez.stamp.ui.screens.scrapbook.ScrapbookScreen
@@ -259,7 +260,18 @@ private fun StampNavigation(
                 )
             }
             composable<MapRoute> {
-                PlaceholderScreen(stringResource(R.string.nav_map), comingSoon = true, contentPadding = inner)
+                MapScreen(
+                    contentPadding = inner,
+                    onOpenCountry = { nav.navigate(MapCountryRoute(it)) },
+                    onStampIt = { nav.navigate(CameraRoute()) },
+                )
+            }
+            composable<MapCountryRoute> {
+                CountryScreen(
+                    contentPadding = inner,
+                    onBack = { nav.popBackStack() },
+                    onOpenStamp = { nav.navigate(StampDetailRoute(it)) },
+                )
             }
             composable<ProfileRoute> {
                 ProfileScreen(
@@ -315,7 +327,7 @@ private const val ScreenMillis = 240
 private fun NavDestination.tab(): NavTab? = when {
     isAny(HomeRoute::class, CollectionsRoute::class) -> NavTab.Album
     isAny(CalendarRoute::class) -> NavTab.Calendar
-    isAny(MapRoute::class) -> NavTab.Map
+    isAny(MapRoute::class, MapCountryRoute::class) -> NavTab.Map
     isAny(ProfileRoute::class) -> NavTab.Profile
     else -> null
 }

@@ -18,7 +18,6 @@
     <string name="pattern_postmark_year" translatable="false">yyyy</string>
     <string name="pattern_postmark_date" translatable="false">dd MMM yy</string>
     <!-- Shown on a tab whose screen isn't built yet (Map) -->
-    <string name="placeholder_note">coming soon…</string>
 
     <!-- Postmark: city, date -->
     <string name="postmark_description">Postmark: %1$s, %2$s</string>
@@ -539,4 +538,35 @@
     <string name="scrap_sample_seal" translatable="false">A</string>
     <string name="scrap_sample_ticket">TODAY</string>
     <string name="scrap_sample_postmark">TODAY\nPOSTED</string>
+
+    <!-- Map tab: the world map "passport" -->
+    <string name="map_title">Your world</string>
+    <string name="map_stats">%1$s · %2$s · %3$s</string>
+    <plurals name="map_country_count">
+        <item quantity="one">%d country</item>
+        <item quantity="other">%d countries</item>
+    </plurals>
+    <plurals name="map_place_count">
+        <item quantity="one">%d place</item>
+        <item quantity="other">%d places</item>
+    </plurals>
+    <string name="map_tab_countries">Countries</string>
+    <string name="map_tab_places">Places</string>
+    <string name="map_empty">stamps that know where they were taken land here</string>
+    <string name="map_empty_place_off">Place on postmarks is off, so new stamps won\'t land on the map. You can turn it on in Profile.</string>
+    <plurals name="map_unplaced">
+        <item quantity="one">%d stamp has no place on its postmark, so it isn\'t on the map</item>
+        <item quantity="other">%d stamps have no place on their postmark, so they aren\'t on the map</item>
+    </plurals>
+    <string name="map_somewhere_in">Somewhere in %1$s</string>
+    <string name="map_since">since %1$s</string>
+    <string name="map_place_line">%1$s · since %2$s</string>
+    <string name="map_count_note">×%1$d</string>
+    <string name="map_row_cd">%1$s, %2$s</string>
+    <string name="map_cd">World map. Stamped in %1$s</string>
+    <string name="map_cd_empty">World map, no stamps on it yet</string>
+    <string name="map_country_cd">Map of %1$s</string>
+    <string name="map_country_gone">no stamps from here any more</string>
+    <string name="visa_first">First stamp %1$s</string>
+    <string name="visa_cd">%1$s visa. First stamp %2$s. %3$s, %4$s.</string>
 </resources>

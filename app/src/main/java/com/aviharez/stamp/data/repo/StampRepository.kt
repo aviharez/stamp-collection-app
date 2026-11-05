@@ -96,6 +96,12 @@ class StampRepository @Inject constructor(
     fun observeByIds(ids: Collection<String>): Flow<List<Stamp>> =
         if (ids.isEmpty()) kotlinx.coroutines.flow.flowOf(emptyList()) else dao.observeByIds(ids.toList()).map { list -> list.map { it.toDomain() } }
 
+    /** Stamps with a country on their postmark, newest first (the map). */
+    fun observeWithCountry(): Flow<List<Stamp>> =
+        dao.observeWithCountry().map { list -> list.map { it.toDomain() } }
+
+    fun observeWithoutCountryCount(): Flow<Int> = dao.observeWithoutCountryCount()
+
     fun observeRecent(limit: Int): Flow<List<Stamp>> =
         dao.observeRecent(limit).map { list -> list.map { it.toDomain() } }
 
