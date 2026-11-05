@@ -99,6 +99,18 @@ android {
     }
 }
 
+// The baseline profile plugin copies release (upload key included) into benchmarkRelease and
+// nonMinifiedRelease. Those are for this computer's emulator / phone only: sign them with the debug
+// key so they install over the debug app and keep its data.
+androidComponents {
+    onVariants(selector().withBuildType("benchmarkRelease")) { variant ->
+        variant.signingConfig.setConfig(android.signingConfigs.getByName("debug"))
+    }
+    onVariants(selector().withBuildType("nonMinifiedRelease")) { variant ->
+        variant.signingConfig.setConfig(android.signingConfigs.getByName("debug"))
+    }
+}
+
 room3 {
     schemaDirectory("$projectDir/schemas")
 }

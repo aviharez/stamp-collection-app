@@ -23,6 +23,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.aviharez.stamp.ui.components.backdropSource
+import com.aviharez.stamp.ui.components.NavBackdrop
+import androidx.compose.ui.graphics.rememberGraphicsLayer
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -126,191 +130,203 @@ private fun StampNavigation(
             }
         },
     ) { inner ->
-        NavHost(
-            navController = nav,
-            startDestination = if (startOnWelcome) WelcomeRoute else HomeRoute,
-            modifier = Modifier.fillMaxSize(),
-            enterTransition = { if (reduceMotion) EnterTransition.None else fadeIn(tween(ScreenMillis)) },
-            exitTransition = { if (reduceMotion) ExitTransition.None else fadeOut(tween(ScreenMillis)) },
-        ) {
-            composable<WelcomeRoute> {
-                // Each choice swaps the welcome for Home underneath, so back from the camera lands Home.
-                fun leaveTo(next: Any?) {
-                    onWelcomeDone()
-                    nav.navigate(HomeRoute) { popUpTo<WelcomeRoute> { inclusive = true } }
-                    next?.let { nav.navigate(it) }
-                }
-                WelcomeScreen(
-                    onMakeStamp = { leaveTo(CameraRoute(fromWelcome = true)) },
-                    onPicked = { uri -> leaveTo(ImportRoute(uri.toString())) },
-                    onSkip = { leaveTo(null) },
-                )
-            }
-            composable<HomeRoute> {
-                HomeScreen(
-                    contentPadding = inner,
-                    onStampIt = { nav.navigate(CameraRoute()) },
-                    onOpenCollections = { nav.navigate(CollectionsRoute) },
-                    onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
-                )
-            }
-            composable<CollectionsRoute> { entry ->
-                val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
-                CollectionsScreen(
-                    contentPadding = inner,
-                    onBack = { nav.popBackStack() },
-                    onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
-                    onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Albums.name)) },
-                    openNewAlbum = openNewAlbum,
-                    onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
-                )
-            }
-            composable<AlbumPageRoute> { entry ->
-                val albumId = entry.toRoute<AlbumPageRoute>().albumId
-                val savedScrap by entry.savedStateHandle.getStateFlow<String?>(ScrapSavedKey, null).collectAsStateWithLifecycle()
-                AlbumPageScreen(
-                    onBack = { nav.popBackStack() },
-                    onNextStamp = { nav.navigate(CameraRoute()) },
-                    onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
-                    onOpenStamp = { nav.navigate(StampDetailRoute(it)) },
-                    onOpenScrapbook = { nav.navigate(ScrapbookRoute(albumId, it)) },
-                    onPrintStickers = { nav.navigate(StickerSheetRoute(albumId)) },
-                    scrollToScrap = savedScrap,
-                    onScrolled = { entry.savedStateHandle[ScrapSavedKey] = null },
-                )
-            }
-            composable<ScrapbookRoute> {
-                ScrapbookScreen(
-                    onClose = { nav.popBackStack() },
-                    onSaved = { pageId ->
-                        nav.previousBackStackEntry?.savedStateHandle?.set(ScrapSavedKey, pageId)
-                        nav.popBackStack()
-                    },
-                    onDeleted = { nav.popBackStack() },
-                    onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Scrapbook.name)) },
-                )
-            }
-            composable<CreditsRoute> {
-                CreditsScreen(onBack = { nav.popBackStack() })
-            }
-            composable<StickerSheetRoute> {
-                StickerSheetScreen(
-                    onBack = { nav.popBackStack() },
-                    onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Stickers.name)) },
-                )
-            }
-            composable<StampDetailRoute> { entry ->
-                val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
-                StampDetailScreen(
-                    onClose = { nav.popBackStack() },
-                    onReframe = { nav.navigate(ImportRoute(reframeId = it)) },
-                    onOpenPaywall = { reason -> nav.navigate(PaywallRoute(reason.name)) },
-                    openNewAlbum = openNewAlbum,
-                    onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
-                )
-            }
-            composable<CameraRoute>(
-                enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },
-                popExitTransition = { if (reduceMotion) ExitTransition.None else slideOutVertically(tween(ScreenMillis)) { it / 6 } + fadeOut(tween(ScreenMillis)) },
-            ) { entry ->
-                CameraScreen(
-                    askRightAway = entry.toRoute<CameraRoute>().fromWelcome,
-                    onClose = { nav.popBackStack() },
-                    onCaptured = { stampId ->
-                        // Replace the camera with the celebration; back from Stamped! returns Home.
-                        nav.navigate(StampedRoute(stampId)) { popUpTo<CameraRoute> { inclusive = true } }
-                    },
-                    onImport = { uri -> nav.navigate(ImportRoute(uri.toString())) },
-                )
-            }
-            composable<ImportRoute>(
+        // Tab screens scroll under the nav bar; a blurred copy of them sits behind it.
+        val backdrop = rememberGraphicsLayer()
+        Box(Modifier.fillMaxSize()) {
+            NavHost(
+                navController = nav,
+                startDestination = if (startOnWelcome) WelcomeRoute else HomeRoute,
+                modifier = Modifier.fillMaxSize().backdropSource(backdrop),
                 enterTransition = { if (reduceMotion) EnterTransition.None else fadeIn(tween(ScreenMillis)) },
-            ) { entry ->
-                val reframing = entry.toRoute<ImportRoute>().reframeId != null
-                ImportScreen(
-                    onClose = { nav.popBackStack() },
-                    onSaved = { stampId ->
-                        // Re-framed: back to the stamp, which now shows the new picture.
-                        if (reframing) {
-                            nav.popBackStack()
-                            return@ImportScreen
-                        }
-                        // Like a capture: Stamped! replaces the camera (if import started there) and this screen.
-                        val fromCamera = nav.hasInBackStack<CameraRoute>()
-                        nav.navigate(StampedRoute(stampId)) {
-                            if (fromCamera) popUpTo<CameraRoute> { inclusive = true } else popUpTo<ImportRoute> { inclusive = true }
-                        }
-                    },
-                    onPickAnother = { uri ->
-                        nav.navigate(ImportRoute(uri.toString())) { popUpTo<ImportRoute> { inclusive = true } }
-                    },
-                )
-            }
-            composable<StampedRoute> { entry ->
-                val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
-                StampedScreen(
-                    openNewAlbum = openNewAlbum,
-                    onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
-                    onRetake = {
-                        nav.navigate(CameraRoute()) { popUpTo<StampedRoute> { inclusive = true } }
-                    },
-                    onPickAnother = { uri ->
-                        nav.navigate(ImportRoute(uri.toString())) { popUpTo<StampedRoute> { inclusive = true } }
-                    },
-                    onOpenPaywall = { reason -> nav.navigate(PaywallRoute(reason.name)) },
-                    onStickInAlbum = { albumId ->
-                        // Open the album the stamp went into; back from there returns Home.
-                        nav.navigate(AlbumPageRoute(albumId)) { popUpTo<HomeRoute> { inclusive = false } }
-                    },
-                )
-            }
-            composable<CalendarRoute> {
-                CalendarScreen(
-                    contentPadding = inner,
-                    onStampIt = { nav.navigate(CameraRoute()) },
-                    onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
-                )
-            }
-            composable<MapRoute> {
-                MapScreen(
-                    contentPadding = inner,
-                    onOpenCountry = { nav.navigate(MapCountryRoute(it)) },
-                    onStampIt = { nav.navigate(CameraRoute()) },
-                    onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
-                )
-            }
-            composable<MapCountryRoute> {
-                CountryScreen(
-                    contentPadding = inner,
-                    onBack = { nav.popBackStack() },
-                    onOpenStamp = { nav.navigate(StampDetailRoute(it)) },
-                )
-            }
-            composable<ProfileRoute> {
-                ProfileScreen(
-                    contentPadding = inner,
-                    onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) },
-                    onOpenCredits = { nav.navigate(CreditsRoute) },
-                    footerExtras = {
-                        DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
-                        DebugProSwitch()
-                    },
-                )
-            }
-            composable<PaywallRoute>(
-                enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },
-                popExitTransition = { if (reduceMotion) ExitTransition.None else slideOutVertically(tween(ScreenMillis)) { it / 6 } + fadeOut(tween(ScreenMillis)) },
+                exitTransition = { if (reduceMotion) ExitTransition.None else fadeOut(tween(ScreenMillis)) },
             ) {
-                PaywallScreen(
-                    onClose = { nav.popBackStack() },
-                    onAlbumUnlocked = {
-                        // Back where "New album" was tapped, straight onto the form.
-                        nav.previousBackStackEntry?.savedStateHandle?.set(AlbumEarnedKey, true)
-                        nav.popBackStack()
-                    },
-                )
+                composable<WelcomeRoute> {
+                    // Each choice swaps the welcome for Home underneath, so back from the camera lands Home.
+                    fun leaveTo(next: Any?) {
+                        onWelcomeDone()
+                        nav.navigate(HomeRoute) { popUpTo<WelcomeRoute> { inclusive = true } }
+                        next?.let { nav.navigate(it) }
+                    }
+                    WelcomeScreen(
+                        onMakeStamp = { leaveTo(CameraRoute(fromWelcome = true)) },
+                        onPicked = { uri -> leaveTo(ImportRoute(uri.toString())) },
+                        onSkip = { leaveTo(null) },
+                    )
+                }
+                composable<HomeRoute> {
+                    HomeScreen(
+                        contentPadding = inner,
+                        onStampIt = { nav.navigate(CameraRoute()) },
+                        onOpenCollections = { nav.navigate(CollectionsRoute) },
+                        onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
+                    )
+                }
+                composable<CollectionsRoute> { entry ->
+                    val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
+                    CollectionsScreen(
+                        contentPadding = inner,
+                        onBack = { nav.popBackStack() },
+                        onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
+                        onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Albums.name)) },
+                        openNewAlbum = openNewAlbum,
+                        onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
+                    )
+                }
+                composable<AlbumPageRoute> { entry ->
+                    val albumId = entry.toRoute<AlbumPageRoute>().albumId
+                    val savedScrap by entry.savedStateHandle.getStateFlow<String?>(ScrapSavedKey, null).collectAsStateWithLifecycle()
+                    AlbumPageScreen(
+                        onBack = { nav.popBackStack() },
+                        onNextStamp = { nav.navigate(CameraRoute()) },
+                        onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
+                        onOpenStamp = { nav.navigate(StampDetailRoute(it)) },
+                        onOpenScrapbook = { nav.navigate(ScrapbookRoute(albumId, it)) },
+                        onPrintStickers = { nav.navigate(StickerSheetRoute(albumId)) },
+                        scrollToScrap = savedScrap,
+                        onScrolled = { entry.savedStateHandle[ScrapSavedKey] = null },
+                    )
+                }
+                composable<ScrapbookRoute> {
+                    ScrapbookScreen(
+                        onClose = { nav.popBackStack() },
+                        onSaved = { pageId ->
+                            nav.previousBackStackEntry?.savedStateHandle?.set(ScrapSavedKey, pageId)
+                            nav.popBackStack()
+                        },
+                        onDeleted = { nav.popBackStack() },
+                        onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Scrapbook.name)) },
+                    )
+                }
+                composable<CreditsRoute> {
+                    CreditsScreen(onBack = { nav.popBackStack() })
+                }
+                composable<StickerSheetRoute> {
+                    StickerSheetScreen(
+                        onBack = { nav.popBackStack() },
+                        onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Stickers.name)) },
+                    )
+                }
+                composable<StampDetailRoute> { entry ->
+                    val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
+                    StampDetailScreen(
+                        onClose = { nav.popBackStack() },
+                        onReframe = { nav.navigate(ImportRoute(reframeId = it)) },
+                        onOpenPaywall = { reason -> nav.navigate(PaywallRoute(reason.name)) },
+                        openNewAlbum = openNewAlbum,
+                        onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
+                    )
+                }
+                composable<CameraRoute>(
+                    enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },
+                    popExitTransition = { if (reduceMotion) ExitTransition.None else slideOutVertically(tween(ScreenMillis)) { it / 6 } + fadeOut(tween(ScreenMillis)) },
+                ) { entry ->
+                    CameraScreen(
+                        askRightAway = entry.toRoute<CameraRoute>().fromWelcome,
+                        onClose = { nav.popBackStack() },
+                        onCaptured = { stampId ->
+                            // Replace the camera with the celebration; back from Stamped! returns Home.
+                            nav.navigate(StampedRoute(stampId)) { popUpTo<CameraRoute> { inclusive = true } }
+                        },
+                        onImport = { uri -> nav.navigate(ImportRoute(uri.toString())) },
+                    )
+                }
+                composable<ImportRoute>(
+                    enterTransition = { if (reduceMotion) EnterTransition.None else fadeIn(tween(ScreenMillis)) },
+                ) { entry ->
+                    val reframing = entry.toRoute<ImportRoute>().reframeId != null
+                    ImportScreen(
+                        onClose = { nav.popBackStack() },
+                        onSaved = { stampId ->
+                            // Re-framed: back to the stamp, which now shows the new picture.
+                            if (reframing) {
+                                nav.popBackStack()
+                                return@ImportScreen
+                            }
+                            // Like a capture: Stamped! replaces the camera (if import started there) and this screen.
+                            val fromCamera = nav.hasInBackStack<CameraRoute>()
+                            nav.navigate(StampedRoute(stampId)) {
+                                if (fromCamera) popUpTo<CameraRoute> { inclusive = true } else popUpTo<ImportRoute> { inclusive = true }
+                            }
+                        },
+                        onPickAnother = { uri ->
+                            nav.navigate(ImportRoute(uri.toString())) { popUpTo<ImportRoute> { inclusive = true } }
+                        },
+                    )
+                }
+                composable<StampedRoute> { entry ->
+                    val openNewAlbum by entry.savedStateHandle.getStateFlow(AlbumEarnedKey, false).collectAsStateWithLifecycle()
+                    StampedScreen(
+                        openNewAlbum = openNewAlbum,
+                        onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
+                        onRetake = {
+                            nav.navigate(CameraRoute()) { popUpTo<StampedRoute> { inclusive = true } }
+                        },
+                        onPickAnother = { uri ->
+                            nav.navigate(ImportRoute(uri.toString())) { popUpTo<StampedRoute> { inclusive = true } }
+                        },
+                        onOpenPaywall = { reason -> nav.navigate(PaywallRoute(reason.name)) },
+                        onStickInAlbum = { albumId ->
+                            // Open the album the stamp went into; back from there returns Home.
+                            nav.navigate(AlbumPageRoute(albumId)) { popUpTo<HomeRoute> { inclusive = false } }
+                        },
+                    )
+                }
+                composable<CalendarRoute> {
+                    CalendarScreen(
+                        contentPadding = inner,
+                        onStampIt = { nav.navigate(CameraRoute()) },
+                        onOpenAlbum = { nav.navigate(AlbumPageRoute(it)) },
+                    )
+                }
+                composable<MapRoute> {
+                    MapScreen(
+                        contentPadding = inner,
+                        onOpenCountry = { nav.navigate(MapCountryRoute(it)) },
+                        onStampIt = { nav.navigate(CameraRoute()) },
+                        onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
+                    )
+                }
+                composable<MapCountryRoute> {
+                    CountryScreen(
+                        contentPadding = inner,
+                        onBack = { nav.popBackStack() },
+                        onOpenStamp = { nav.navigate(StampDetailRoute(it)) },
+                    )
+                }
+                composable<ProfileRoute> {
+                    ProfileScreen(
+                        contentPadding = inner,
+                        onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) },
+                        onOpenCredits = { nav.navigate(CreditsRoute) },
+                        footerExtras = {
+                            DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
+                            DebugProSwitch()
+                        },
+                    )
+                }
+                composable<PaywallRoute>(
+                    enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },
+                    popExitTransition = { if (reduceMotion) ExitTransition.None else slideOutVertically(tween(ScreenMillis)) { it / 6 } + fadeOut(tween(ScreenMillis)) },
+                ) {
+                    PaywallScreen(
+                        onClose = { nav.popBackStack() },
+                        onAlbumUnlocked = {
+                            // Back where "New album" was tapped, straight onto the form.
+                            nav.previousBackStackEntry?.savedStateHandle?.set(AlbumEarnedKey, true)
+                            nav.popBackStack()
+                        },
+                    )
+                }
+                composable<DebugGalleryRoute> { DebugGallery() }
             }
-            composable<DebugGalleryRoute> { DebugGallery() }
+            AnimatedVisibility(
+                visible = currentTab != null,
+                modifier = Modifier.align(Alignment.BottomCenter),
+                enter = if (reduceMotion) EnterTransition.None else fadeIn(tween(BarMillis)),
+                exit = if (reduceMotion) ExitTransition.None else fadeOut(tween(BarMillis)),
+            ) {
+                NavBackdrop(backdrop, height = inner.calculateBottomPadding())
+            }
         }
     }
 

@@ -18,7 +18,7 @@ Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 3
 - [x] Privacy policy draft: `docs/privacy.html` (contact: hello.goomistudio@gmail.com)
 - [x] App name: **Postmory** (`app_name` in `strings.xml`)
 - [x] Support email: **hello.goomistudio@gmail.com** (default in `app/build.gradle.kts`; a `supportEmail=` gradle property overrides it). Developer name on Play: **Goomi Studio**
-- [ ] Firebase: console.firebase.google.com → Add project "Postmory" (Google Analytics on) → Add Android app
+- [x] Firebase: console.firebase.google.com → Add project "Postmory" (Google Analytics on) → Add Android app
   `com.aviharez.stamp` → download `google-services.json` into `app/` (git-ignored) and paste it into the
   `GOOGLE_SERVICES_JSON` secret (§11). In Analytics settings, leave Google signals and ads personalisation off.
 - [ ] Publish the privacy page: GitHub repo → Settings → Pages → "Deploy from a branch", `main`, `/docs`.
