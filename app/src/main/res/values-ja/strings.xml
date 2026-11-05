@@ -312,6 +312,7 @@
     <string name="credits_licence_google">Googleの規約</string>
     <string name="credits_footer">タップするとライセンスを読めます</string>
     <string name="profile_version">バージョン %1$s</string>
+    <string name="profile_made_by">%1$s 制作</string>
 
     <!-- Rewarded ads -->
     <string name="ad_loading">広告を読み込み中…</string>

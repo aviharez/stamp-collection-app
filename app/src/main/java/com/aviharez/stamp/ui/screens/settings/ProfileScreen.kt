@@ -239,10 +239,15 @@ fun ProfileContent(
             PaperChip(stringResource(R.string.profile_credits), selected = false, onClick = onCredits)
             footerExtras()
         }
+        HandNote(
+            stringResource(R.string.profile_made_by, stringResource(R.string.developer_name)),
+            Modifier.padding(top = s.s),
+            style = t.noteSmall,
+            strength = InkStrength.Strong,
+        )
         if (versionName != null) {
             HandNote(
                 stringResource(R.string.profile_version, versionName),
-                Modifier.padding(top = s.s),
                 style = t.noteSmall,
                 strength = InkStrength.Soft,
             )

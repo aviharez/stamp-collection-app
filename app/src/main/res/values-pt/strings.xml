@@ -328,6 +328,7 @@
     <string name="credits_licence_google">Termos do Google</string>
     <string name="credits_footer">toque em um para ler a licença</string>
     <string name="profile_version">versão %1$s</string>
+    <string name="profile_made_by">feito por %1$s</string>
 
     <!-- Rewarded ads -->
     <string name="ad_loading">Carregando anúncio…</string>

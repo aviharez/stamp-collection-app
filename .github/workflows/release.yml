@@ -3,7 +3,7 @@
 # Secrets (Settings → Secrets and variables → Actions), see docs/play-console.md §11:
 #   KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD   upload key
 #   ADMOB_APP_ID, ADMOB_REWARDED_ID                               real ad IDs (else Google's test IDs)
-#   SUPPORT_EMAIL, PRIVACY_POLICY_URL                             optional Profile links
+#   SUPPORT_EMAIL (optional override), PRIVACY_POLICY_URL         Profile links
 name: Release
 
 on:

@@ -343,6 +343,8 @@
     <string name="credits_licence_google">Google terms</string>
     <string name="credits_footer">tap one to read its licence</string>
     <string name="profile_version">version %1$s</string>
+    <string name="developer_name" translatable="false">Goomi Studio</string>
+    <string name="profile_made_by">made by %1$s</string>
     <string name="play_store_app_link" translatable="false">market://details?id=%1$s</string>
     <string name="play_store_web_link" translatable="false">https://play.google.com/store/apps/details?id=%1$s</string>
 

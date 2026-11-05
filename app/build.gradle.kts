@@ -20,6 +20,8 @@ val uploadKey = rootProject.file("keystore.properties").takeIf { it.exists() }?.
 }
 
 /** Google's public test IDs (AdMob docs). */
+/** Public support address (Profile → Send feedback, store listing, privacy policy). */
+val SupportEmail = "heelo.goomistudio@gmail.com"
 val AdMobTestAppId = "ca-app-pub-3940256099942544~3347511713"
 val AdMobTestRewardedId = "ca-app-pub-3940256099942544/5224354917"
 
@@ -38,8 +40,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Profile → "Send feedback" / "Privacy policy" show once these are set (gradle.properties).
-        resValue("string", "support_email", providers.gradleProperty("supportEmail").getOrElse(""))
+        // Profile → "Send feedback" / "Privacy policy". The support email is public (store listing), so it has a
+        // default here; the privacy link shows once `privacyPolicyUrl` is set (gradle.properties).
+        resValue("string", "support_email", providers.gradleProperty("supportEmail").filter { it.isNotBlank() }.getOrElse(SupportEmail))
         resValue("string", "privacy_policy_url", providers.gradleProperty("privacyPolicyUrl").getOrElse(""))
     }
 

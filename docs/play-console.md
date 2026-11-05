@@ -15,9 +15,9 @@ Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 3
       **Back up the .jks and the password** (password manager plus one offline copy). If the upload key is
       lost, Play can reset it, but that takes a support request and days.
 - [x] Signed release bundle: `./gradlew bundleRelease` → `app/build/outputs/bundle/release/app-release.aab`
-- [x] Privacy policy draft: `docs/privacy.html` (replace `SUPPORT_EMAIL`, final app name)
+- [x] Privacy policy draft: `docs/privacy.html` (contact: heelo.goomistudio@gmail.com)
 - [x] App name: **Postmory** (`app_name` in `strings.xml`)
-- [ ] Support email (Play requires one, shown publicly) → `supportEmail=` in `gradle.properties`
+- [x] Support email: **heelo.goomistudio@gmail.com** (default in `app/build.gradle.kts`; a `supportEmail=` gradle property overrides it). Developer name on Play: **Goomi Studio**
 - [ ] Publish the privacy page: GitHub repo → Settings → Pages → "Deploy from a branch", `main`, `/docs`.
       URL becomes `https://aviharez.github.io/stamp-collection-app/privacy.html` →
       `privacyPolicyUrl=` in `gradle.properties` (shows "Privacy policy" on Profile)
@@ -210,7 +210,7 @@ pictures to well-known cities (no districts or home towns).
   | `KEY_ALIAS` | `upload` |
   | `KEY_PASSWORD` | keyPassword from `keystore.properties` |
   | `ADMOB_APP_ID` / `ADMOB_REWARDED_ID` | real AdMob IDs (empty → Google's test IDs) |
-  | `SUPPORT_EMAIL` / `PRIVACY_POLICY_URL` | optional, shows Send feedback / Privacy policy on Profile |
+  | `SUPPORT_EMAIL` / `PRIVACY_POLICY_URL` | optional: overrides the built-in support email / shows Privacy policy on Profile |
 
   Without `KEYSTORE_BASE64` the release build is unsigned (a warning shows in the run). The job runs in the
   `release` environment: add yourself as a required reviewer there if you want to approve each run.

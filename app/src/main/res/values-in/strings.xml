@@ -312,6 +312,7 @@
     <string name="credits_licence_google">Ketentuan Google</string>
     <string name="credits_footer">ketuk salah satu untuk membaca lisensinya</string>
     <string name="profile_version">versi %1$s</string>
+    <string name="profile_made_by">dibuat oleh %1$s</string>
 
     <!-- Rewarded ads -->
     <string name="ad_loading">Memuat iklan…</string>
