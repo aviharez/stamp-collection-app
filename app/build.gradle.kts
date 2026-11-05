@@ -21,7 +21,7 @@ val uploadKey = rootProject.file("keystore.properties").takeIf { it.exists() }?.
 
 /** Google's public test IDs (AdMob docs). */
 /** Public support address (Profile → Send feedback, store listing, privacy policy). */
-val SupportEmail = "heelo.goomistudio@gmail.com"
+val SupportEmail = "hello.goomistudio@gmail.com"
 val AdMobTestAppId = "ca-app-pub-3940256099942544~3347511713"
 val AdMobTestRewardedId = "ca-app-pub-3940256099942544/5224354917"
 

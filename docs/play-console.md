@@ -15,9 +15,9 @@ Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 3
       **Back up the .jks and the password** (password manager plus one offline copy). If the upload key is
       lost, Play can reset it, but that takes a support request and days.
 - [x] Signed release bundle: `./gradlew bundleRelease` → `app/build/outputs/bundle/release/app-release.aab`
-- [x] Privacy policy draft: `docs/privacy.html` (contact: heelo.goomistudio@gmail.com)
+- [x] Privacy policy draft: `docs/privacy.html` (contact: hello.goomistudio@gmail.com)
 - [x] App name: **Postmory** (`app_name` in `strings.xml`)
-- [x] Support email: **heelo.goomistudio@gmail.com** (default in `app/build.gradle.kts`; a `supportEmail=` gradle property overrides it). Developer name on Play: **Goomi Studio**
+- [x] Support email: **hello.goomistudio@gmail.com** (default in `app/build.gradle.kts`; a `supportEmail=` gradle property overrides it). Developer name on Play: **Goomi Studio**
 - [ ] Publish the privacy page: GitHub repo → Settings → Pages → "Deploy from a branch", `main`, `/docs`.
       URL becomes `https://aviharez.github.io/stamp-collection-app/privacy.html` →
       `privacyPolicyUrl=` in `gradle.properties` (shows "Privacy policy" on Profile)
