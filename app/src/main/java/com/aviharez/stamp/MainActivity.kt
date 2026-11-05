@@ -2,17 +2,16 @@ package com.aviharez.stamp
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
-import android.view.animation.AccelerateInterpolator
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.splashscreen.SplashScreenViewProvider
 import com.aviharez.stamp.ui.navigation.StampApp
+import com.aviharez.stamp.ui.screens.splash.LaunchSplash
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.widget.WidgetLink
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,40 +22,35 @@ class MainActivity : ComponentActivity() {
     /** A home-screen widget tap waiting to be followed by the nav host. */
     private var widgetLink by mutableStateOf<WidgetLink?>(null)
 
-    /** False until StampApp knows whether to open on Home or the welcome; the splash stays up till then. */
-    private var ready = false
+    /** False until StampApp knows whether to open on Home or the welcome. */
+    private var ready by mutableStateOf(false)
+
+    /** The envelope splash plays on a fresh launch (not after Android recreated us, not for widget taps). */
+    private var showSplash by mutableStateOf(false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splash = installSplashScreen()
         super.onCreate(savedInstanceState)
-        splash.setKeepOnScreenCondition { !ready }
-        splash.setOnExitAnimationListener(::leaveSplash)
         // After process death the back stack is restored; don't follow the same tap twice.
         if (savedInstanceState == null) widgetLink = WidgetLink.from(intent)
+        showSplash = savedInstanceState == null && widgetLink == null
+        // The system splash is plain Paper: with the envelope splash it leaves at the first frame,
+        // otherwise it stays until StampApp knows its first screen (so Home never flashes first).
+        splash.setKeepOnScreenCondition { !showSplash && !ready }
         // Bar icon colours are set per screen by SystemBarsFor (dark icons on Paper by default).
         enableEdgeToEdge()
         setContent {
             StampAppTheme {
-                StampApp(
-                    widgetLink = widgetLink,
-                    onWidgetLinkHandled = { widgetLink = null },
-                    onReady = { ready = true },
-                )
+                Box {
+                    StampApp(
+                        widgetLink = widgetLink,
+                        onWidgetLinkHandled = { widgetLink = null },
+                        onReady = { ready = true },
+                    )
+                    if (showSplash) LaunchSplash(appReady = ready, onFinished = { showSplash = false })
+                }
             }
         }
-    }
-
-    /** The icon lifts a little and the splash fades (200 ms); gone at once with reduce motion. */
-    private fun leaveSplash(view: SplashScreenViewProvider) {
-        val reduceMotion = Settings.Global.getFloat(contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f
-        if (reduceMotion) return view.remove()
-        view.iconView.animate().scaleX(SplashIconScale).scaleY(SplashIconScale).setDuration(SplashExitMillis).start()
-        view.view.animate()
-            .alpha(0f)
-            .setDuration(SplashExitMillis)
-            .setInterpolator(AccelerateInterpolator())
-            .withEndAction(view::remove)
-            .start()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -64,6 +58,3 @@ class MainActivity : ComponentActivity() {
         WidgetLink.from(intent)?.let { widgetLink = it }
     }
 }
-
-private const val SplashExitMillis = 200L
-private const val SplashIconScale = 1.12f

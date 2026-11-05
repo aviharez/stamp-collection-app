@@ -399,6 +399,7 @@
     <!-- First run -->
     <string name="welcome_skip">Passer</string>
     <string name="welcome_title">Fais d’aujourd’hui un timbre</string>
+    <string name="splash_tagline">fais d’aujourd’hui un timbre</string>
     <string name="welcome_body">Prends une photo, elle devient un timbre-poste, oblitéré avec ta ville et la date, et collé dans un album. Un par jour entretient ta série.</string>
     <string name="welcome_step_1">touche en bas</string>
     <string name="welcome_step_2">prends la photo</string>

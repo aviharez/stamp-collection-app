@@ -385,6 +385,7 @@
     <!-- First run -->
     <string name="welcome_skip">Überspringen</string>
     <string name="welcome_title">Mach aus heute eine Marke</string>
+    <string name="splash_tagline">mach aus heute eine Marke</string>
     <string name="welcome_body">Mach ein Foto, und es wird zur Briefmarke, gestempelt mit deiner Stadt und dem Datum, eingeklebt in ein Album. Eine am Tag hält deine Serie am Laufen.</string>
     <string name="welcome_step_1">unten tippen</string>
     <string name="welcome_step_2">Foto machen</string>

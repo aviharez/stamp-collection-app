@@ -414,6 +414,7 @@
     <!-- First run (shown once on a fresh install) -->
     <string name="welcome_skip">Skip</string>
     <string name="welcome_title">Turn today into a stamp</string>
+    <string name="splash_tagline">turn today into a stamp</string>
     <string name="welcome_body">Take a photo and it becomes a postage stamp, postmarked with your city and the date, stuck into an album. One a day keeps the streak going.</string>
     <string name="welcome_step_1">tap below</string>
     <string name="welcome_step_2">snap it</string>

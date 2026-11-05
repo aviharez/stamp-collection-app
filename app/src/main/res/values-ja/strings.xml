@@ -373,6 +373,7 @@
     <!-- First run -->
     <string name="welcome_skip">スキップ</string>
     <string name="welcome_title">今日を切手にしよう</string>
+    <string name="splash_tagline">今日を切手にしよう</string>
     <string name="welcome_body">写真を撮ると、街と日付の消印が押された切手になって、アルバムに貼られます。1日1枚で連続記録が続きます。</string>
     <string name="welcome_step_1">下をタップ</string>
     <string name="welcome_step_2">撮る</string>

@@ -398,6 +398,7 @@
     <!-- First run -->
     <string name="welcome_skip">Saltar</string>
     <string name="welcome_title">Convierte el día de hoy en un sello</string>
+    <string name="splash_tagline">convierte el día de hoy en un sello</string>
     <string name="welcome_body">Haz una foto y se convierte en un sello postal, con un matasellos de tu ciudad y la fecha, pegado en un álbum. Uno al día mantiene tu racha.</string>
     <string name="welcome_step_1">toca abajo</string>
     <string name="welcome_step_2">haz la foto</string>

@@ -373,6 +373,7 @@
     <!-- First run -->
     <string name="welcome_skip">Lewati</string>
     <string name="welcome_title">Jadikan hari ini prangko</string>
+    <string name="splash_tagline">jadikan hari ini prangko</string>
     <string name="welcome_body">Ambil foto dan jadikan prangko, dicap dengan kota dan tanggalmu, lalu tempel di album. Satu sehari menjaga runtunanmu.</string>
     <string name="welcome_step_1">ketuk di bawah</string>
     <string name="welcome_step_2">jepret</string>

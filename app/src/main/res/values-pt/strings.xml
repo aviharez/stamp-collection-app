@@ -399,6 +399,7 @@
     <!-- First run -->
     <string name="welcome_skip">Pular</string>
     <string name="welcome_title">Transforme o dia de hoje em selo</string>
+    <string name="splash_tagline">transforme o dia de hoje em selo</string>
     <string name="welcome_body">Tire uma foto e ela vira um selo postal, carimbado com sua cidade e a data, colado em um álbum. Um por dia mantém a sequência.</string>
     <string name="welcome_step_1">toque abaixo</string>
     <string name="welcome_step_2">tire a foto</string>

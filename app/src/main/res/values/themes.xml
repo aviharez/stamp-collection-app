@@ -10,11 +10,10 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
-    <!-- Launch splash (core-splashscreen): Paper, the app icon on its Cobalt disc, then the app's own theme. -->
-    <style name="Theme.StampApp.Starting" parent="Theme.SplashScreen.IconBackground">
+    <!-- Launch splash (core-splashscreen): plain Paper with no icon; LaunchSplash.kt draws the envelope on top. -->
+    <style name="Theme.StampApp.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/paper</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/cobalt</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_blank</item>
         <item name="postSplashScreenTheme">@style/Theme.StampApp</item>
     </style>
 </resources>
