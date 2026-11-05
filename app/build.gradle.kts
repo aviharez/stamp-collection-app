@@ -63,8 +63,8 @@ android {
             resValue("string", "admob_rewarded_unit", AdMobTestRewardedId)
         }
         release {
-            manifestPlaceholders["admobAppId"] = providers.gradleProperty("admobAppId").getOrElse(AdMobTestAppId)
-            resValue("string", "admob_rewarded_unit", providers.gradleProperty("admobRewardedId").getOrElse(AdMobTestRewardedId))
+            manifestPlaceholders["admobAppId"] = providers.gradleProperty("admobAppId").filter { it.isNotBlank() }.getOrElse(AdMobTestAppId)
+            resValue("string", "admob_rewarded_unit", providers.gradleProperty("admobRewardedId").filter { it.isNotBlank() }.getOrElse(AdMobTestRewardedId))
             // R8 shrink + optimise. The classic flags, not the newer `optimization {}` block: the
             // baseline profile plugin copies release into nonMinifiedRelease and only turns
             // isMinifyEnabled off, so with `optimization.enable` the profile came out obfuscated.

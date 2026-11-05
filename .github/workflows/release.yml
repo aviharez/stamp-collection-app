@@ -1,0 +1,73 @@
+# Signed release bundle (.aab for Play) + APK, built on a version tag (v1.0.0) or by hand.
+# The repo is public: the builds are kept as workflow artifacts only (never a public GitHub Release).
+# Secrets (Settings → Secrets and variables → Actions), see docs/play-console.md §11:
+#   KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD   upload key
+#   ADMOB_APP_ID, ADMOB_REWARDED_ID                               real ad IDs (else Google's test IDs)
+#   SUPPORT_EMAIL, PRIVACY_POLICY_URL                             optional Profile links
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: release
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          cache-read-only: true
+
+      - name: Upload key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::warning::No KEYSTORE_BASE64 secret: the release build will be unsigned (Play won't take it)."
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/upload.jks"
+          {
+            echo "storeFile=$RUNNER_TEMP/upload.jks"
+            echo "storePassword=$KEYSTORE_PASSWORD"
+            echo "keyAlias=$KEY_ALIAS"
+            echo "keyPassword=$KEY_PASSWORD"
+          } > keystore.properties
+
+      - name: Release bundle and APK
+        env:
+          ORG_GRADLE_PROJECT_admobAppId: ${{ secrets.ADMOB_APP_ID }}
+          ORG_GRADLE_PROJECT_admobRewardedId: ${{ secrets.ADMOB_REWARDED_ID }}
+          ORG_GRADLE_PROJECT_supportEmail: ${{ secrets.SUPPORT_EMAIL }}
+          ORG_GRADLE_PROJECT_privacyPolicyUrl: ${{ secrets.PRIVACY_POLICY_URL }}
+        run: ./gradlew :app:bundleRelease :app:assembleRelease
+
+      - name: Remove the key from the runner
+        if: always()
+        run: rm -f keystore.properties "$RUNNER_TEMP/upload.jks"
+
+      - name: Upload bundle and APK
+        uses: actions/upload-artifact@v7
+        with:
+          name: postmory-release-${{ github.ref_name }}
+          path: |
+            app/build/outputs/bundle/release/*.aab
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/mapping/release/mapping.txt
+          retention-days: 30

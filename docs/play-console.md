@@ -158,6 +158,8 @@ Notes:
 **Release notes v1.0:**
 > First release. Make your first stamp in three taps.
 
+**Translations** (id, es, pt, fr, de, ja): `docs/store-listing-translations.md`.
+
 ## 8. Graphics (ready in `store/`)
 
 | Asset | File | Size |
@@ -189,5 +191,28 @@ pictures to well-known cities (no districts or home towns).
 - [ ] `versionCode` +1 (and `versionName`)
 - [ ] `admobAppId` / `admobRewardedId` set (not the test IDs)
 - [ ] `./gradlew :app:generateBaselineProfile` if screens changed a lot (emulator with stamps restored)
-- [ ] `./gradlew lint bundleRelease`
+- [ ] `./gradlew lint bundleRelease` (or push a `v*` tag, §11)
 - [ ] Smoke test the release build on a real phone via internal testing
+
+## 11. GitHub Actions builds
+
+- **CI** (`.github/workflows/ci.yml`): every push to `main` and every pull request runs unit tests, lint and
+  the debug build. The debug APK and the lint/test reports are kept as workflow artifacts for 14 days.
+- **Release** (`.github/workflows/release.yml`): runs on a `v*` tag (`git tag v1.0.0 && git push origin v1.0.0`)
+  or by hand (Actions → Release → Run workflow). Builds the signed `.aab` (for Play) + APK + R8 mapping, kept as
+  workflow artifacts for 30 days. The repo is public, so nothing is published as a GitHub Release.
+- Secrets (repo → Settings → Secrets and variables → Actions → New repository secret):
+
+  | Secret | Value |
+  |---|---|
+  | `KEYSTORE_BASE64` | `base64 -w0 ~/keystores/stamp-upload.jks` (the whole output, one line) |
+  | `KEYSTORE_PASSWORD` | storePassword from `keystore.properties` |
+  | `KEY_ALIAS` | `upload` |
+  | `KEY_PASSWORD` | keyPassword from `keystore.properties` |
+  | `ADMOB_APP_ID` / `ADMOB_REWARDED_ID` | real AdMob IDs (empty → Google's test IDs) |
+  | `SUPPORT_EMAIL` / `PRIVACY_POLICY_URL` | optional, shows Send feedback / Privacy policy on Profile |
+
+  Without `KEYSTORE_BASE64` the release build is unsigned (a warning shows in the run). The job runs in the
+  `release` environment: add yourself as a required reviewer there if you want to approve each run.
+- Download the `.aab` from the run's Artifacts and upload it in Play Console (or keep uploading the one you
+  build locally; both are signed with the same upload key).
