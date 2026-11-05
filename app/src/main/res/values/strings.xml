@@ -569,4 +569,32 @@
     <string name="map_country_gone">no stamps from here any more</string>
     <string name="visa_first">First stamp %1$s</string>
     <string name="visa_cd">%1$s visa. First stamp %2$s. %3$s, %4$s.</string>
+    <!-- Map share -->
+    <string name="map_share_cd">Share your map</string>
+    <string name="map_export_title">Share your world</string>
+    <string name="map_export_world">World</string>
+    <string name="map_export_passport">Passport</string>
+    <string name="map_export_overline">My world · %1$s</string>
+    <plurals name="map_export_headline">
+        <item quantity="one">Stamped in %d country</item>
+        <item quantity="other">Stamped in %d countries</item>
+    </plurals>
+    <plurals name="map_export_stat_countries">
+        <item quantity="one">country</item>
+        <item quantity="other">countries</item>
+    </plurals>
+    <plurals name="map_export_stat_places">
+        <item quantity="one">place</item>
+        <item quantity="other">places</item>
+    </plurals>
+    <plurals name="map_export_stat_stamps">
+        <item quantity="one">stamp</item>
+        <item quantity="other">stamps</item>
+    </plurals>
+    <string name="map_export_country">%1$s ×%2$d</string>
+    <string name="map_export_more">+%1$d more</string>
+    <string name="map_export_counts">%1$s · %2$s</string>
+    <string name="map_export_passport_overline">Passport · visas</string>
+    <string name="map_export_watermark_note">small “%1$s” mark at the foot of the picture</string>
+    <string name="map_export_unlocked_note">watermark off while the map is open · thanks for watching</string>
 </resources>

@@ -44,6 +44,7 @@ import com.aviharez.stamp.R
 import com.aviharez.stamp.data.map.EqualEarth
 import com.aviharez.stamp.data.map.WorldOutline
 import com.aviharez.stamp.domain.model.Place
+import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
@@ -69,11 +70,16 @@ fun MapScreen(
     contentPadding: PaddingValues,
     onOpenCountry: (String) -> Unit,
     onStampIt: () -> Unit,
+    onGetPro: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MapViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    MapContent(state, contentPadding, onOpenCountry, onStampIt, modifier)
+    var sharing by rememberSaveable { mutableStateOf(false) }
+    MapContent(state, contentPadding, onOpenCountry, onStampIt, onShare = { sharing = true }, modifier = modifier)
+    if (sharing && state.countries.isNotEmpty()) {
+        MapExportSheet(state, onDismiss = { sharing = false }, onGetPro = onGetPro)
+    }
 }
 
 @Composable
@@ -82,6 +88,7 @@ fun MapContent(
     contentPadding: PaddingValues,
     onOpenCountry: (String) -> Unit,
     onStampIt: () -> Unit,
+    onShare: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val s = StampTheme.spacing
@@ -96,7 +103,7 @@ fun MapContent(
             bottom = contentPadding.calculateBottomPadding() + s.l,
         ),
     ) {
-        item(contentType = "header") { MapHeader(state) }
+        item(contentType = "header") { MapHeader(state, onShare) }
         item(contentType = "map") {
             WorldCard(state, onOpenCountry, Modifier.padding(top = s.m))
         }
@@ -134,36 +141,47 @@ fun MapContent(
 }
 
 @Composable
-private fun MapHeader(state: MapUiState) {
+private fun MapHeader(state: MapUiState, onShare: () -> Unit) {
     val countries = state.countries.size
     val places = state.places.size
     val stamps = state.stampCount
-    TitleWithNote(
-        note = if (countries > 0) {
-            {
-                HandNote(
-                    stringResource(
-                        R.string.map_stats,
-                        pluralStringResource(R.plurals.map_country_count, countries, countries),
-                        pluralStringResource(R.plurals.map_place_count, places, places),
-                        pluralStringResource(R.plurals.album_stamp_count, stamps, stamps),
-                    ),
-                    style = StampTheme.type.noteSmall,
-                    rotation = Tilt.note(StatsSeed),
-                    modifier = Modifier.padding(bottom = StampTheme.spacing.xxs),
-                )
-            }
-        } else {
-            null
-        },
-    ) {
-        Text(stringResource(R.string.map_title), style = StampTheme.type.screenTitle, color = StampTheme.colors.textHigh)
+    Row(verticalAlignment = Alignment.Top) {
+        TitleWithNote(
+            modifier = Modifier.weight(1f),
+            note = if (countries > 0) {
+                {
+                    HandNote(
+                        stringResource(
+                            R.string.map_stats,
+                            pluralStringResource(R.plurals.map_country_count, countries, countries),
+                            pluralStringResource(R.plurals.map_place_count, places, places),
+                            pluralStringResource(R.plurals.album_stamp_count, stamps, stamps),
+                        ),
+                        style = StampTheme.type.noteSmall,
+                        rotation = Tilt.note(StatsSeed),
+                        modifier = Modifier.padding(bottom = StampTheme.spacing.xxs),
+                    )
+                }
+            } else {
+                null
+            },
+        ) {
+            Text(stringResource(R.string.map_title), style = StampTheme.type.screenTitle, color = StampTheme.colors.textHigh)
+        }
+        if (countries > 0) {
+            CircleIconButton(
+                R.drawable.ic_share,
+                stringResource(R.string.map_share_cd),
+                onShare,
+                Modifier.padding(start = StampTheme.spacing.xs, top = StampTheme.spacing.xxs),
+            )
+        }
     }
 }
 
 /** The kraft card: the world, a dot on every place, a taped stamp on the busiest countries. */
 @Composable
-private fun WorldCard(state: MapUiState, onOpenCountry: (String) -> Unit, modifier: Modifier = Modifier) {
+internal fun WorldCard(state: MapUiState, onOpenCountry: (String) -> Unit, modifier: Modifier = Modifier) {
     val window = MapWindow.World
     val names = state.countries.take(DescribedCountries).map { countryName(it.code, it.postmarkName) }
     val description = if (state.countries.isEmpty()) {
@@ -339,7 +357,7 @@ private const val StatsSeed = 41L
 private const val EmptySeed = 42L
 private const val UnplacedSeed = 43L
 /** More pins than this crowd the world map; the rest still show as red countries and dots. */
-private const val MaxPins = 12
+internal const val MaxPins = 12
 private const val DescribedCountries = 8
 private val Dot = 2.5.dp
 private val DotRing = 3.5.dp
@@ -352,7 +370,7 @@ private val RowStampSlot = 52.dp
 
 /* ---------------------------------------------------------------- previews */
 
-private fun previewCountries(): List<MapCountry> {
+internal fun previewMapCountries(): List<MapCountry> {
     val base = previewStamps(6)
     fun at(i: Int, city: String, country: String, cc: String, lat: Double, lon: Double) =
         base[i].copy(id = "m$i$city", place = Place(city, country, cc, lat, lon), takenAt = Instant.ofEpochSecond(i * 1000L))
@@ -372,10 +390,11 @@ private fun previewCountries(): List<MapCountry> {
 private fun MapContentPreview() {
     StampAppTheme {
         MapContent(
-            MapUiState(loaded = true, countries = previewCountries(), unplaced = 3),
+            MapUiState(loaded = true, countries = previewMapCountries(), unplaced = 3),
             PaddingValues(),
             onOpenCountry = {},
             onStampIt = {},
+            onShare = {},
         )
     }
 }
@@ -384,6 +403,6 @@ private fun MapContentPreview() {
 @Composable
 private fun MapEmptyPreview() {
     StampAppTheme {
-        MapContent(MapUiState(loaded = true, placeOn = false), PaddingValues(), onOpenCountry = {}, onStampIt = {})
+        MapContent(MapUiState(loaded = true, placeOn = false), PaddingValues(), onOpenCountry = {}, onStampIt = {}, onShare = {})
     }
 }

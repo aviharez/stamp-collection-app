@@ -264,6 +264,7 @@ private fun StampNavigation(
                     contentPadding = inner,
                     onOpenCountry = { nav.navigate(MapCountryRoute(it)) },
                     onStampIt = { nav.navigate(CameraRoute()) },
+                    onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
                 )
             }
             composable<MapCountryRoute> {
