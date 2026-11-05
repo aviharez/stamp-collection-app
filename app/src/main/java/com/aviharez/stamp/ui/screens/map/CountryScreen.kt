@@ -22,6 +22,9 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,7 +65,7 @@ fun CountryScreen(
     viewModel: CountryViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    CountryContent(state, contentPadding, onBack, onOpenStamp, modifier)
+    CountryContent(state, contentPadding, onBack, onOpenStamp, modifier, onRenamePlace = viewModel::renamePlace)
 }
 
 @Composable
@@ -72,10 +75,16 @@ fun CountryContent(
     onBack: () -> Unit,
     onOpenStamp: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onRenamePlace: (MapPlace, String) -> Unit = { _, _ -> },
 ) {
     val s = StampTheme.spacing
     val country = state.country
     val name = countryName(state.code, country?.postmarkName)
+    // Keyed by the place, so the sheet survives rotation / Android closing the app.
+    var renaming by rememberSaveable { mutableStateOf<String?>(null) }
+    country?.places?.firstOrNull { it.key == renaming }?.let { place ->
+        PlaceRenameSheet(place, name, onSave = { onRenamePlace(place, it) }, onDismiss = { renaming = null })
+    }
     LazyVerticalGrid(
         columns = GridCells.Fixed(Columns),
         modifier = modifier.fillMaxSize().statusBarsPadding(),
@@ -100,7 +109,9 @@ fun CountryContent(
         }
         item(span = { GridItemSpan(maxLineSpan) }, contentType = "map") { CountryMap(name, country, state.outline) }
         country.places.forEach { place ->
-            item(key = "h" + place.key, span = { GridItemSpan(maxLineSpan) }, contentType = "place") { PlaceHeading(place, name) }
+            item(key = "h" + place.key, span = { GridItemSpan(maxLineSpan) }, contentType = "place") {
+                PlaceHeading(place, name, onRename = { renaming = place.key })
+            }
             items(place.stamps, key = { it.id }, contentType = { "stamp" }) { stamp ->
                 PageStamp(
                     stamp,
@@ -205,15 +216,17 @@ private fun windowFor(country: MapCountry, outline: WorldOutline): MapWindow {
 }
 
 @Composable
-private fun PlaceHeading(place: MapPlace, countryName: String) {
+private fun PlaceHeading(place: MapPlace, countryName: String, onRename: () -> Unit) {
     val s = StampTheme.spacing
     val since = rememberDateText(R.string.pattern_passport_since, place.firstDay)
-    Row(Modifier.fillMaxWidth().padding(top = s.m), verticalAlignment = Alignment.CenterVertically) {
+    val title = place.city ?: stringResource(R.string.map_somewhere_in, countryName)
+    Row(Modifier.fillMaxWidth().padding(top = s.m), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(s.xs)) {
         Column(Modifier.weight(1f)) {
-            Text(place.city ?: stringResource(R.string.map_somewhere_in, countryName), style = StampTheme.type.albumName, color = StampTheme.colors.textHigh)
+            Text(title, style = StampTheme.type.albumName, color = StampTheme.colors.textHigh)
             Text(stringResource(R.string.map_since, since), style = StampTheme.type.label, color = StampTheme.colors.textMedium)
         }
         HandNote(stringResource(R.string.map_count_note, place.stamps.size), style = StampTheme.type.noteLarge)
+        CircleIconButton(R.drawable.ic_edit, stringResource(R.string.map_rename_cd, title), onRename)
     }
 }
 

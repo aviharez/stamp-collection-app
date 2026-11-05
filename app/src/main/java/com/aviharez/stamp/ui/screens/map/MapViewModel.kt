@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class MapUiState(
@@ -68,7 +69,7 @@ data class CountryUiState(
 
 @HiltViewModel
 class CountryViewModel @Inject constructor(
-    stamps: StampRepository,
+    private val stamps: StampRepository,
     world: WorldMapRepository,
     savedState: SavedStateHandle,
 ) : ViewModel() {
@@ -77,4 +78,10 @@ class CountryViewModel @Inject constructor(
     val state: StateFlow<CountryUiState> = combine(world.asFlow(), stamps.grouped()) { outline, countries ->
         CountryUiState(loaded = true, code = code, outline = outline, country = countries.firstOrNull { it.code == code })
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), CountryUiState(code = code))
+
+    /** Renames [place] on all of its stamps; a name another place has merges the two. */
+    fun renamePlace(place: MapPlace, name: String) {
+        val ids = place.stamps.map { it.id }
+        viewModelScope.launch { stamps.renamePlace(ids, name) }
+    }
 }

@@ -566,6 +566,15 @@
     <string name="map_cd">World map. Stamped in %1$s</string>
     <string name="map_cd_empty">World map, no stamps on it yet</string>
     <string name="map_country_cd">Map of %1$s</string>
+    <string name="map_rename_cd">Rename %1$s</string>
+    <string name="map_rename_title">Rename this place</string>
+    <string name="map_rename_hint">City or town</string>
+    <plurals name="map_rename_note">
+        <item quantity="one">changes the postmark on its stamp</item>
+        <item quantity="other">changes the postmark on its %1$d stamps</item>
+    </plurals>
+    <string name="map_rename_empty_note">left empty, it\'s “Somewhere in %1$s”</string>
+    <string name="map_rename_save">Save name</string>
     <string name="map_country_gone">no stamps from here any more</string>
     <string name="visa_first">First stamp %1$s</string>
     <string name="visa_cd">%1$s visa. First stamp %2$s. %3$s, %4$s.</string>

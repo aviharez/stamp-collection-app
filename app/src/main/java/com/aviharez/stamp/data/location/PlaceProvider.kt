@@ -128,7 +128,7 @@ class PlaceProvider @Inject constructor(@ApplicationContext private val context:
             }
         } ?: return coords
         return coords.copy(
-            city = address.locality ?: address.subAdminArea ?: address.adminArea,
+            city = PostmarkCity.from(address.locality, address.subAdminArea, address.adminArea, address.countryCode),
             country = address.countryName,
             countryCode = address.countryCode,
         )
@@ -150,5 +150,30 @@ class PlaceProvider @Inject constructor(@ApplicationContext private val context:
         const val GeocodeTimeoutMillis = 4_000L
         const val MaxFixAgeMillis = 10 * 60_000L
         const val CacheMillis = 10 * 60_000L
+    }
+}
+
+/** Which of the geocoder's names goes on the postmark as the "city". */
+object PostmarkCity {
+    /**
+     * Countries where the geocoder's locality is a district (Indonesia: the kecamatan, e.g. "Kelapa
+     * Dua") and the city people say is one level up (kota / kabupaten, e.g. "Tangerang").
+     */
+    private val CityIsSubAdmin = setOf("ID")
+
+    /** "Kabupaten Tangerang", "Tangerang Regency", "Kota Jakarta Selatan" → the bare name. */
+    private val SubAdminWords = Regex(
+        "^(?:kota administrasi|kabupaten administrasi|kabupaten|kab\\.|kota)(?:\\s+|$)|\\s+(?:regency|city)$",
+        RegexOption.IGNORE_CASE,
+    )
+
+    fun from(locality: String?, subAdminArea: String?, adminArea: String?, countryCode: String?): String? {
+        val local = locality?.trim()?.takeIf(String::isNotEmpty)
+        val sub = subAdminArea?.trim()?.takeIf(String::isNotEmpty)
+        val admin = adminArea?.trim()?.takeIf(String::isNotEmpty)
+        if (countryCode?.uppercase(Locale.ROOT) in CityIsSubAdmin && sub != null) {
+            sub.replace(SubAdminWords, "").trim().takeIf(String::isNotEmpty)?.let { return it }
+        }
+        return local ?: sub ?: admin
     }
 }

@@ -128,6 +128,10 @@ class StampRepository @Inject constructor(
     suspend fun setTitle(id: String, title: String) =
         dao.setTitle(id, title.trim().ifEmpty { null })
 
+    /** Renames the place on these stamps' postmarks (blank = the country only). */
+    suspend fun renamePlace(ids: Collection<String>, city: String) =
+        ids.chunked(MaxIdsPerQuery).forEach { dao.setCity(it, city.trim().ifEmpty { null }) }
+
     suspend fun moveToAlbum(id: String, albumId: Long) {
         dao.moveToAlbum(id, albumId)
         settings.setLastAlbumId(albumId)
@@ -159,6 +163,9 @@ class StampRepository @Inject constructor(
         }
     }
 }
+
+/** Under SQLite's bound-variable limit (999 on older Android). */
+private const val MaxIdsPerQuery = 500
 
 internal fun StampEntity.toDomain() = Stamp(
     id = id,

@@ -129,6 +129,10 @@ interface StampDao {
     )
     suspend fun setImage(id: String, shape: String, imagePath: String, filter: String, perforation: String, renderSpec: String?)
 
+    /** Renames a place: the city on these stamps' postmarks. */
+    @Query("UPDATE stamps SET city = :city WHERE id IN (:ids)")
+    suspend fun setCity(ids: List<String>, city: String?)
+
     @Query("UPDATE stamps SET album_id = :albumId WHERE id = :id")
     suspend fun moveToAlbum(id: String, albumId: Long)
 
