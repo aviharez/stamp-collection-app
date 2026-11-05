@@ -69,7 +69,7 @@
         <item quantity="one">%d day</item>
         <item quantity="other">%d days</item>
     </plurals>
-    <string name="album_more_cd">Edit album</string>
+    <string name="album_more_cd">Album options</string>
     <string name="album_next_stamp_cd">Take the next stamp for this album</string>
     <string name="album_edit_title">This album</string>
     <string name="album_edit_save">Save changes</string>
@@ -597,4 +597,37 @@
     <string name="map_export_passport_overline">Passport · visas</string>
     <string name="map_export_watermark_note">small “%1$s” mark at the foot of the picture</string>
     <string name="map_export_unlocked_note">watermark off while the map is open · thanks for watching</string>
+    <!-- Sticker sheets (print) -->
+    <string name="album_print_stickers">Print stickers</string>
+    <string name="stickers_title">Print stickers</string>
+    <string name="stickers_overline">Album · %1$s</string>
+    <plurals name="stickers_page_count">
+        <item quantity="one">%d page</item>
+        <item quantity="other">%d pages</item>
+    </plurals>
+    <string name="stickers_counts">%1$s · %2$s</string>
+    <string name="stickers_look">Look</string>
+    <string name="stickers_look_grid">Grid</string>
+    <string name="stickers_look_mix">Mix</string>
+    <string name="stickers_size">Size</string>
+    <string name="stickers_size_small">Small</string>
+    <string name="stickers_size_medium">Medium</string>
+    <string name="stickers_size_large">Large</string>
+    <string name="stickers_paper">Paper</string>
+    <string name="stickers_paper_a4">A4</string>
+    <string name="stickers_paper_letter">Letter</string>
+    <string name="stickers_postmarks">Postmarks on the stamps</string>
+    <string name="stickers_cut_hint">cut along the dashed lines</string>
+    <string name="stickers_page_of">Page %1$d of %2$d</string>
+    <string name="stickers_page_number">%1$d / %2$d</string>
+    <string name="stickers_print">Print or save PDF</string>
+    <string name="stickers_print_pro">Print with Pro</string>
+    <string name="stickers_pro_note">sticker sheets come with Pro · try every look here first</string>
+    <string name="stickers_preparing">Preparing page %1$d of %2$d…</string>
+    <string name="stickers_failed">Couldn’t make the PDF. Try again.</string>
+    <string name="stickers_empty">no stamps in this album yet · stamp a few and come back</string>
+    <string name="stickers_job">%1$s stickers</string>
+    <string name="stickers_page_cd">Sticker sheet, page %1$d of %2$d, %3$s</string>
+    <string name="paywall_overline_stickers">Pro · printable sticker sheets</string>
+    <string name="paywall_perk_stickers">Printable sticker sheets</string>
 </resources>

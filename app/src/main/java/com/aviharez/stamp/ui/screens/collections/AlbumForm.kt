@@ -153,6 +153,8 @@ fun AlbumFormSheet(
     onSubmit: (name: String, category: AlbumCategory, cover: AlbumCoverColor) -> Unit,
     onDismiss: () -> Unit,
     initial: AlbumDraft? = null,
+    /** Extra actions above the form (the album page's "Print stickers"). */
+    header: (@Composable () -> Unit)? = null,
 ) {
     val c = StampTheme.colors
     val s = StampTheme.spacing
@@ -162,6 +164,9 @@ fun AlbumFormSheet(
         containerColor = c.paper,
         contentColor = c.textHigh,
     ) {
+        if (header != null) {
+            Box(Modifier.padding(horizontal = s.screen).padding(bottom = s.l)) { header() }
+        }
         AlbumForm(
             onSubmit = { name, category, cover ->
                 onSubmit(name, category, cover)

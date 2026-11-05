@@ -55,6 +55,7 @@ import com.aviharez.stamp.ui.screens.map.MapScreen
 import com.aviharez.stamp.ui.screens.paywall.PaywallReason
 import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
 import com.aviharez.stamp.ui.screens.scrapbook.ScrapbookScreen
+import com.aviharez.stamp.ui.screens.stickers.StickerSheetScreen
 import com.aviharez.stamp.ui.screens.settings.ProfileScreen
 import com.aviharez.stamp.ui.screens.stamped.StampedScreen
 import com.aviharez.stamp.ui.screens.welcome.FirstRunViewModel
@@ -172,6 +173,7 @@ private fun StampNavigation(
                     onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
                     onOpenStamp = { nav.navigate(StampDetailRoute(it)) },
                     onOpenScrapbook = { nav.navigate(ScrapbookRoute(albumId, it)) },
+                    onPrintStickers = { nav.navigate(StickerSheetRoute(albumId)) },
                     scrollToScrap = savedScrap,
                     onScrolled = { entry.savedStateHandle[ScrapSavedKey] = null },
                 )
@@ -185,6 +187,12 @@ private fun StampNavigation(
                     },
                     onDeleted = { nav.popBackStack() },
                     onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Scrapbook.name)) },
+                )
+            }
+            composable<StickerSheetRoute> {
+                StickerSheetScreen(
+                    onBack = { nav.popBackStack() },
+                    onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Stickers.name)) },
                 )
             }
             composable<StampDetailRoute> { entry ->

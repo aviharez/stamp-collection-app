@@ -86,6 +86,7 @@ fun AlbumPageScreen(
     onGetPro: () -> Unit,
     onOpenStamp: (stampId: String) -> Unit,
     onOpenScrapbook: (pageId: String?) -> Unit,
+    onPrintStickers: () -> Unit,
     modifier: Modifier = Modifier,
     /** A scrapbook page just saved: the pager turns to it once, then [onScrolled]. */
     scrollToScrap: String? = null,
@@ -134,6 +135,18 @@ fun AlbumPageScreen(
             onSubmit = viewModel::edit,
             onDismiss = { editing = false },
             initial = AlbumDraft(album.name, album.category, album.cover),
+            header = {
+                ProPill(
+                    label = stringResource(R.string.album_print_stickers),
+                    locked = !state.isPro,
+                    onClick = {
+                        editing = false
+                        onPrintStickers()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = state.stampCount > 0,
+                )
+            },
         )
     }
 }
@@ -258,7 +271,7 @@ fun AlbumPageContent(
             Modifier.padding(horizontal = s.screenFullBleed),
             horizontalArrangement = Arrangement.spacedBy(s.s),
         ) {
-            ScrapbookPill(locked = state.loaded && !state.isPro, onClick = { onOpenScrapbook(null) }, modifier = Modifier.weight(1f))
+            ProPill(stringResource(R.string.album_scrapbook), locked = state.loaded && !state.isPro, onClick = { onOpenScrapbook(null) }, modifier = Modifier.weight(1f))
             PillButton(
                 stringResource(R.string.album_share_page),
                 onClick = { onSharePage(currentPage) },
@@ -278,17 +291,17 @@ private val AlbumLeaf.sharable: Boolean
         is AlbumLeaf.Scrap -> true
     }
 
-/** "Scrapbook page": makes a new page; free users see the red "PRO" tag (they can still try it). */
+/** An outline pill for a Pro feature; free users see the red "PRO" tag (they can still try it). */
 @Composable
-private fun ScrapbookPill(locked: Boolean, onClick: () -> Unit, modifier: Modifier) {
+private fun ProPill(label: String, locked: Boolean, onClick: () -> Unit, modifier: Modifier, enabled: Boolean = true) {
     val c = StampTheme.colors
-    val label = stringResource(R.string.album_scrapbook)
     val description = if (locked) stringResource(R.string.postcard_pro_cd, label) else label
     Box(modifier) {
         PillButton(
             label,
             onClick = onClick,
             style = PillStyle.Outline,
+            enabled = enabled,
             modifier = Modifier.fillMaxWidth().semantics { contentDescription = description },
         )
         if (locked) {

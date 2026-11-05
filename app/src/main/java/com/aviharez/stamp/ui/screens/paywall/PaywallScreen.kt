@@ -80,6 +80,7 @@ private enum class Perk(@DrawableRes val icon: Int, @StringRes val label: Int, v
     Postcards(R.drawable.ic_perk_postcards, R.string.paywall_perk_postcards, true),
     Widget(R.drawable.ic_perk_widget, R.string.paywall_perk_widget, true),
     Scrapbook(R.drawable.ic_perk_scrapbook, R.string.paywall_perk_scrapbook, true),
+    Stickers(R.drawable.ic_perk_stickers, R.string.paywall_perk_stickers, true),
 }
 
 private fun PaywallReason.perk(): Perk? = when (this) {
@@ -90,6 +91,7 @@ private fun PaywallReason.perk(): Perk? = when (this) {
     PaywallReason.Edges -> Perk.Edges
     PaywallReason.Postcards -> Perk.Postcards
     PaywallReason.Scrapbook -> Perk.Scrapbook
+    PaywallReason.Stickers -> Perk.Stickers
     PaywallReason.Profile -> null
 }
 
@@ -161,6 +163,7 @@ fun PaywallContent(
                 PaywallReason.Edges -> stringResource(R.string.paywall_overline_edges)
                 PaywallReason.Postcards -> stringResource(R.string.paywall_overline_postcards)
                 PaywallReason.Scrapbook -> stringResource(R.string.paywall_overline_scrapbook)
+                PaywallReason.Stickers -> stringResource(R.string.paywall_overline_stickers)
                 PaywallReason.Profile -> stringResource(R.string.paywall_overline)
             }.uppercase(),
             style = StampTheme.type.overline,
