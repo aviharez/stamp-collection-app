@@ -51,8 +51,9 @@ data class PhotoFit(val zoom: Float = 1f, val pan: Offset = Offset.Zero) {
     /** Pulls [pan] back so the photo still covers the whole window. */
     fun clamped(window: Rect, photoSize: Size): PhotoFit {
         val r = PhotoFit(zoom).photoRect(window, photoSize)
-        val maxX = (r.width - window.width) / 2f
-        val maxY = (r.height - window.height) / 2f
+        // At zoom 1 one side fits exactly, and float rounding can leave a tiny negative slack.
+        val maxX = ((r.width - window.width) / 2f).coerceAtLeast(0f)
+        val maxY = ((r.height - window.height) / 2f).coerceAtLeast(0f)
         return copy(pan = Offset(pan.x.coerceIn(-maxX, maxX), pan.y.coerceIn(-maxY, maxY)))
     }
 

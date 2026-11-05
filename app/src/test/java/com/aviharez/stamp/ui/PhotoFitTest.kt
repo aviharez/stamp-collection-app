@@ -43,4 +43,16 @@ class PhotoFitTest {
         assertEquals(1f, PhotoFit().transformed(window, landscape, window.center, Offset.Zero, 0.2f).zoom)
         assertEquals(PhotoFit.MaxZoom, PhotoFit().transformed(window, landscape, window.center, Offset.Zero, 50f).zoom)
     }
+
+    @Test fun fittedPhotoNeverBreaksTheClamp() {
+        // At zoom 1 one side fits exactly; float rounding used to leave a negative slack and crash.
+        val photo = Size(2400f, 1566f)
+        repeat(2000) { i ->
+            val w = 200f + i * 0.37f
+            val frame = Rect(24f, 80f, 24f + w, 80f + w * 4f / 3f)
+            val pan = PhotoFit(pan = Offset(5f, -5f)).clamped(frame, photo).pan
+            assertEquals(5f, pan.x, 1e-3f) // the wide photo has room sideways
+            assertEquals(0f, pan.y, 1e-3f) // and none up or down
+        }
+    }
 }
