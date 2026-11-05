@@ -367,6 +367,7 @@ class CameraViewModel @Inject constructor(
                         originalFile = original,
                         place = placeForCapture(),
                         source = StampSource.Camera,
+                        renderSpec = rendered.spec,
                     ),
                 )
                 _state.update { it.copy(capturing = false, captured = stampId) }

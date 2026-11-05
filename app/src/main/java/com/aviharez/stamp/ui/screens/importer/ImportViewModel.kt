@@ -19,6 +19,7 @@ import com.aviharez.stamp.data.repo.StampRepository
 import com.aviharez.stamp.di.AppScope
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.Place
+import com.aviharez.stamp.domain.model.StampFilter
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.domain.model.StampSource
 import com.aviharez.stamp.ui.navigation.ImportRoute
@@ -82,6 +83,9 @@ class ImportViewModel @Inject constructor(
     private var photo: ImportedPhoto? = null
     private var kept = false
 
+    /** Reframing keeps the stamp's filter; a new import starts as Original. */
+    private var reframeFilter = StampFilter.Original
+
     init {
         viewModelScope.launch { if (reframeId != null) loadStamp(reframeId) else load() }
     }
@@ -96,6 +100,7 @@ class ImportViewModel @Inject constructor(
             _state.update { it.copy(loading = false, failed = true) }
             return
         }
+        reframeFilter = stamp.filter
         photo = ImportedPhoto(
             id = id,
             original = original,
@@ -206,11 +211,12 @@ class ImportViewModel @Inject constructor(
                         shape = snapshot.shape,
                         perforation = snapshot.perforation,
                         frameShortDp = frameShortDp,
+                        filter = reframeFilter,
                         output = output,
                     )
                 }
                 if (reframeId != null) {
-                    stamps.replaceImage(reframeId, rendered.shape, rendered.file)
+                    stamps.replaceImage(reframeId, rendered, reframeFilter)
                     _state.update { it.copy(saving = false, saved = reframeId) }
                     return@launch
                 }
@@ -226,6 +232,7 @@ class ImportViewModel @Inject constructor(
                         source = StampSource.Gallery,
                         takenAt = picked.takenAt?.takeIf { !it.isAfter(now) } ?: now,
                         day = snapshot.day,
+                        renderSpec = rendered.spec,
                     ),
                 )
                 kept = true

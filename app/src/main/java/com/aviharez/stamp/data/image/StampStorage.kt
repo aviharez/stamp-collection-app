@@ -35,6 +35,10 @@ class StampStorage @Inject constructor(@ApplicationContext private val context: 
     fun renderedFile(id: String, version: Long? = null): File =
         File(rendered.also { it.mkdirs() }, if (version == null) "$id.png" else "$id-$version.png")
 
+    /** A Pro filter tried on by a free user: shown, never saved (cache; Android may clear it). */
+    fun filterPreviewFile(id: String, filter: String): File =
+        File(File(context.cacheDir, "filter_previews").also { it.mkdirs() }, "$id-$filter.png")
+
     /**
      * Enough space for one more stamp (a full-resolution photo plus its PNG)? Counts cached files
      * Android would clear to make room, as it does on a nearly full phone.

@@ -55,6 +55,10 @@ data class StampEntity(
     val title: String?,
     val caption: String?,
     val source: String,
+    /** [com.aviharez.stamp.domain.model.StampFilter] name. */
+    @ColumnInfo(defaultValue = "Original") val filter: String = "Original",
+    /** How the picture was cut from the original ([com.aviharez.stamp.data.image.RenderSpec]); null before v3. */
+    @ColumnInfo(name = "render_spec") val renderSpec: String? = null,
 )
 
 /** Row for the albums list: album + count + newest stamp image. */

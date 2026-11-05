@@ -7,19 +7,12 @@ import com.aviharez.stamp.data.db.AlbumDao
 import com.aviharez.stamp.data.db.AlbumEntity
 import com.aviharez.stamp.data.db.StampDao
 import com.aviharez.stamp.data.db.StampEntity
+import com.aviharez.stamp.data.image.RenderSpec
 import com.aviharez.stamp.data.image.StampStorage
 import com.aviharez.stamp.data.settings.SettingsRepository
 import com.aviharez.stamp.di.AppScope
+import com.aviharez.stamp.domain.model.StampFilter
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.serialization.SerializationException
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -31,6 +24,15 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.serialization.SerializationException
 
 enum class BackupError { NotABackup, NewerVersion, Failed }
 
@@ -220,4 +222,6 @@ private fun BackupStamp.toEntity(albumId: Long, rendered: File, original: File) 
     title = title,
     caption = caption,
     source = source,
+    filter = StampFilter.fromName(filter).name,
+    renderSpec = RenderSpec.decode(renderSpec)?.encode(),
 )

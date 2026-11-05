@@ -2,25 +2,28 @@ package com.aviharez.stamp.data.repo
 
 import com.aviharez.stamp.data.db.StampDao
 import com.aviharez.stamp.data.db.StampEntity
+import com.aviharez.stamp.data.image.RenderSpec
+import com.aviharez.stamp.data.image.RenderedStamp
 import com.aviharez.stamp.data.image.StampStorage
 import com.aviharez.stamp.data.settings.SettingsRepository
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.Place
 import com.aviharez.stamp.domain.model.Stamp
+import com.aviharez.stamp.domain.model.StampFilter
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.domain.model.StampSource
 import com.aviharez.stamp.domain.usecase.Streak
 import com.aviharez.stamp.domain.usecase.StreakCalculator
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 /** A freshly made stamp, before it has an album. */
 data class NewStamp(
@@ -35,6 +38,8 @@ data class NewStamp(
     val takenAt: Instant? = null,
     /** The calendar day it counts for; null = [takenAt]'s day here. */
     val day: LocalDate? = null,
+    val renderSpec: RenderSpec? = null,
+    val filter: StampFilter = StampFilter.Original,
 )
 
 @Singleton
@@ -69,6 +74,8 @@ class StampRepository @Inject constructor(
                 title = null,
                 caption = null,
                 source = new.source.name,
+                filter = new.filter.name,
+                renderSpec = new.renderSpec?.encode(),
             ),
         )
         settings.setLastAlbumId(albumId)
@@ -112,11 +119,14 @@ class StampRepository @Inject constructor(
         settings.setLastAlbumId(albumId)
     }
 
-    /** A re-framed picture (new crop / turn / shape); the old PNG is deleted. Date, place and words stay. */
-    suspend fun replaceImage(id: String, shape: StampShape, image: File) {
+    /**
+     * A re-drawn picture (new crop / turn / shape / filter); the old PNG is deleted. Date, place
+     * and words stay.
+     */
+    suspend fun replaceImage(id: String, image: RenderedStamp, filter: StampFilter) {
         val old = dao.get(id) ?: return
-        dao.setImage(id, shape.name, image.path)
-        if (old.imagePath != image.path) withContext(Dispatchers.IO) { File(old.imagePath).delete() }
+        dao.setImage(id, image.shape.name, image.file.path, filter.name, image.spec.encode())
+        if (old.imagePath != image.file.path) withContext(Dispatchers.IO) { File(old.imagePath).delete() }
     }
 
     /** Deletes image files that no stamp uses any more (see [StampStorage.sweep]). */
@@ -149,4 +159,6 @@ internal fun StampEntity.toDomain() = Stamp(
     title = title,
     caption = caption,
     source = enumOr(source, StampSource.Camera),
+    filter = StampFilter.fromName(filter),
+    renderSpec = renderSpec,
 )

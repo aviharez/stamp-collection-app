@@ -6,7 +6,7 @@ import androidx.room3.migration.Migration
 import androidx.sqlite.SQLiteConnection
 import androidx.sqlite.execSQL
 
-@Database(entities = [AlbumEntity::class, StampEntity::class], version = 2, exportSchema = true)
+@Database(entities = [AlbumEntity::class, StampEntity::class], version = 3, exportSchema = true)
 abstract class StampDatabase : RoomDatabase() {
     abstract fun albumDao(): AlbumDao
     abstract fun stampDao(): StampDao
@@ -19,6 +19,14 @@ abstract class StampDatabase : RoomDatabase() {
             override suspend fun migrate(connection: SQLiteConnection) {
                 connection.execSQL("ALTER TABLE stamps ADD COLUMN created_day TEXT NOT NULL DEFAULT ''")
                 connection.execSQL("UPDATE stamps SET created_day = day")
+            }
+        }
+
+        /** v3: stamps.filter + stamps.render_spec (older stamps: Original, no spec until reframed). */
+        val Migration2To3 = object : Migration(2, 3) {
+            override suspend fun migrate(connection: SQLiteConnection) {
+                connection.execSQL("ALTER TABLE stamps ADD COLUMN filter TEXT NOT NULL DEFAULT 'Original'")
+                connection.execSQL("ALTER TABLE stamps ADD COLUMN render_spec TEXT")
             }
         }
     }

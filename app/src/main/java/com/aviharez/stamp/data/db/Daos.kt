@@ -99,8 +99,10 @@ interface StampDao {
     @Query("UPDATE stamps SET title = :title WHERE id = :id")
     suspend fun setTitle(id: String, title: String?)
 
-    @Query("UPDATE stamps SET shape = :shape, image_path = :imagePath WHERE id = :id")
-    suspend fun setImage(id: String, shape: String, imagePath: String)
+    @Query(
+        "UPDATE stamps SET shape = :shape, image_path = :imagePath, filter = :filter, render_spec = :renderSpec WHERE id = :id",
+    )
+    suspend fun setImage(id: String, shape: String, imagePath: String, filter: String, renderSpec: String?)
 
     @Query("UPDATE stamps SET album_id = :albumId WHERE id = :id")
     suspend fun moveToAlbum(id: String, albumId: Long)

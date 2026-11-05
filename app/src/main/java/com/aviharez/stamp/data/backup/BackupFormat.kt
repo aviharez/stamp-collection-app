@@ -2,6 +2,7 @@ package com.aviharez.stamp.data.backup
 
 import com.aviharez.stamp.data.db.AlbumEntity
 import com.aviharez.stamp.data.db.StampEntity
+import com.aviharez.stamp.domain.model.StampFilter
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
@@ -43,6 +44,9 @@ data class BackupStamp(
     val title: String? = null,
     val caption: String? = null,
     val source: String,
+    /** Added with filters; older files restore as Original with no spec. */
+    val filter: String? = null,
+    val renderSpec: String? = null,
 )
 
 @Serializable
@@ -114,6 +118,8 @@ object BackupFormat {
                 title = s.title,
                 caption = s.caption,
                 source = s.source,
+                filter = s.filter.takeIf { it != StampFilter.Original.name },
+                renderSpec = s.renderSpec,
             )
         },
         settings = settings,

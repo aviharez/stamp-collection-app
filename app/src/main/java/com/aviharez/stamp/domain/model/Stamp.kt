@@ -42,4 +42,10 @@ data class Stamp(
     val title: String?,
     val caption: String?,
     val source: StampSource,
+    val filter: StampFilter = StampFilter.Original,
+    /**
+     * How the picture was cut from [originalPath] (encoded data.image.RenderSpec), so it can be
+     * drawn again with another filter. Null for stamps made before filters until they are reframed.
+     */
+    val renderSpec: String? = null,
 )

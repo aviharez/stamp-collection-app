@@ -3,6 +3,8 @@ package com.aviharez.stamp.data.image
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.Path
@@ -13,8 +15,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.withSave
 import com.aviharez.stamp.domain.model.PerforationStyle
+import com.aviharez.stamp.domain.model.StampFilter
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.components.PerforationCornerDp
+import com.aviharez.stamp.ui.components.colorMatrix
 import com.aviharez.stamp.ui.components.perforatedPath
 import com.aviharez.stamp.ui.theme.PaperWhite
 import java.io.File
@@ -44,8 +48,39 @@ data class CropSpec(
     val deviceRotation: Int,
 )
 
-/** Result of rendering: the PNG and the shape it ended up as (after the device rotation). */
-data class RenderedStamp(val file: File, val shape: StampShape)
+/**
+ * How a stamp's picture was cut from its original, so it can be drawn again (another filter)
+ * without asking the user to frame it again.
+ *
+ * @param window crop of the upright photo after it was turned [turnBefore]° (normalised 0..1).
+ * @param turnAfter degrees the crop was turned afterwards (camera: the phone was sideways).
+ * @param frameShortDp short side of the on-screen frame the margins and perforations scale from.
+ */
+data class RenderSpec(
+    val window: NormRect,
+    val turnBefore: Int,
+    val turnAfter: Int,
+    val frameShortDp: Float,
+) {
+    /** "left,top,right,bottom,turnBefore,turnAfter,frameShortDp" for the database and backups. */
+    fun encode(): String = listOf(window.left, window.top, window.right, window.bottom, turnBefore, turnAfter, frameShortDp)
+        .joinToString(",")
+
+    companion object {
+        private const val Parts = 7
+
+        fun decode(text: String?): RenderSpec? {
+            val parts = text?.split(",")?.takeIf { it.size == Parts } ?: return null
+            val n = parts.map { it.toFloatOrNull() ?: return null }
+            val window = NormRect(n[0], n[1], n[2], n[3])
+            if (window.width <= 0f || window.height <= 0f || n[6] <= 0f) return null
+            return RenderSpec(window, n[4].toInt(), n[5].toInt(), n[6])
+        }
+    }
+}
+
+/** Result of rendering: the PNG, the shape it ended up as (after the device rotation) and how to redo it. */
+data class RenderedStamp(val file: File, val shape: StampShape, val spec: RenderSpec)
 
 /**
  * Turns a captured photo into a stamp PNG: EXIF orientation → crop to the frame window →
@@ -61,12 +96,10 @@ class StampRenderer @Inject constructor() {
         val window = viewfinderToPhoto(spec.window, spec.viewfinderAspect, uprightW.toFloat() / uprightH)
         return renderWindow(
             original = original,
-            window = window,
-            turnBefore = 0,
-            turnAfter = spec.deviceRotation,
+            spec = RenderSpec(window, turnBefore = 0, turnAfter = spec.deviceRotation, frameShortDp = spec.frameShortDp),
             shape = spec.shape,
             perforation = spec.perforation,
-            frameShortDp = spec.frameShortDp,
+            filter = StampFilter.Original,
             output = output,
         )
     }
@@ -82,51 +115,77 @@ class StampRenderer @Inject constructor() {
         shape: StampShape,
         perforation: PerforationStyle,
         frameShortDp: Float,
+        filter: StampFilter,
         output: File,
     ): RenderedStamp = renderWindow(
         original = original,
-        window = window,
-        turnBefore = Math.floorMod(quarterTurns, 4) * 90,
-        turnAfter = 0,
+        spec = RenderSpec(window, turnBefore = Math.floorMod(quarterTurns, 4) * 90, turnAfter = 0, frameShortDp = frameShortDp),
         shape = shape,
         perforation = perforation,
-        frameShortDp = frameShortDp,
+        filter = filter,
         output = output,
     )
 
-    private fun renderWindow(
+    /**
+     * Draws a saved stamp again from its original with [filter] ([finalShape] is the shape the
+     * stamp has now, i.e. after [RenderSpec.turnAfter]).
+     */
+    fun rerender(
         original: File,
-        window: NormRect,
-        turnBefore: Int,
-        turnAfter: Int,
-        shape: StampShape,
+        spec: RenderSpec,
+        finalShape: StampShape,
         perforation: PerforationStyle,
-        frameShortDp: Float,
+        filter: StampFilter,
         output: File,
     ): RenderedStamp {
+        val shape = if (spec.turnAfter % 180 != 0) finalShape.quarterTurned() else finalShape
+        return renderWindow(original, spec, shape, perforation, filter, output)
+    }
+
+    /**
+     * Just the stamp's picture (cropped and upright, no paper or filter), long side about
+     * [longPx]: the filter picker's thumbnails. Null when the original won't decode.
+     */
+    fun picture(original: File, spec: RenderSpec, longPx: Int): Bitmap? = runCatching {
+        cutPicture(original, spec, longPx)
+    }.getOrNull()
+
+    private fun cutPicture(original: File, spec: RenderSpec, longPx: Int): Bitmap {
+        val window = spec.window
         val exifOrientation = exifOrientation(original)
         val (uprightW, uprightH) = uprightSize(original)
-        val turnedW = if (turnBefore % 180 != 0) uprightH else uprightW
-        val turnedH = if (turnBefore % 180 != 0) uprightW else uprightH
+        val turnedW = if (spec.turnBefore % 180 != 0) uprightH else uprightW
+        val turnedH = if (spec.turnBefore % 180 != 0) uprightW else uprightH
 
-        // Sample down only as far as the crop still delivers MaxLongPx.
+        // Sample down only as far as the crop still delivers longPx.
         val cropLongPx = max(window.width * turnedW, window.height * turnedH)
         var sample = 1
-        while (cropLongPx / (sample * 2) >= MaxLongPx) sample *= 2
+        while (cropLongPx / (sample * 2) >= longPx) sample *= 2
 
         val decoded = BitmapFactory.decodeFile(original.path, BitmapFactory.Options().apply { inSampleSize = sample })
             ?: error("Could not decode ${original.name}")
         val upright = decoded.applyExif(exifOrientation)
-        val turned = rotate(upright, turnBefore)
+        val turned = rotate(upright, spec.turnBefore)
         val cropped = crop(turned, window)
-        val photo = rotate(cropped, turnAfter)
-        val finalShape = if (turnAfter % 180 != 0) shape.quarterTurned() else shape
+        return rotate(cropped, spec.turnAfter)
+    }
 
-        val stamp = drawStamp(photo, finalShape, perforation, frameShortDp)
+    private fun renderWindow(
+        original: File,
+        spec: RenderSpec,
+        shape: StampShape,
+        perforation: PerforationStyle,
+        filter: StampFilter,
+        output: File,
+    ): RenderedStamp {
+        val photo = cutPicture(original, spec, MaxLongPx)
+        val finalShape = if (spec.turnAfter % 180 != 0) shape.quarterTurned() else shape
+
+        val stamp = drawStamp(photo, finalShape, perforation, spec.frameShortDp, filter)
         photo.recycle()
         output.outputStream().use { stamp.compress(Bitmap.CompressFormat.PNG, PngQuality, it) }
         stamp.recycle()
-        return RenderedStamp(output, finalShape)
+        return RenderedStamp(output, finalShape, spec)
     }
 
     private fun crop(src: Bitmap, window: NormRect): Bitmap {
@@ -143,7 +202,13 @@ class StampRenderer @Inject constructor() {
         return Bitmap.createBitmap(src, 0, 0, src.width, src.height, m, true).also { if (it !== src) src.recycle() }
     }
 
-    internal fun drawStamp(photo: Bitmap, shape: StampShape, perforation: PerforationStyle, frameShortDp: Float): Bitmap {
+    internal fun drawStamp(
+        photo: Bitmap,
+        shape: StampShape,
+        perforation: PerforationStyle,
+        frameShortDp: Float,
+        filter: StampFilter = StampFilter.Original,
+    ): Bitmap {
         // Outer paper size: the photo plus the paper margin, at the frame's proportions.
         val marginRatio = perforation.paperMarginDp / frameShortDp
         val photoShort = min(photo.width, photo.height).toFloat()
@@ -178,7 +243,9 @@ class StampRenderer @Inject constructor() {
             val dw = photo.width * scale
             val dh = photo.height * scale
             val dst = RectF(inner.centerX() - dw / 2f, inner.centerY() - dh / 2f, inner.centerX() + dw / 2f, inner.centerY() + dh / 2f)
-            drawBitmap(photo, null, dst, Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG))
+            val paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.FILTER_BITMAP_FLAG)
+            filter.colorMatrix()?.let { paint.colorFilter = ColorMatrixColorFilter(ColorMatrix(it)) }
+            drawBitmap(photo, null, dst, paint)
         }
         return out
     }

@@ -20,6 +20,10 @@ internal val Sage = Color(0xFF6E8F6A)        // album covers / accents
 internal val Ember = Color(0xFFFF6A4D)       // streak flame / accents on dark
 internal val Surface2 = Color(0xFFEBE1D0)    // icon-button backgrounds on Paper
 
+// Photo-filter inks (only inside stamp pictures, never UI): the Sepia filter's dark and light.
+internal val SepiaInk = Color(0xFF3B2414)
+internal val SepiaPaper = Color(0xFFF3E3C6)
+
 // Tinted shadow bases (alpha is applied by Modifier.tintedShadow) — never pure black.
 private val ShadowWarmBase = Color(0xFF462D0F) // rgba(70,45,15,…) on paper
 private val ShadowNavyBase = Color(0xFF0B1550) // on cobalt / ink surfaces
