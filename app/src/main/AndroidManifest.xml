@@ -40,7 +40,7 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"
-            android:theme="@style/Theme.StampApp"
+            android:theme="@style/Theme.StampApp.Starting"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -118,6 +118,8 @@ room3 {
 dependencies {
     // Core / lifecycle
     implementation(libs.androidx.core.ktx)
+    // Same launch splash on Android 8–11 as the system one on 12+ (and keep it up until Home or the welcome is known).
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)

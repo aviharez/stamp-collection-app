@@ -75,10 +75,13 @@ import com.aviharez.stamp.widget.WidgetLink
 fun StampApp(
     widgetLink: WidgetLink? = null,
     onWidgetLinkHandled: () -> Unit = {},
+    onReady: () -> Unit = {},
     firstRun: FirstRunViewModel = hiltViewModel(),
 ) {
-    // Wait the few ms it takes to know whether this is a fresh install, so Home never flashes first.
+    // Wait the few ms it takes to know whether this is a fresh install, so Home never flashes first
+    // (the launch splash stays up until then).
     val showWelcome by firstRun.showWelcome.collectAsStateWithLifecycle()
+    LaunchedEffect(showWelcome != null) { if (showWelcome != null) onReady() }
     when (showWelcome) {
         null -> Box(Modifier.fillMaxSize().background(StampTheme.colors.paper))
         else -> StampNavigation(
