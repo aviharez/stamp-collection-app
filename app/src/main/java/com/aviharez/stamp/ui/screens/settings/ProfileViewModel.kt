@@ -44,6 +44,8 @@ data class ProfileUiState(
     val mirrorSelfie: Boolean = true,
     /** The user wants places on postmarks (it still needs location permission to happen). */
     val postmarkPlace: Boolean = true,
+    /** Crash reports + anonymous usage counts (UsageStats). */
+    val usageStats: Boolean = true,
     val restore: RestoreMessage? = null,
 )
 
@@ -76,14 +78,17 @@ class ProfileViewModel @Inject constructor(
         )
     }
 
+    private val switches = combine(settings.mirrorSelfie, settings.postmarkPlace, settings.usageStats) { mirror, place, usage ->
+        ProfileUiState(mirrorSelfie = mirror, postmarkPlace = place, usageStats = usage)
+    }
+
     val state: StateFlow<ProfileUiState> = combine(
         passport,
         proStatus.isPro,
-        settings.mirrorSelfie,
-        settings.postmarkPlace,
+        switches,
         restore,
-    ) { passport, pro, mirror, place, restore ->
-        ProfileUiState(passport, pro, mirror, place, if (pro) null else restore)
+    ) { passport, pro, switches, restore ->
+        switches.copy(passport = passport, isPro = pro, restore = if (pro) null else restore)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), ProfileUiState())
 
     // App scope: a setting tapped just before leaving Profile is still written.
@@ -93,6 +98,10 @@ class ProfileViewModel @Inject constructor(
 
     fun setPostmarkPlace(on: Boolean) {
         appScope.launch { settings.setPostmarkPlace(on) }
+    }
+
+    fun setUsageStats(on: Boolean) {
+        appScope.launch { settings.setUsageStats(on) }
     }
 
     /** The system location dialog was answered from Profile: the camera won't ask again. */

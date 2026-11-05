@@ -25,3 +25,6 @@ local.properties
 keystore.properties
 *.jks
 *.keystore
+
+# Firebase config (from the Firebase console; CI gets it from the GOOGLE_SERVICES_JSON secret)
+app/google-services.json

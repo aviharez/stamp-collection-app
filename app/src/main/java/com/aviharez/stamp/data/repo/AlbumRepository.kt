@@ -18,6 +18,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.time.Clock
 import java.time.Instant
+import com.aviharez.stamp.data.analytics.UsageStats
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,6 +27,7 @@ class AlbumRepository @Inject constructor(
     private val dao: AlbumDao,
     private val clock: Clock,
     @ApplicationContext private val context: Context,
+    private val usage: UsageStats,
 ) {
     private val defaultLock = Mutex()
 
@@ -59,7 +61,7 @@ class AlbumRepository @Inject constructor(
                 cover = cover.name,
                 createdAt = clock.millis(),
             ),
-        )
+        ).also { usage.albumCreated() }
 
     suspend fun update(album: Album) = dao.update(album.toEntity())
 

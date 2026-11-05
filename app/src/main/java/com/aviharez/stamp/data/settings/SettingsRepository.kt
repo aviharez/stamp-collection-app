@@ -65,6 +65,13 @@ class SettingsRepository @Inject constructor(private val store: DataStore<Prefer
         store.edit { it[LastBackupAt] = millis }
     }
 
+    /** Crash reports + anonymous usage counts (Profile switch, on by default). See UsageStats. */
+    val usageStats: Flow<Boolean> = store.data.map { it[UsageStatsOn] ?: true }.distinctUntilChanged()
+
+    suspend fun setUsageStats(on: Boolean) {
+        store.edit { it[UsageStatsOn] = on }
+    }
+
     /** Evening streak reminder: off until the user turns it on on Profile. */
     val reminder: Flow<ReminderSetting> = store.data
         .map { ReminderSetting(on = it[ReminderOn] ?: false, minuteOfDay = it[ReminderMinute] ?: ReminderSetting.DefaultMinute) }
@@ -87,6 +94,7 @@ class SettingsRepository @Inject constructor(private val store: DataStore<Prefer
         val PostmarkPlace = booleanPreferencesKey("postmark_place")
         val LastBackupAt = longPreferencesKey("last_backup_at")
         val Onboarded = booleanPreferencesKey("onboarded")
+        val UsageStatsOn = booleanPreferencesKey("usage_stats")
     }
 }
 

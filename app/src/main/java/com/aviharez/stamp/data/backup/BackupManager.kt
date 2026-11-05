@@ -23,6 +23,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipException
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
+import com.aviharez.stamp.data.analytics.UsageStats
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
@@ -65,6 +66,7 @@ class BackupManager @Inject constructor(
     private val pro: ProStatus,
     private val clock: Clock,
     @param:AppScope private val scope: CoroutineScope,
+    private val usage: UsageStats,
 ) {
     private val _state = MutableStateFlow<BackupState>(BackupState.Idle)
     val state: StateFlow<BackupState> = _state.asStateFlow()
@@ -95,6 +97,7 @@ class BackupManager @Inject constructor(
                 val notOurs = e is SerializationException || e is ZipException || e is IllegalArgumentException
                 BackupState.Failed(restoring, if (notOurs) BackupError.NotABackup else BackupError.Failed)
             }
+            usage.backup(restoring, ok = _state.value !is BackupState.Failed)
         }
     }
 

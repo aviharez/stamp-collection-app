@@ -49,6 +49,30 @@
             </intent-filter>
         </activity>
 
+        <!-- Firebase (crash reports + anonymous usage counts). Off until UsageStats has read the Profile
+             switch at start; never the advertising ID or other ad signals (counting only, never ads). -->
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_ssaid_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_ad_storage"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_ad_user_data"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_ad_personalization_signals"
+            android:value="false" />
+
         <!-- AdMob app ID (test ID in debug; see app/build.gradle.kts). Rewarded ads only. -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aviharez.stamp.R
+import com.aviharez.stamp.data.analytics.ExportKind
 import com.aviharez.stamp.domain.model.Stamp
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.domain.model.ScrapPage
@@ -124,7 +125,7 @@ fun PageExportSheet(
             if (bitmap != null) then(bitmap) else viewModel.failed()
         }
     }
-    val save = rememberSaveToPhotos { capture { viewModel.save(it, fileName) } }
+    val save = rememberSaveToPhotos { capture { viewModel.save(it, fileName, ExportKind.AlbumPage) } }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -142,7 +143,7 @@ fun PageExportSheet(
             content = content,
             state = state,
             onSave = save,
-            onShare = { capture { viewModel.share(it, fileName) } },
+            onShare = { capture { viewModel.share(it, fileName, ExportKind.AlbumPage) } },
             onGetPro = onGetPro,
             onWatchAd = { activity?.let(viewModel::watchAd) },
             modifier = Modifier.navigationBarsPadding(),

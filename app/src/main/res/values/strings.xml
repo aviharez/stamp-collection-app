@@ -327,6 +327,10 @@
     <string name="profile_place_off_note">postmarks show only the date</string>
     <string name="profile_place_blocked_note">location is off for this app, so postmarks show only the date</string>
     <string name="profile_open_settings">Open settings</string>
+    <string name="profile_section_privacy">Privacy</string>
+    <string name="profile_usage_stats">Share anonymous usage stats</string>
+    <string name="profile_usage_on_note">crash reports and counts like “a stamp was made”, never your photos, words or places</string>
+    <string name="profile_usage_off_note">nothing is sent from this phone</string>
     <string name="profile_rate">Rate the app</string>
     <string name="profile_feedback">Send feedback</string>
     <string name="profile_feedback_subject">%1$s feedback · version %2$s</string>

@@ -27,6 +27,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import com.aviharez.stamp.data.analytics.UsageStats
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
@@ -46,6 +47,7 @@ enum class AdOffer { Idle, Loading, Unavailable }
 class RewardedAds @Inject constructor(
     @param:ApplicationContext private val context: Context,
     @param:AppScope private val scope: CoroutineScope,
+    private val usage: UsageStats,
 ) {
     private val consent: ConsentInformation = UserMessagingPlatform.getConsentInformation(context)
     private val sdk = Mutex()
@@ -69,6 +71,7 @@ class RewardedAds @Inject constructor(
         val ad = withTimeoutOrNull(LoadTimeoutMs) { ensureReady() } ?: return@withContext AdResult.Unavailable
         ready = null
         val result = present(activity, ad)
+        usage.adFinished(result.name)
         preload() // next one ready if they want another
         result
     }

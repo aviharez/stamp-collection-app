@@ -10,6 +10,14 @@ plugins {
     alias(libs.plugins.baselineprofile)
 }
 
+// Firebase (Crashlytics + Analytics) needs app/google-services.json from the Firebase console. It is
+// git-ignored (public repo); CI writes it from the GOOGLE_SERVICES_JSON secret. Without it the app still
+// builds and runs, with Firebase simply not started (UsageStats does nothing).
+if (file("google-services.json").exists()) {
+    apply(plugin = libs.plugins.google.services.get().pluginId)
+    apply(plugin = libs.plugins.firebase.crashlytics.get().pluginId)
+}
+
 /**
  * Upload key for Play (keystore.properties in the project root, never committed):
  * storeFile=/absolute/path/upload.jks, storePassword=…, keyAlias=upload, keyPassword=…
@@ -19,9 +27,9 @@ val uploadKey = rootProject.file("keystore.properties").takeIf { it.exists() }?.
     Properties().apply { file.inputStream().use { load(it) } }
 }
 
-/** Google's public test IDs (AdMob docs). */
 /** Public support address (Profile → Send feedback, store listing, privacy policy). */
 val SupportEmail = "hello.goomistudio@gmail.com"
+/** Google's public test IDs (AdMob docs). */
 val AdMobTestAppId = "ca-app-pub-3940256099942544~3347511713"
 val AdMobTestRewardedId = "ca-app-pub-3940256099942544/5224354917"
 
@@ -141,6 +149,9 @@ dependencies {
     // Ads (rewarded only, opt-in) + consent
     implementation(libs.play.services.ads)
     implementation(libs.ump)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
     // Images
     implementation(libs.coil.compose)

@@ -303,6 +303,10 @@
     <string name="profile_place_off_note">Stempel zeigen nur das Datum</string>
     <string name="profile_place_blocked_note">der Standort ist für diese App aus, daher zeigen Stempel nur das Datum</string>
     <string name="profile_open_settings">Einstellungen öffnen</string>
+    <string name="profile_section_privacy">Datenschutz</string>
+    <string name="profile_usage_stats">Anonyme Nutzungsdaten teilen</string>
+    <string name="profile_usage_on_note">Absturzberichte und Zahlen wie „eine Marke wurde gemacht“, nie deine Fotos, Texte oder Orte</string>
+    <string name="profile_usage_off_note">von diesem Handy wird nichts gesendet</string>
     <string name="profile_rate">App bewerten</string>
     <string name="profile_feedback">Feedback senden</string>
     <string name="profile_feedback_subject">%1$s-Feedback · Version %2$s</string>

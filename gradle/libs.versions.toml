@@ -21,6 +21,9 @@ kotlinxSerialization = "1.12.0"
 billing = "9.1.0"
 playServicesAds = "25.5.0"
 ump = "4.0.0"
+firebaseBom = "35.1.0"
+googleServices = "4.5.0"
+firebaseCrashlyticsPlugin = "3.0.8"
 benchmark = "1.5.0"
 uiautomator = "2.4.0"
 profileinstaller = "1.4.1"
@@ -85,6 +88,11 @@ play-services-ads = { group = "com.google.android.gms", name = "play-services-ad
 # Ad consent form (GDPR/US states), required before requesting ads; also pulled in by play-services-ads
 ump = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "ump" }
 
+# Crash reports + anonymous usage counts (Profile switch turns both off; no advertising ID)
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+
 # Baseline profile: installs the shipped profile on sideloaded/benchmark builds (Play does it itself)
 androidx-profileinstaller = { group = "androidx.profileinstaller", name = "profileinstaller", version.ref = "profileinstaller" }
 # Baseline profile generator + startup/scroll benchmarks (test module only, not in the app)
@@ -106,3 +114,6 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 room3 = { id = "androidx.room3", version.ref = "room3" }
+# Firebase: reads app/google-services.json; Crashlytics uploads the R8 mapping so release stack traces are readable
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlyticsPlugin" }

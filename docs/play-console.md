@@ -18,6 +18,9 @@ Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 3
 - [x] Privacy policy draft: `docs/privacy.html` (contact: hello.goomistudio@gmail.com)
 - [x] App name: **Postmory** (`app_name` in `strings.xml`)
 - [x] Support email: **hello.goomistudio@gmail.com** (default in `app/build.gradle.kts`; a `supportEmail=` gradle property overrides it). Developer name on Play: **Goomi Studio**
+- [ ] Firebase: console.firebase.google.com → Add project "Postmory" (Google Analytics on) → Add Android app
+  `com.aviharez.stamp` → download `google-services.json` into `app/` (git-ignored) and paste it into the
+  `GOOGLE_SERVICES_JSON` secret (§11). In Analytics settings, leave Google signals and ads personalisation off.
 - [ ] Publish the privacy page: GitHub repo → Settings → Pages → "Deploy from a branch", `main`, `/docs`.
       URL becomes `https://aviharez.github.io/stamp-collection-app/privacy.html` →
       `privacyPolicyUrl=` in `gradle.properties` (shows "Privacy policy" on Profile)
@@ -103,12 +106,18 @@ General answers:
 | Device or other IDs | Yes | Yes | Optional | Advertising, Analytics, Fraud prevention, security | Mobile Ads SDK |
 | App activity → App interactions | Yes | Yes | Optional | Advertising, Analytics | Mobile Ads SDK |
 | App info and performance → Crash logs, Diagnostics | Yes | Yes | Optional | Analytics, Fraud prevention | Mobile Ads SDK |
+| App info and performance → Crash logs, Diagnostics | Yes | No | Optional (Profile → Privacy) | Analytics (app stability) | Firebase Crashlytics |
+| App activity → App interactions | Yes | No | Optional (Profile → Privacy) | Analytics | Google Analytics for Firebase |
+| Device or other IDs (Firebase installation ID, not the advertising ID) | Yes | No | Optional (Profile → Privacy) | Analytics | Firebase |
 | Photos and videos | **No**: stay on the device | | | | |
 | Purchase history | **No**: handled by Google Play itself | | | | |
 
 Notes:
 - Data processed only on the device (photos, albums, captions, reminders, widgets, backups) is **not**
   "collected" in Play's definition, because it never leaves the phone through the app.
+- Firebase counts as a service provider (processing on our behalf), so its rows are "collected", not
+  "shared". Usage counts never include photos, words, places or ids of stamps; the advertising ID and ad
+  signals are off (AndroidManifest.xml).
 - Before submitting, compare the Mobile Ads SDK rows with Google's current page
   ("Mobile Ads SDK: data disclosure" in the AdMob help). Google updates that list.
 
@@ -191,6 +200,7 @@ pictures to well-known cities (no districts or home towns).
 - [ ] `versionCode` +1 (and `versionName`)
 - [ ] `admobAppId` / `admobRewardedId` set (not the test IDs)
 - [ ] `./gradlew :app:generateBaselineProfile` if screens changed a lot (emulator with stamps restored)
+- [ ] `app/google-services.json` present (else the build has no crash reports / usage stats)
 - [ ] `./gradlew lint bundleRelease` (or push a `v*` tag, §11)
 - [ ] Smoke test the release build on a real phone via internal testing
 
@@ -211,6 +221,7 @@ pictures to well-known cities (no districts or home towns).
   | `KEY_PASSWORD` | keyPassword from `keystore.properties` |
   | `ADMOB_APP_ID` / `ADMOB_REWARDED_ID` | real AdMob IDs (empty → Google's test IDs) |
   | `SUPPORT_EMAIL` / `PRIVACY_POLICY_URL` | optional: overrides the built-in support email / shows Privacy policy on Profile |
+  | `GOOGLE_SERVICES_JSON` | the whole `app/google-services.json` from the Firebase console (without it: no crash reports / usage stats) |
 
   Without `KEYSTORE_BASE64` the release build is unsigned (a warning shows in the run). The job runs in the
   `release` environment: add yourself as a required reviewer there if you want to approve each run.

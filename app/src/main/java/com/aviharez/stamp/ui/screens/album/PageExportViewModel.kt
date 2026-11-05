@@ -28,6 +28,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.aviharez.stamp.data.analytics.ExportAction
+import com.aviharez.stamp.data.analytics.ExportKind
+import com.aviharez.stamp.data.analytics.UsageStats
 import javax.inject.Inject
 
 data class PageExportUiState(
@@ -50,6 +53,7 @@ class PageExportViewModel @Inject constructor(
     proStatus: ProStatus,
     private val ads: RewardedAds,
     private val savedState: SavedStateHandle,
+    private val usage: UsageStats,
 ) : ViewModel() {
     // A watched ad stays watched when Android closes the app in the background (e.g. while sharing).
     private val work = MutableStateFlow(PageExportUiState(adUnlocked = savedState[KeyUnlocked] ?: false))
@@ -84,7 +88,7 @@ class PageExportViewModel @Inject constructor(
     fun setBusy(sharing: Boolean) = work.update { it.copy(sharing = sharing) }
 
     /** Called once the page picture is captured; [bitmap] is recycled. */
-    fun share(bitmap: Bitmap, name: String) {
+    fun share(bitmap: Bitmap, name: String, kind: ExportKind) {
         work.update { it.copy(sharing = true, failed = false) }
         viewModelScope.launch {
             val result = runCatching {
@@ -92,14 +96,18 @@ class PageExportViewModel @Inject constructor(
                 FileProvider.getUriForFile(context, "${context.packageName}$AuthoritySuffix", file)
             }
             work.update { it.copy(sharing = false, failed = result.isFailure) }
-            result.getOrNull()?.let { _share.send(it) }
+            result.getOrNull()?.let {
+                usage.exported(kind, ExportAction.Share)
+                _share.send(it)
+            }
         }
     }
 
-    fun save(bitmap: Bitmap, name: String) {
+    fun save(bitmap: Bitmap, name: String, kind: ExportKind) {
         work.update { it.copy(save = SaveState.Saving, failed = false) }
         viewModelScope.launch {
             val result = runCatching { withContext(Dispatchers.IO) { exporter.saveToPictures(name) { bitmap } } }
+            if (result.isSuccess) usage.exported(kind, ExportAction.Save)
             work.update { it.copy(save = if (result.isSuccess) SaveState.Saved else SaveState.Failed, failed = result.isFailure) }
         }
     }

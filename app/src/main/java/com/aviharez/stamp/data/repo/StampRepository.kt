@@ -23,6 +23,7 @@ import java.io.File
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
+import com.aviharez.stamp.data.analytics.UsageStats
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -50,6 +51,7 @@ class StampRepository @Inject constructor(
     private val settings: SettingsRepository,
     private val clock: Clock,
     private val storage: StampStorage,
+    private val usage: UsageStats,
 ) {
     /** Saves a new stamp into the last-used album (or the default one). Returns the stamp id. */
     suspend fun add(new: NewStamp): String {
@@ -80,6 +82,7 @@ class StampRepository @Inject constructor(
             ),
         )
         settings.setLastAlbumId(albumId)
+        usage.stampMade(new.source.name, new.shape.name, withPlace = new.place.country != null)
         return new.id
     }
 

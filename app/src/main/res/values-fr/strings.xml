@@ -312,6 +312,10 @@
     <string name="profile_place_off_note">les cachets n’indiquent que la date</string>
     <string name="profile_place_blocked_note">la localisation est désactivée pour cette appli, les cachets n’indiquent donc que la date</string>
     <string name="profile_open_settings">Ouvrir les paramètres</string>
+    <string name="profile_section_privacy">Confidentialité</string>
+    <string name="profile_usage_stats">Partager des statistiques anonymes</string>
+    <string name="profile_usage_on_note">rapports de plantage et comptages comme « un timbre a été créé », jamais tes photos, textes ou lieux</string>
+    <string name="profile_usage_off_note">rien n’est envoyé depuis ce téléphone</string>
     <string name="profile_rate">Noter l’appli</string>
     <string name="profile_feedback">Envoyer un avis</string>
     <string name="profile_feedback_subject">Avis sur %1$s · version %2$s</string>

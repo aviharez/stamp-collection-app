@@ -312,6 +312,10 @@
     <string name="profile_place_off_note">os carimbos mostram só a data</string>
     <string name="profile_place_blocked_note">a localização está desativada para este app, então os carimbos mostram só a data</string>
     <string name="profile_open_settings">Abrir configurações</string>
+    <string name="profile_section_privacy">Privacidade</string>
+    <string name="profile_usage_stats">Enviar estatísticas anônimas</string>
+    <string name="profile_usage_on_note">relatórios de falhas e contagens como “um selo foi feito”, nunca suas fotos, textos ou lugares</string>
+    <string name="profile_usage_off_note">nada é enviado deste celular</string>
     <string name="profile_rate">Avaliar o app</string>
     <string name="profile_feedback">Enviar feedback</string>
     <string name="profile_feedback_subject">Feedback do %1$s · versão %2$s</string>

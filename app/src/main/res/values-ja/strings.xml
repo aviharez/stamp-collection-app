@@ -296,6 +296,10 @@
     <string name="profile_place_off_note">消印は日付だけになります</string>
     <string name="profile_place_blocked_note">このアプリの位置情報がオフなので、消印は日付だけになります</string>
     <string name="profile_open_settings">設定を開く</string>
+    <string name="profile_section_privacy">プライバシー</string>
+    <string name="profile_usage_stats">匿名の利用データを送信</string>
+    <string name="profile_usage_on_note">クラッシュレポートと「切手を1枚作成」のような回数だけ。写真・文章・場所は送りません</string>
+    <string name="profile_usage_off_note">この端末からは何も送信しません</string>
     <string name="profile_rate">アプリを評価</string>
     <string name="profile_feedback">フィードバックを送る</string>
     <string name="profile_feedback_subject">%1$sへのフィードバック · バージョン %2$s</string>

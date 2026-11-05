@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.min
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aviharez.stamp.R
+import com.aviharez.stamp.data.analytics.ExportKind
 import com.aviharez.stamp.ui.components.AirmailStripe
 import com.aviharez.stamp.ui.components.FitText
 import com.aviharez.stamp.ui.components.GrainedSurface
@@ -119,7 +120,7 @@ fun MapExportSheet(
             if (bitmap != null) then(bitmap) else viewModel.failed()
         }
     }
-    val save = rememberSaveToPhotos { capture { viewModel.save(it, fileName) } }
+    val save = rememberSaveToPhotos { capture { viewModel.save(it, fileName, ExportKind.Map) } }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -139,7 +140,7 @@ fun MapExportSheet(
             export = export,
             onLook = { look = it },
             onSave = save,
-            onShare = { capture { viewModel.share(it, fileName) } },
+            onShare = { capture { viewModel.share(it, fileName, ExportKind.Map) } },
             onGetPro = onGetPro,
             onWatchAd = { activity?.let(viewModel::watchAd) },
             modifier = Modifier.navigationBarsPadding(),

@@ -25,6 +25,9 @@ import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.Locale
+import com.aviharez.stamp.data.analytics.ExportAction
+import com.aviharez.stamp.data.analytics.ExportKind
+import com.aviharez.stamp.data.analytics.UsageStats
 import javax.inject.Inject
 
 data class StickerChoice(
@@ -56,6 +59,7 @@ class StickerSheetViewModel @Inject constructor(
     albums: AlbumRepository,
     stamps: StampRepository,
     pro: ProStatus,
+    private val usage: UsageStats,
 ) : ViewModel() {
     private val albumId = savedState.toRoute<StickerSheetRoute>().albumId
 
@@ -136,6 +140,7 @@ class StickerSheetViewModel @Inject constructor(
             runCatching { doc.writeTo(file) }.isSuccess.also { doc.close() }
         }
         work.value = Work(failed = !ok)
+        if (ok) usage.exported(ExportKind.Stickers, ExportAction.Print, choice.value.look.name)
         return if (ok) file to doc.pageCount else null
     }
 

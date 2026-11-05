@@ -40,6 +40,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.aviharez.stamp.data.analytics.ExportAction
+import com.aviharez.stamp.data.analytics.ExportKind
+import com.aviharez.stamp.data.analytics.UsageStats
 import javax.inject.Inject
 
 /** What the user picks in the sheet; the watermark follows Pro, not a choice. */
@@ -86,6 +89,7 @@ class ExportViewModel @Inject constructor(
     proStatus: ProStatus,
     private val ads: RewardedAds,
     private val savedState: SavedStateHandle,
+    private val usage: UsageStats,
 ) : ViewModel() {
 
     private val stampId = MutableStateFlow<String?>(null)
@@ -194,7 +198,10 @@ class ExportViewModel @Inject constructor(
                 FileProvider.getUriForFile(context, "${context.packageName}$AuthoritySuffix", file)
             }
             work.update { it.copy(sharing = false, failed = result.isFailure) }
-            result.getOrNull()?.let { _events.send(ExportEvent.Share(it)) }
+            result.getOrNull()?.let {
+                usage.exported(ExportKind.Postcard, ExportAction.Share, choice.value.postcard?.name)
+                _events.send(ExportEvent.Share(it))
+            }
         }
     }
 
@@ -205,6 +212,7 @@ class ExportViewModel @Inject constructor(
                 val name = postcardName(stamp.first())
                 withContext(Dispatchers.IO) { exporter.saveToPictures(name) { bitmap } }
             }
+            if (result.isSuccess) usage.exported(ExportKind.Postcard, ExportAction.Save, choice.value.postcard?.name)
             work.update { it.copy(save = if (result.isSuccess) SaveState.Saved else SaveState.Failed, failed = result.isFailure) }
         }
     }
@@ -222,7 +230,10 @@ class ExportViewModel @Inject constructor(
                 FileProvider.getUriForFile(context, "${context.packageName}$AuthoritySuffix", file)
             }
             work.update { it.copy(sharing = false, failed = result.isFailure) }
-            result.getOrNull()?.let { _events.send(ExportEvent.Share(it)) }
+            result.getOrNull()?.let {
+                usage.exported(ExportKind.Stamp, ExportAction.Share)
+                _events.send(ExportEvent.Share(it))
+            }
         }
     }
 
@@ -235,6 +246,7 @@ class ExportViewModel @Inject constructor(
                 val s = stamp.first()
                 withContext(Dispatchers.IO) { exporter.saveToPictures(s, options) }
             }
+            if (result.isSuccess) usage.exported(ExportKind.Stamp, ExportAction.Save)
             work.update { it.copy(save = if (result.isSuccess) SaveState.Saved else SaveState.Failed, failed = result.isFailure) }
         }
     }

@@ -4,6 +4,7 @@
 #   KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD   upload key
 #   ADMOB_APP_ID, ADMOB_REWARDED_ID                               real ad IDs (else Google's test IDs)
 #   SUPPORT_EMAIL (optional override), PRIVACY_POLICY_URL         Profile links
+#   GOOGLE_SERVICES_JSON                                          Firebase config (else no crash reports / usage stats)
 name: Release
 
 on:
@@ -50,6 +51,16 @@ jobs:
             echo "keyPassword=$KEY_PASSWORD"
           } > keystore.properties
 
+      - name: Firebase config
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -z "$GOOGLE_SERVICES_JSON" ]; then
+            echo "::warning::No GOOGLE_SERVICES_JSON secret: the build has no crash reports or usage stats."
+            exit 0
+          fi
+          printf '%s' "$GOOGLE_SERVICES_JSON" > app/google-services.json
+
       - name: Release bundle and APK
         env:
           ORG_GRADLE_PROJECT_admobAppId: ${{ secrets.ADMOB_APP_ID }}
@@ -60,7 +71,7 @@ jobs:
 
       - name: Remove the key from the runner
         if: always()
-        run: rm -f keystore.properties "$RUNNER_TEMP/upload.jks"
+        run: rm -f keystore.properties "$RUNNER_TEMP/upload.jks" app/google-services.json
 
       - name: Upload bundle and APK
         uses: actions/upload-artifact@v7

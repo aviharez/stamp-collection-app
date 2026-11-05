@@ -126,6 +126,7 @@ fun ProfileScreen(
         onGetPro = onGetPro,
         onRestore = viewModel::restorePurchases,
         onMirrorSelfie = viewModel::setMirrorSelfie,
+        onUsageStats = viewModel::setUsageStats,
         onPostmarkPlace = { on ->
             when {
                 !on -> {
@@ -163,6 +164,7 @@ fun ProfileContent(
     onRestore: () -> Unit,
     onMirrorSelfie: (Boolean) -> Unit,
     onPostmarkPlace: (Boolean) -> Unit,
+    onUsageStats: (Boolean) -> Unit,
     onOpenAppSettings: () -> Unit,
     onRate: () -> Unit,
     versionName: String?,
@@ -226,6 +228,15 @@ fun ProfileContent(
                     strength = InkStrength.Soft,
                 )
             }
+        }
+
+        SettingsStamp(R.string.profile_section_privacy, R.drawable.ic_privacy, tilt = PrivacyTilt) {
+            SwitchRow(stringResource(R.string.profile_usage_stats), state.usageStats, onUsageStats)
+            HandNote(
+                stringResource(if (state.usageStats) R.string.profile_usage_on_note else R.string.profile_usage_off_note),
+                style = t.noteSmall,
+                strength = InkStrength.Soft,
+            )
         }
 
         FlowRow(
@@ -476,6 +487,7 @@ private const val PlayStorePackage = "com.android.vending"
 private const val ReminderTilt = -0.6f
 private const val BackupTilt = 0.5f
 private const val CameraTilt = -0.4f
+private const val PrivacyTilt = 0.4f
 private const val PassportStampTilt = -3f
 private val PassportStampWidth = 92.dp
 private val ProPostmarkDiameter = 64.dp
@@ -497,6 +509,7 @@ private fun ProfileContentPreview() {
             onRestore = {},
             onMirrorSelfie = {},
             onPostmarkPlace = {},
+            onUsageStats = {},
             onOpenAppSettings = {},
             onRate = {},
             versionName = "1.0",
@@ -526,6 +539,7 @@ private fun ProfileProPreview() {
             onRestore = {},
             onMirrorSelfie = {},
             onPostmarkPlace = {},
+            onUsageStats = {},
             onOpenAppSettings = {},
             onRate = {},
             versionName = "1.0",

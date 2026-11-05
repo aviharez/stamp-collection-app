@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.aviharez.stamp.data.analytics.UsageStats
 import javax.inject.Inject
 
 /** Why the paywall opened: decides the overline and which perk is lit up. */
@@ -53,6 +54,7 @@ class PaywallViewModel @Inject constructor(
     private val billing: BillingRepository,
     private val ads: RewardedAds,
     private val proStatus: ProStatus,
+    usage: UsageStats,
 ) : ViewModel() {
 
     private val reason = runCatching { PaywallReason.valueOf(savedState.toRoute<PaywallRoute>().reason) }
@@ -67,6 +69,7 @@ class PaywallViewModel @Inject constructor(
     val close: Flow<PaywallExit> = _close.receiveAsFlow()
 
     init {
+        usage.paywallShown(reason.name)
         loadOffers()
         if (reason == PaywallReason.Albums) ads.preload()
         viewModelScope.launch {
