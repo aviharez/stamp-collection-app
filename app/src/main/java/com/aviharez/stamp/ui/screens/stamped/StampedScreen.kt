@@ -22,6 +22,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -150,8 +153,20 @@ fun StampedScreen(
         onChangeAlbum = { picking = true },
         retakeLabel = stringResource(if (fromGallery) R.string.stamped_pick_another else R.string.stamped_retake),
         onRetake = { if (fromGallery) pickPhoto() else viewModel.retake(onRetake) },
-        onStickInAlbum = { stamp?.let { onStickInAlbum(it.albumId) } },
-        onShare = { if (stamp != null) exporting = true },
+        // While a Pro look is tried on, both ways forward ask for Pro first (the look isn't saved
+        // without it); picking a free look again goes back to the normal buttons.
+        onStickInAlbum = {
+            when {
+                filter.tryingPro -> onOpenPaywall(filter.keepReason)
+                else -> stamp?.let { onStickInAlbum(it.albumId) }
+            }
+        },
+        onShare = {
+            when {
+                filter.tryingPro -> onOpenPaywall(filter.keepReason)
+                stamp != null -> exporting = true
+            }
+        },
         filter = filter,
         onPickFilter = viewModel::pickFilter,
         onPickEdge = viewModel::pickEdge,
@@ -220,6 +235,9 @@ fun StampedContent(
 ) {
     val s = StampTheme.spacing
     val c = StampTheme.colors
+    // While the keyboard is up (writing on the back), the look picker and its Pro pill step aside
+    // so the stamp keeps a readable size instead of being squeezed to a sliver.
+    val typing = WindowInsets.ime.getBottom(LocalDensity.current) > 0
     GrainedSurface(c.cobalt, modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             AirmailStripe(Modifier.fillMaxWidth().height(s.xs), accent = c.ink)
@@ -250,7 +268,7 @@ fun StampedContent(
                         animate = animate,
                         modifier = Modifier.fillMaxSize(),
                     )
-                    if (filter.tryingPro) {
+                    if (filter.tryingPro && !typing) {
                         LaunchedEffect(filter.edgeAdOffered) { if (filter.edgeAdOffered) onPreloadEdgeAd() }
                         Column(Modifier.align(Alignment.TopCenter), horizontalAlignment = Alignment.CenterHorizontally) {
                             // Side by side; at large font sizes the ad chip moves under instead of being squeezed.
@@ -269,7 +287,7 @@ fun StampedContent(
                         }
                     }
                 }
-                if (filter.available) {
+                if (filter.available && !typing) {
                     LookPicker(
                         photo = filter.thumbnail,
                         selected = filter.selected,

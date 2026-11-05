@@ -315,6 +315,8 @@ private fun DoneCard(today: Stamp, albumName: String, onStampIt: () -> Unit, onO
             icon = R.drawable.ic_camera,
             contentDescription = stringResource(R.string.home_stamp_another),
             onClick = onStampIt,
+            containerColor = StampTheme.colors.airmailRed,
+            contentColor = StampTheme.colors.textOnDarkHigh,
         )
     }
 }

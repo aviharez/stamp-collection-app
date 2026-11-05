@@ -132,17 +132,18 @@ fun CircleIconButton(
     onDark: Boolean = false,
     size: Dp = StampTheme.spacing.touchTarget,
     enabled: Boolean = true,
+    containerColor: Color = if (onDark) StampTheme.colors.plateOnDark else StampTheme.colors.surface2,
+    contentColor: Color = if (onDark) StampTheme.colors.textOnDarkHigh else StampTheme.colors.ink,
 ) {
-    val c = StampTheme.colors
     val source = remember { MutableInteractionSource() }
     val scale by pressScale(source)
-    val content = if (onDark) c.textOnDarkHigh else c.ink
+    val content = contentColor
     Box(
         modifier
             .graphicsLayer { scaleX = scale; scaleY = scale; alpha = if (enabled) 1f else DisabledAlpha }
             .size(size)
             .clip(CircleShape)
-            .background(if (onDark) c.plateOnDark else c.surface2)
+            .background(containerColor)
             .clickableWithRipple(source, enabled, content, onClick, contentDescription),
         contentAlignment = Alignment.Center,
     ) {
