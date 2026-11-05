@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /** Why the paywall opened: decides the overline and which perk is lit up. */
-enum class PaywallReason { Profile, Albums, Watermark, Widget }
+enum class PaywallReason { Profile, Albums, Watermark, Widget, Filters }
 
 enum class PaywallMessage { Pending, Failed, NothingToRestore, RestoreFailed }
 

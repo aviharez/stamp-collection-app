@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.aviharez.stamp.data.billing.ProRules
 import com.aviharez.stamp.data.billing.ProStatus
+import com.aviharez.stamp.data.image.StampFilterer
 import com.aviharez.stamp.data.repo.AlbumRepository
 import com.aviharez.stamp.data.repo.StampRepository
 import com.aviharez.stamp.di.AppScope
@@ -13,8 +14,11 @@ import com.aviharez.stamp.domain.model.AlbumCategory
 import com.aviharez.stamp.domain.model.AlbumCoverColor
 import com.aviharez.stamp.domain.model.AlbumSummary
 import com.aviharez.stamp.domain.model.Stamp
+import com.aviharez.stamp.domain.model.StampFilter
 import com.aviharez.stamp.domain.usecase.Streak
 import com.aviharez.stamp.ui.navigation.StampedRoute
+import com.aviharez.stamp.ui.screens.filter.FilterSession
+import com.aviharez.stamp.ui.screens.filter.FilterUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -53,12 +57,18 @@ class StampedViewModel @Inject constructor(
     private val stamps: StampRepository,
     private val albums: AlbumRepository,
     proStatus: ProStatus,
+    filterer: StampFilterer,
     @param:AppScope private val appScope: CoroutineScope,
 ) : ViewModel() {
 
     private val stampId = savedState.toRoute<StampedRoute>().stampId
 
     private val stamp = stamps.observe(stampId)
+
+    private val filters = FilterSession(filterer, viewModelScope, appScope, stamp, proStatus.isPro)
+    val filter: StateFlow<FilterUi> = filters.state
+
+    fun pickFilter(filter: StampFilter) = filters.pick(filter)
 
     val state: StateFlow<StampedUiState> = combine(
         stamp,
@@ -107,6 +117,7 @@ class StampedViewModel @Inject constructor(
     /** Throws the stamp away (row + files), then [then] reopens the camera (or the next import). */
     fun retake(then: () -> Unit) {
         captionSave?.cancel()
+        filters.cancel()
         viewModelScope.launch {
             stamps.delete(stampId)
             then()

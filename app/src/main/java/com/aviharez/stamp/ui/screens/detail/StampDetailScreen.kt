@@ -54,6 +54,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aviharez.stamp.R
 import com.aviharez.stamp.domain.model.Stamp
 import com.aviharez.stamp.ui.components.FitText
+import com.aviharez.stamp.ui.components.FilterPicker
+import com.aviharez.stamp.ui.components.GrainedSurface
+import com.aviharez.stamp.ui.components.label
+import com.aviharez.stamp.domain.model.StampFilter
+import com.aviharez.stamp.ui.screens.filter.FilterUi
+import com.aviharez.stamp.ui.theme.Elevation
+import com.aviharez.stamp.ui.theme.tintedShadow
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.PaddingValues
 import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
@@ -91,6 +100,8 @@ fun StampDetailScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val title by viewModel.title.collectAsStateWithLifecycle()
     val caption by viewModel.caption.collectAsStateWithLifecycle()
+    val filter by viewModel.filter.collectAsStateWithLifecycle()
+    var filtering by rememberSaveable { mutableStateOf(false) }
     var exporting by rememberSaveable { mutableStateOf(false) }
     var picking by rememberSaveable { mutableStateOf(false) }
     var pickerOnForm by rememberSaveable { mutableStateOf(false) }
@@ -123,8 +134,22 @@ fun StampDetailScreen(
         onCaptionChange = viewModel::onCaptionChange,
         onReframe = { onReframe(stamp.id) },
         onShare = { exporting = true },
+        filter = filter,
+        isPro = state.isPro,
+        filtering = filtering && filter.available,
+        onOpenFilters = { filtering = true },
+        onPickFilter = viewModel::pickFilter,
+        onKeepFilter = { onOpenPaywall(PaywallReason.Filters) },
+        onCloseFilters = {
+            filtering = false
+            viewModel.closeFilters()
+        },
         modifier = modifier,
     )
+    BackHandler(enabled = filtering) {
+        filtering = false
+        viewModel.closeFilters()
+    }
 
     if (more) {
         MoreSheet(
@@ -182,6 +207,14 @@ fun StampDetailContent(
     onShare: () -> Unit,
     modifier: Modifier = Modifier,
     canShare: Boolean = true,
+    filter: FilterUi = FilterUi(),
+    isPro: Boolean = false,
+    /** The filter tray is open (in place of the words and buttons). */
+    filtering: Boolean = false,
+    onOpenFilters: () -> Unit = {},
+    onPickFilter: (StampFilter) -> Unit = {},
+    onKeepFilter: () -> Unit = {},
+    onCloseFilters: () -> Unit = {},
 ) {
     val s = StampTheme.spacing
     val c = StampTheme.colors
@@ -221,7 +254,17 @@ fun StampDetailContent(
             CircleIconButton(R.drawable.ic_more, stringResource(R.string.detail_more_cd), onMore)
         }
 
-        StampHero(stamp, Modifier.weight(1f).fillMaxWidth().padding(horizontal = s.screen, vertical = s.m))
+        StampHero(
+            stamp,
+            // A Pro filter tried on shows its preview; the saved picture stays as it is.
+            file = File(filter.preview?.path ?: stamp.imagePath),
+            modifier = Modifier.weight(1f).fillMaxWidth().padding(horizontal = s.screen, vertical = s.m),
+        )
+
+        if (filtering) {
+            FilterTray(filter, isPro, onPickFilter, onKeepFilter, onCloseFilters)
+            return@Column
+        }
 
         Column(Modifier.padding(horizontal = s.screen), verticalArrangement = Arrangement.spacedBy(s.xs)) {
             TitleField(title, onTitleChange)
@@ -239,12 +282,23 @@ fun StampDetailContent(
             Modifier.fillMaxWidth().padding(horizontal = s.screen).padding(top = s.l),
             horizontalArrangement = Arrangement.spacedBy(s.s),
         ) {
+            // Three buttons share the row: the outline ones drop their icons so the words stay full size.
+            val crowded = canReframe && filter.available && canShare
             if (canReframe) {
                 PillButton(
                     stringResource(R.string.detail_reframe),
                     onClick = onReframe,
                     style = PillStyle.Outline,
-                    leadingIcon = R.drawable.ic_rotate,
+                    leadingIcon = if (crowded) null else R.drawable.ic_rotate,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            if (filter.available) {
+                PillButton(
+                    stringResource(R.string.filter_button),
+                    onClick = onOpenFilters,
+                    style = PillStyle.Outline,
+                    leadingIcon = if (crowded) null else R.drawable.ic_perk_filters,
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -263,7 +317,7 @@ fun StampDetailContent(
 
 /** The stamp as large as fits, its postmark over the bottom-end corner (as on Stamped! and in exports). */
 @Composable
-private fun StampHero(stamp: Stamp, modifier: Modifier = Modifier) {
+private fun StampHero(stamp: Stamp, file: File, modifier: Modifier = Modifier) {
     val lines = rememberPostmarkLines(stamp.place, stamp.day)
     BoxWithConstraints(modifier, contentAlignment = Alignment.Center) {
         val aspect = stamp.shape.aspectRatio
@@ -275,7 +329,7 @@ private fun StampHero(stamp: Stamp, modifier: Modifier = Modifier) {
         val d = min(w, h) * PostmarkScale
         Box(Modifier.size(w, h).offset(x = -d * PostmarkOffsetX / 2, y = -d * PostmarkOffsetY / 2)) {
             RenderedStamp(
-                file = File(stamp.imagePath),
+                file = file,
                 shape = stamp.shape,
                 perforation = stamp.perforation,
                 contentDescription = stamp.description(),
@@ -288,6 +342,67 @@ private fun StampHero(stamp: Stamp, modifier: Modifier = Modifier) {
                 rotation = PostmarkTilt,
                 modifier = Modifier.align(Alignment.BottomEnd).offset(x = d * PostmarkOffsetX, y = d * PostmarkOffsetY),
             )
+        }
+    }
+}
+
+/**
+ * Kraft tray under the stamp: the filters as mini stamps (a pick shows on the big stamp straight
+ * away and is saved; a Pro filter for a free user is only tried on) and "Done".
+ */
+@Composable
+private fun FilterTray(
+    filter: FilterUi,
+    isPro: Boolean,
+    onPick: (StampFilter) -> Unit,
+    onKeep: () -> Unit,
+    onDone: () -> Unit,
+) {
+    val s = StampTheme.spacing
+    val c = StampTheme.colors
+    GrainedSurface(
+        c.kraft,
+        Modifier.fillMaxWidth().padding(horizontal = s.screenFullBleed).tintedShadow(Elevation.Card, StampTheme.shapes.card, c.shadowWarm),
+        StampTheme.shapes.card,
+    ) {
+        Column(Modifier.padding(vertical = s.m), verticalArrangement = Arrangement.spacedBy(s.xs)) {
+            Text(
+                stringResource(R.string.filter_tray_title),
+                style = StampTheme.type.cardTitle,
+                color = c.textHigh,
+                modifier = Modifier.padding(horizontal = s.m),
+            )
+            FilterPicker(
+                photo = filter.thumbnail,
+                selected = filter.selected,
+                isPro = isPro,
+                onPick = onPick,
+                contentPadding = PaddingValues(horizontal = s.m),
+            )
+            if (filter.tryingPro) {
+                HandNote(
+                    stringResource(R.string.filter_try_note),
+                    style = StampTheme.type.noteSmall,
+                    strength = InkStrength.Soft,
+                    modifier = Modifier.padding(horizontal = s.m),
+                )
+            }
+            Row(Modifier.padding(horizontal = s.m).padding(top = s.xs), horizontalArrangement = Arrangement.spacedBy(s.s)) {
+                if (filter.tryingPro) {
+                    PillButton(
+                        stringResource(R.string.filter_keep_with_pro, stringResource(filter.selected.label)),
+                        onClick = onKeep,
+                        style = PillStyle.Red,
+                        modifier = Modifier.weight(1.6f),
+                    )
+                }
+                PillButton(
+                    stringResource(R.string.filter_done),
+                    onClick = onDone,
+                    style = if (filter.tryingPro) PillStyle.Outline else PillStyle.Red,
+                    modifier = Modifier.weight(1f),
+                )
+            }
         }
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Outline icon, 24dp, 1.8 stroke: three overlapping ink circles (photo filters). Tinted at runtime. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:pathData="M12,9m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M8.5,15m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M15.5,15m-5,0a5,5 0,1 1,10 0a5,5 0,1 1,-10 0" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>

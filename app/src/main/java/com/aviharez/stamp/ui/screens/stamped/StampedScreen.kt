@@ -67,6 +67,11 @@ import com.aviharez.stamp.domain.model.Place
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.domain.usecase.Streak
 import com.aviharez.stamp.ui.components.AirmailStripe
+import com.aviharez.stamp.ui.components.FilterPicker
+import com.aviharez.stamp.ui.components.bleed
+import com.aviharez.stamp.ui.components.label
+import com.aviharez.stamp.domain.model.StampFilter
+import com.aviharez.stamp.ui.screens.filter.FilterUi
 import com.aviharez.stamp.ui.components.GrainedSurface
 import com.aviharez.stamp.ui.components.PillButton
 import com.aviharez.stamp.ui.components.PillStyle
@@ -108,6 +113,7 @@ fun StampedScreen(
     viewModel: StampedViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val filter by viewModel.filter.collectAsStateWithLifecycle()
     val caption by viewModel.caption.collectAsStateWithLifecycle()
     var picking by rememberSaveable { mutableStateOf(false) }
     var exporting by rememberSaveable { mutableStateOf(false) }
@@ -125,7 +131,8 @@ fun StampedScreen(
     val pickPhoto = rememberPhotoPicker { uri -> viewModel.retake { onPickAnother(uri) } }
 
     StampedContent(
-        stampPath = stamp?.imagePath,
+        // A Pro filter tried on shows its preview; the album keeps the saved picture.
+        stampPath = filter.preview?.path ?: stamp?.imagePath,
         shape = stamp?.shape ?: StampShape.Portrait,
         place = stamp?.place ?: Place.Unknown,
         day = stamp?.day ?: LocalDate.now(),
@@ -139,6 +146,10 @@ fun StampedScreen(
         onRetake = { if (fromGallery) pickPhoto() else viewModel.retake(onRetake) },
         onStickInAlbum = { stamp?.let { onStickInAlbum(it.albumId) } },
         onShare = { if (stamp != null) exporting = true },
+        filter = filter,
+        isPro = state.isPro,
+        onPickFilter = viewModel::pickFilter,
+        onKeepFilter = { onOpenPaywall(PaywallReason.Filters) },
         modifier = modifier,
     )
 
@@ -191,6 +202,10 @@ fun StampedContent(
     onStickInAlbum: () -> Unit,
     onShare: () -> Unit,
     modifier: Modifier = Modifier,
+    filter: FilterUi = FilterUi(),
+    isPro: Boolean = false,
+    onPickFilter: (StampFilter) -> Unit = {},
+    onKeepFilter: () -> Unit = {},
     animate: Boolean = true,
 ) {
     val s = StampTheme.spacing
@@ -215,14 +230,34 @@ fun StampedContent(
                     modifier = Modifier.align(Alignment.Start),
                 )
 
-                StampHero(
-                    stampPath = stampPath,
-                    shape = shape,
-                    place = place,
-                    day = day,
-                    animate = animate,
-                    modifier = Modifier.weight(1f).fillMaxWidth(),
-                )
+                Box(Modifier.weight(1f).fillMaxWidth()) {
+                    StampHero(
+                        stampPath = stampPath,
+                        shape = shape,
+                        place = place,
+                        day = day,
+                        animate = animate,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                    if (filter.tryingPro) {
+                        PillButton(
+                            stringResource(R.string.filter_keep_with_pro, stringResource(filter.selected.label)),
+                            onClick = onKeepFilter,
+                            style = PillStyle.Red,
+                            modifier = Modifier.align(Alignment.TopCenter),
+                        )
+                    }
+                }
+                if (filter.available) {
+                    FilterPicker(
+                        photo = filter.thumbnail,
+                        selected = filter.selected,
+                        isPro = isPro,
+                        onPick = onPickFilter,
+                        onDark = true,
+                        modifier = Modifier.bleed(s.screen).padding(bottom = s.xs),
+                    )
+                }
 
                 Text(stringResource(R.string.stamped_title), style = StampTheme.type.hero, color = c.textOnDarkHigh)
                 val changeAlbum = stringResource(R.string.stamped_change_album)

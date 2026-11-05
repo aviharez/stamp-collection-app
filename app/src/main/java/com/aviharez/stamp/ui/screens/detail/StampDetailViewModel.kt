@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.aviharez.stamp.data.billing.ProRules
 import com.aviharez.stamp.data.billing.ProStatus
+import com.aviharez.stamp.data.image.StampFilterer
 import com.aviharez.stamp.data.repo.AlbumRepository
 import com.aviharez.stamp.data.repo.StampRepository
 import com.aviharez.stamp.di.AppScope
@@ -13,7 +14,10 @@ import com.aviharez.stamp.domain.model.AlbumCategory
 import com.aviharez.stamp.domain.model.AlbumCoverColor
 import com.aviharez.stamp.domain.model.AlbumSummary
 import com.aviharez.stamp.domain.model.Stamp
+import com.aviharez.stamp.domain.model.StampFilter
 import com.aviharez.stamp.ui.navigation.StampDetailRoute
+import com.aviharez.stamp.ui.screens.filter.FilterSession
+import com.aviharez.stamp.ui.screens.filter.FilterUi
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -56,11 +60,20 @@ class StampDetailViewModel @Inject constructor(
     private val stamps: StampRepository,
     private val albums: AlbumRepository,
     proStatus: ProStatus,
+    filterer: StampFilterer,
     @param:AppScope private val appScope: CoroutineScope,
 ) : ViewModel() {
 
     val stampId = savedState.toRoute<StampDetailRoute>().stampId
     private val stamp = stamps.observe(stampId)
+
+    private val filters = FilterSession(filterer, viewModelScope, appScope, stamp, proStatus.isPro)
+    val filter: StateFlow<FilterUi> = filters.state
+
+    fun pickFilter(filter: StampFilter) = filters.pick(filter)
+
+    /** The tray closed: a Pro filter that was only tried on goes away. */
+    fun closeFilters() = filters.revert()
 
     val state: StateFlow<StampDetailUiState> = combine(
         stamp,
@@ -126,6 +139,7 @@ class StampDetailViewModel @Inject constructor(
 
     /** Row and both picture files; pending text saves are dropped. */
     fun delete() {
+        filters.cancel()
         titleSave?.cancel()
         captionSave?.cancel()
         appScope.launch { stamps.delete(stampId) }

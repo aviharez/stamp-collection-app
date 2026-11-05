@@ -75,6 +75,7 @@ import com.aviharez.stamp.ui.theme.StampTheme
 private enum class Perk(@DrawableRes val icon: Int, @StringRes val label: Int, val available: Boolean) {
     Albums(R.drawable.ic_perk_albums, R.string.paywall_perk_albums, true),
     NoMark(R.drawable.ic_perk_no_mark, R.string.paywall_perk_no_mark, true),
+    Filters(R.drawable.ic_perk_filters, R.string.paywall_perk_filters, true),
     Edges(R.drawable.ic_perk_edges, R.string.paywall_perk_edges, false),
     Scrapbook(R.drawable.ic_gallery, R.string.paywall_perk_scrapbook, false),
     Widget(R.drawable.ic_perk_widget, R.string.paywall_perk_widget, true),
@@ -84,6 +85,7 @@ private fun PaywallReason.perk(): Perk? = when (this) {
     PaywallReason.Albums -> Perk.Albums
     PaywallReason.Watermark -> Perk.NoMark
     PaywallReason.Widget -> Perk.Widget
+    PaywallReason.Filters -> Perk.Filters
     PaywallReason.Profile -> null
 }
 
@@ -151,6 +153,7 @@ fun PaywallContent(
                 PaywallReason.Albums -> pluralStringResource(R.plurals.paywall_overline_albums, ProRules.FreeAlbumLimit, ProRules.FreeAlbumLimit)
                 PaywallReason.Watermark -> stringResource(R.string.paywall_overline_watermark)
                 PaywallReason.Widget -> stringResource(R.string.paywall_overline_widget)
+                PaywallReason.Filters -> stringResource(R.string.paywall_overline_filters)
                 PaywallReason.Profile -> stringResource(R.string.paywall_overline)
             }.uppercase(),
             style = StampTheme.type.overline,
@@ -424,7 +427,7 @@ private const val PerksPerRow = 3
 private val PerkStampSize = 58.dp
 private val PerkCellWidth = 96.dp
 private val PlanStampWidth = 128.dp
-private val PerkTilts = listOf(-3f, 2f, -1.5f, 2.5f, -2f)
+private val PerkTilts = listOf(-3f, 2f, -1.5f, 2.5f, -2f, 1.5f)
 private const val SheetTilt = -0.6f
 private const val ActiveTilt = -6f
 private const val RestTilt = 1.5f
