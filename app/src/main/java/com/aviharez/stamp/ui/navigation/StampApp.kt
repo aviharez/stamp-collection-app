@@ -1,6 +1,5 @@
 package com.aviharez.stamp.ui.navigation
 
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -9,6 +8,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -36,35 +39,29 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.aviharez.stamp.R
 import com.aviharez.stamp.ui.components.NavTab
+import com.aviharez.stamp.ui.components.StampNavBar
 import com.aviharez.stamp.ui.debug.DebugGallery
 import com.aviharez.stamp.ui.debug.DebugGalleryEntry
 import com.aviharez.stamp.ui.debug.DebugProSwitch
-import com.aviharez.stamp.ui.screens.paywall.PaywallReason
-import com.aviharez.stamp.ui.screens.scrapbook.ScrapbookScreen
-import com.aviharez.stamp.widget.WidgetLink
-import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
-import com.aviharez.stamp.ui.screens.settings.AdPrivacyEntry
-import com.aviharez.stamp.ui.screens.settings.BackupEntry
-import com.aviharez.stamp.ui.screens.settings.ProEntry
-import com.aviharez.stamp.ui.screens.settings.ReminderEntry
-import com.aviharez.stamp.ui.components.StampNavBar
 import com.aviharez.stamp.ui.screens.PlaceholderScreen
 import com.aviharez.stamp.ui.screens.album.AlbumPageScreen
 import com.aviharez.stamp.ui.screens.calendar.CalendarScreen
 import com.aviharez.stamp.ui.screens.camera.CameraScreen
 import com.aviharez.stamp.ui.screens.collections.CollectionsScreen
+import com.aviharez.stamp.ui.screens.detail.StampDetailScreen
 import com.aviharez.stamp.ui.screens.home.HomeScreen
 import com.aviharez.stamp.ui.screens.importer.ImportScreen
+import com.aviharez.stamp.ui.screens.paywall.PaywallReason
+import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
+import com.aviharez.stamp.ui.screens.scrapbook.ScrapbookScreen
+import com.aviharez.stamp.ui.screens.settings.ProfileScreen
 import com.aviharez.stamp.ui.screens.stamped.StampedScreen
 import com.aviharez.stamp.ui.screens.welcome.FirstRunViewModel
-import com.aviharez.stamp.ui.screens.detail.StampDetailScreen
 import com.aviharez.stamp.ui.screens.welcome.WelcomeScreen
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.aviharez.stamp.ui.theme.StampTheme
 import com.aviharez.stamp.ui.theme.SystemBarsFor
 import com.aviharez.stamp.ui.theme.rememberReduceMotion
+import com.aviharez.stamp.widget.WidgetLink
 
 /** App root: nav host, the StampNavBar on tab screens, and system-bar styling per screen. */
 @Composable
@@ -265,14 +262,14 @@ private fun StampNavigation(
                 PlaceholderScreen(stringResource(R.string.nav_map), comingSoon = true, contentPadding = inner)
             }
             composable<ProfileRoute> {
-                PlaceholderScreen(stringResource(R.string.nav_profile), comingSoon = false, contentPadding = inner) {
-                    ProEntry(onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) })
-                    DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
-                    ReminderEntry()
-                    BackupEntry()
-                    AdPrivacyEntry()
-                    DebugProSwitch()
-                }
+                ProfileScreen(
+                    contentPadding = inner,
+                    onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Profile.name)) },
+                    footerExtras = {
+                        DebugGalleryEntry(onOpen = { nav.navigate(DebugGalleryRoute) })
+                        DebugProSwitch()
+                    },
+                )
             }
             composable<PaywallRoute>(
                 enterTransition = { if (reduceMotion) EnterTransition.None else slideInVertically(tween(ScreenMillis)) { it / 6 } + fadeIn(tween(ScreenMillis)) },

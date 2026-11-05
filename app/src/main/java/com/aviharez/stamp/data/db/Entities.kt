@@ -91,3 +91,6 @@ data class ScrapPageEntity(
     @ColumnInfo(name = "updated_at") val updatedAt: Long,
     val items: String,
 )
+
+/** Passport numbers on Profile. */
+data class StampTotalsRow(val stamps: Int, val places: Int)

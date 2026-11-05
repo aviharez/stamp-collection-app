@@ -38,6 +38,9 @@ interface AlbumDao {
     @Query("SELECT COUNT(*) FROM albums")
     suspend fun count(): Int
 
+    @Query("SELECT COUNT(*) FROM albums")
+    fun observeCount(): Flow<Int>
+
     @Query("SELECT * FROM albums ORDER BY created_at ASC")
     suspend fun all(): List<AlbumEntity>
 
@@ -64,6 +67,16 @@ interface StampDao {
 
     @Query("SELECT id FROM stamps")
     suspend fun ids(): List<String>
+
+    /** All stamps, and how many different places (city + country) their postmarks name. */
+    @Query(
+        """
+        SELECT COUNT(*) AS stamps,
+            COUNT(DISTINCT LOWER(NULLIF(TRIM(city), '')) || '|' || COALESCE(country_code, '')) AS places
+        FROM stamps
+        """,
+    )
+    fun observeTotals(): Flow<StampTotalsRow>
 
     @Query("SELECT * FROM stamps WHERE id = :id")
     fun observe(id: String): Flow<StampEntity?>

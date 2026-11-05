@@ -17,6 +17,7 @@ import com.aviharez.stamp.data.image.StampStorage
 import com.aviharez.stamp.data.location.PlaceProvider
 import com.aviharez.stamp.data.repo.NewStamp
 import com.aviharez.stamp.data.repo.StampRepository
+import com.aviharez.stamp.data.settings.SettingsRepository
 import com.aviharez.stamp.di.AppScope
 import com.aviharez.stamp.domain.model.PerforationStyle
 import com.aviharez.stamp.domain.model.Place
@@ -72,6 +73,7 @@ class ImportViewModel @Inject constructor(
     private val storage: StampStorage,
     private val stamps: StampRepository,
     private val places: PlaceProvider,
+    private val settings: SettingsRepository,
     private val clock: Clock,
     private val edges: EdgeAccess,
     @param:AppScope private val appScope: CoroutineScope,
@@ -164,9 +166,11 @@ class ImportViewModel @Inject constructor(
 
     /**
      * The photo's own GPS when it still has it; for a photo from today, where the phone is now
-     * (only if location is already allowed); otherwise date-only.
+     * (only if location is already allowed); otherwise date-only. Always date-only when place on
+     * postmarks is turned off on Profile.
      */
     private suspend fun placeFor(photo: ImportedPhoto, isToday: Boolean): Place {
+        if (!settings.postmarkPlace()) return Place.Unknown
         val lat = photo.latitude
         val lon = photo.longitude
         return when {

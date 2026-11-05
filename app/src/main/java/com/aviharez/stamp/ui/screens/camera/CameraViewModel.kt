@@ -144,6 +144,8 @@ class CameraViewModel @Inject constructor(
             edges.edgeForNewStamps.collect { edge -> _state.update { it.copy(perforation = edge) } }
         }
         viewModelScope.launch {
+            // Place on postmarks turned off on Profile: date-only, and no location ask.
+            if (!settings.postmarkPlace()) return@launch
             if (places.hasPermission()) refreshPlace()
             else if (!settings.locationAsked()) _state.update { it.copy(askLocation = true) }
         }
@@ -155,6 +157,7 @@ class CameraViewModel @Inject constructor(
     fun refreshPlace() {
         if (!places.hasPermission() || placeJob?.isActive == true) return
         placeJob = viewModelScope.async {
+            if (!settings.postmarkPlace()) return@async Place.Unknown
             places.current().also { place -> _state.update { it.copy(place = place) } }
         }
     }

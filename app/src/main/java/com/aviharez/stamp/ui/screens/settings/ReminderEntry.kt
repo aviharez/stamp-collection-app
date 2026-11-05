@@ -37,6 +37,7 @@ import com.aviharez.stamp.di.AppScope
 import com.aviharez.stamp.ui.components.HandNote
 import com.aviharez.stamp.ui.components.InkStrength
 import com.aviharez.stamp.ui.components.PaperChip
+import com.aviharez.stamp.ui.components.SwitchRow
 import com.aviharez.stamp.ui.theme.PaperPreview
 import com.aviharez.stamp.ui.theme.StampAppTheme
 import com.aviharez.stamp.ui.theme.StampTheme
@@ -69,7 +70,7 @@ class ReminderViewModel @Inject constructor(
 }
 
 /**
- * Profile: the evening streak reminder. Tapping "Remind me to stamp" is the pre-prompt; Android's
+ * Profile: the evening streak reminder. Switching "Remind me to stamp" on is the pre-prompt; Android's
  * notification permission (13+) is asked only then. If notifications are blocked, says so and
  * offers the app's notification settings; coming back with them allowed finishes turning it on.
  */
@@ -126,22 +127,21 @@ fun ReminderContent(
 ) {
     val s = StampTheme.spacing
     Column(modifier, verticalArrangement = Arrangement.spacedBy(s.xs)) {
+        // Blocked counts as "on": the user asked for it, Android is what's stopping it.
+        SwitchRow(
+            stringResource(R.string.reminder_turn_on),
+            checked = setting.on || blocked,
+            onCheckedChange = { on -> if (on) onTurnOn() else onTurnOff() },
+        )
         when {
             blocked -> {
-                FlowRow(horizontalArrangement = Arrangement.spacedBy(s.xs), verticalArrangement = Arrangement.spacedBy(s.xs)) {
-                    PaperChip(stringResource(R.string.reminder_open_settings), selected = true, onClick = onOpenSettings)
-                    PaperChip(
-                        stringResource(if (setting.on) R.string.reminder_turn_off else R.string.reminder_not_now),
-                        selected = false,
-                        onClick = onTurnOff,
-                    )
-                }
                 HandNote(
                     stringResource(R.string.reminder_blocked_note),
                     style = StampTheme.type.noteSmall,
                     strength = InkStrength.Strong,
                     color = StampTheme.colors.airmailRed,
                 )
+                PaperChip(stringResource(R.string.reminder_open_settings), selected = true, onClick = onOpenSettings)
             }
             setting.on -> {
                 val format = rememberTimeFormat()
@@ -156,7 +156,6 @@ fun ReminderContent(
                             modifier = Modifier.semantics { contentDescription = description },
                         )
                     }
-                    PaperChip(stringResource(R.string.reminder_turn_off), selected = false, onClick = onTurnOff)
                 }
                 HandNote(
                     stringResource(R.string.reminder_on_note, format.format(setting.minuteOfDay.toTime())),
@@ -164,10 +163,7 @@ fun ReminderContent(
                     strength = InkStrength.Soft,
                 )
             }
-            else -> {
-                PaperChip(stringResource(R.string.reminder_turn_on), selected = false, onClick = onTurnOn)
-                HandNote(stringResource(R.string.reminder_off_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
-            }
+            else -> HandNote(stringResource(R.string.reminder_off_note), style = StampTheme.type.noteSmall, strength = InkStrength.Soft)
         }
     }
 }

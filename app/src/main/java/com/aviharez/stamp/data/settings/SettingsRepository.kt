@@ -39,6 +39,18 @@ class SettingsRepository @Inject constructor(private val store: DataStore<Prefer
         store.edit { it[LocationAsked] = true }
     }
 
+    /**
+     * Postmarks name the place (when location is allowed). Off (Profile) = date-only everywhere,
+     * the photo's own GPS included, and the camera never asks for location.
+     */
+    val postmarkPlace: Flow<Boolean> = store.data.map { it[PostmarkPlace] ?: true }.distinctUntilChanged()
+
+    suspend fun postmarkPlace(): Boolean = postmarkPlace.first()
+
+    suspend fun setPostmarkPlace(on: Boolean) {
+        store.edit { it[PostmarkPlace] = on }
+    }
+
     /** The first-run welcome has been answered (or skipped because stamps already exist). */
     suspend fun onboarded(): Boolean = store.data.first()[Onboarded] ?: false
 
@@ -72,6 +84,7 @@ class SettingsRepository @Inject constructor(private val store: DataStore<Prefer
         val MirrorSelfie = booleanPreferencesKey("mirror_selfie")
         val LastAlbumId = longPreferencesKey("last_album_id")
         val LocationAsked = booleanPreferencesKey("location_asked")
+        val PostmarkPlace = booleanPreferencesKey("postmark_place")
         val LastBackupAt = longPreferencesKey("last_backup_at")
         val Onboarded = booleanPreferencesKey("onboarded")
     }

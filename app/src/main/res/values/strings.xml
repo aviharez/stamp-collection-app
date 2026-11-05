@@ -296,7 +296,41 @@
     <!-- Pro entry points -->
     <string name="export_remove_with_pro">Remove with Pro</string>
     <string name="profile_get_pro">Get Pro</string>
-    <string name="profile_is_pro">You have Pro. Thank you!</string>
+
+    <!-- Profile: passport on top, settings as perforated stamps below -->
+    <string name="profile_passport">Stamp passport</string>
+    <string name="profile_passport_since">Stamp passport · since %1$s</string>
+    <string name="pattern_passport_since" translatable="false">d MMM yyyy</string>
+    <string name="profile_stamps">Stamps</string>
+    <string name="profile_albums_places">Albums · places</string>
+    <string name="profile_albums_places_value">%1$d · %2$d</string>
+    <string name="profile_best_streak">Best streak</string>
+    <plurals name="profile_days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <string name="profile_newest_stamp">Your newest stamp</string>
+    <string name="profile_first_stamp_slot">your first stamp goes here</string>
+    <string name="profile_pro_postmark">Pro</string>
+    <string name="profile_pro_postmark_date">thank you</string>
+    <string name="profile_pro_title">Pro</string>
+    <string name="profile_pro_perks">unlimited albums · every look · no watermark</string>
+    <string name="profile_restore_prompt">Already bought it?</string>
+    <string name="profile_restoring">Checking Google Play…</string>
+    <string name="profile_section_reminder">Streak reminder</string>
+    <string name="profile_section_backup">Backup</string>
+    <string name="profile_section_camera">Camera</string>
+    <string name="profile_mirror_selfies">Mirror selfies</string>
+    <string name="profile_mirror_note">saves selfies the way the preview shows them</string>
+    <string name="profile_postmark_place">Place on postmarks</string>
+    <string name="profile_place_on_note">the city only, never your exact spot</string>
+    <string name="profile_place_off_note">postmarks show only the date</string>
+    <string name="profile_place_blocked_note">location is off for this app, so postmarks show only the date</string>
+    <string name="profile_open_settings">Open settings</string>
+    <string name="profile_rate">Rate the app</string>
+    <string name="profile_version">version %1$s</string>
+    <string name="play_store_app_link" translatable="false">market://details?id=%1$s</string>
+    <string name="play_store_web_link" translatable="false">https://play.google.com/store/apps/details?id=%1$s</string>
 
     <!-- Rewarded ads (always optional, started by the user) -->
     <string name="ad_loading">Loading ad…</string>
@@ -312,8 +346,6 @@
     <string name="reminder_off_note">one note in the evening, only if today isn’t stamped yet</string>
     <!-- %1$s = time, e.g. 8:00 PM -->
     <string name="reminder_on_note">reminder at %1$s · stays quiet once today is stamped</string>
-    <string name="reminder_turn_off">Turn off</string>
-    <string name="reminder_not_now">Not now</string>
     <string name="reminder_time_label">Remind me at %1$s</string>
     <string name="reminder_blocked_note">notifications are off for this app, so the reminder can’t show</string>
     <string name="reminder_open_settings">Open settings</string>

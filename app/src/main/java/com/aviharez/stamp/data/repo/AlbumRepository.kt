@@ -49,6 +49,8 @@ class AlbumRepository @Inject constructor(
 
     suspend fun count(): Int = dao.count()
 
+    fun observeCount(): Flow<Int> = dao.observeCount()
+
     suspend fun create(name: String, category: AlbumCategory, cover: AlbumCoverColor): Long =
         dao.insert(
             AlbumEntity(

@@ -2,6 +2,7 @@ package com.aviharez.stamp.data.repo
 
 import com.aviharez.stamp.data.db.StampDao
 import com.aviharez.stamp.data.db.StampEntity
+import com.aviharez.stamp.data.db.StampTotalsRow
 import com.aviharez.stamp.data.image.RenderSpec
 import com.aviharez.stamp.data.image.RenderedStamp
 import com.aviharez.stamp.data.image.StampStorage
@@ -14,16 +15,16 @@ import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.domain.model.StampSource
 import com.aviharez.stamp.domain.usecase.Streak
 import com.aviharez.stamp.domain.usecase.StreakCalculator
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
 /** A freshly made stamp, before it has an album. */
 data class NewStamp(
@@ -104,6 +105,9 @@ class StampRepository @Inject constructor(
 
     fun observeDays(): Flow<Set<LocalDate>> =
         dao.observeDays().map { days -> days.mapTo(HashSet()) { LocalDate.parse(it) } }
+
+    /** Stamp count and different places, for the Profile passport. */
+    fun observeTotals(): Flow<StampTotalsRow> = dao.observeTotals()
 
     /** First day anything was stamped (calendar starts there), null when there are no stamps. */
     fun observeFirstDay(): Flow<LocalDate?> = observeDays().map { it.minOrNull() }
