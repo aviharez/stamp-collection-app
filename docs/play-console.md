@@ -1,0 +1,186 @@
+# Play Console checklist
+
+Everything to fill in once the Google Play developer account exists. Answers below match what the app
+does as of 2026-11-05 (see the Decisions log in CLAUDE.md). Re-check them if a feature changes.
+
+Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 37
+
+---
+
+## 0. Before the account (ready now)
+
+- [x] Upload key: `~/keystores/stamp-upload.jks` (PKCS12, alias `upload`, RSA 4096).
+      Password is in `keystore.properties` (project root, git-ignored).
+      Certificate SHA-256: `c5:37:ab:cf:ee:bc:1c:42:8d:05:a5:a6:bc:9a:4d:5a:b8:5e:86:93:cd:76:86:f1:26:78:be:9a:69:dd:c4:61`
+      **Back up the .jks and the password** (password manager plus one offline copy). If the upload key is
+      lost, Play can reset it, but that takes a support request and days.
+- [x] Signed release bundle: `./gradlew bundleRelease` → `app/build/outputs/bundle/release/app-release.aab`
+- [x] Privacy policy draft: `docs/privacy.html` (replace `SUPPORT_EMAIL`, final app name)
+- [ ] Final app name → `app_name` in `strings.xml` (and the privacy page title)
+- [ ] Support email (Play requires one, shown publicly) → `supportEmail=` in `gradle.properties`
+- [ ] Publish the privacy page: GitHub repo → Settings → Pages → "Deploy from a branch", `main`, `/docs`.
+      URL becomes `https://aviharez.github.io/stamp-collection-app/privacy.html` →
+      `privacyPolicyUrl=` in `gradle.properties` (shows "Privacy policy" on Profile)
+- [ ] Store graphics (see §8)
+
+## 1. Create the app
+
+- App or game: **App** · Free · Default language: English (United States)
+- Category: **Photography**
+- Contact email: the support email · Privacy policy URL: the Pages URL above
+
+## 2. App signing
+
+- Choose **Play App Signing** (Google holds the app signing key, you keep the upload key above).
+- The first upload of `app-release.aab` registers the upload key automatically.
+- After that, copy the **app signing key** SHA-256 from Play Console. You only need it if a Google API
+  is ever restricted by certificate (none today).
+
+## 3. In-app products (Monetize → Products)
+
+| Product ID | Type | Notes |
+|---|---|---|
+| `pro_lifetime` | One-time product | ~US$14.99, main offer. Title "Pro (lifetime)" |
+| `pro_yearly` | Subscription | One auto-renewing base plan, 1 year, ~US$9.99. **No free trial** at launch |
+
+- Product IDs must match exactly (`BillingRepository.kt`). Prices come from Play, never from code.
+- Billing only works on a build installed from a Play testing track, by a tester account. Add your own
+  account under Settings → **License testing** to buy without being charged.
+- Purchases are acknowledged in the app (no server). Turn on Real-time developer notifications later
+  only if a backend is added.
+
+## 4. AdMob
+
+1. Create an AdMob account and add the app (Android, after it's on Play, or "not listed yet").
+2. Create **one Rewarded** ad unit.
+3. Put the IDs in `~/.gradle/gradle.properties` (not in the repo):
+   ```
+   admobAppId=ca-app-pub-XXXXXXXXXXXXXXXX~YYYYYYYYYY
+   admobRewardedId=ca-app-pub-XXXXXXXXXXXXXXXX/ZZZZZZZZZZ
+   ```
+   **Without them a release build falls back to Google's test IDs** (no revenue). Check before uploading.
+4. AdMob → Privacy & messaging: create the **GDPR (EEA/UK)** message and the **US states** message.
+   The app shows them through UMP the first time someone taps a "short ad" button.
+5. Blocking controls → max ad content rating is already set to **PG** in code. Match it in AdMob.
+6. Add `app-ads.txt` on a developer website once you have one (optional, improves fill).
+
+## 5. App content (Policy → App content)
+
+**Privacy policy:** the Pages URL.
+
+**Ads:** **Yes, my app contains ads.**
+
+**App access:** All functionality is available without special access (no login).
+
+**Advertising ID:** **Yes**, used for **Advertising or marketing** (Mobile Ads SDK, permission
+`com.google.android.gms.permission.AD_ID`).
+
+**Target audience and content:** **13–15, 16–17 and 18+** (not under 13: AdMob would need the
+Families policy setup). "Could unintentionally appeal to children": No.
+
+**Content rating (IARC questionnaire):** category *Utility, productivity, communication or other*.
+No violence, sexuality, language, drugs or gambling. "Users can interact or exchange content": **No**
+(sharing goes through Android's share sheet, nothing is hosted). "Shares the user's location with other
+users": **No**. "Digital purchases": **Yes**. Expected result: Everyone / PEGI 3.
+
+**Government apps / Financial features / Health / News:** No / None / No / No.
+
+**Foreground service, exact alarm, background location:** none needed. The reminder and widget use
+inexact alarms, and location is approximate and in-use only.
+
+## 6. Data safety
+
+General answers:
+- Does the app collect or share any of the required user data types? **Yes**
+- Is all user data encrypted in transit? **Yes**
+- Way for users to request deletion? No account exists. Say users delete everything in the app or by
+  uninstalling. No deletion URL is needed without accounts.
+
+| Data type | Collected | Shared | Optional? | Purposes | Who |
+|---|---|---|---|---|---|
+| Location → Approximate location | Yes, processed ephemerally | No | Optional | App functionality (postmark city) | Android Geocoder → Google |
+| Location → Approximate location (from IP) | Yes | Yes | Optional (only if the user watches an ad) | Advertising, Analytics, Fraud prevention | Mobile Ads SDK |
+| Device or other IDs | Yes | Yes | Optional | Advertising, Analytics, Fraud prevention, security | Mobile Ads SDK |
+| App activity → App interactions | Yes | Yes | Optional | Advertising, Analytics | Mobile Ads SDK |
+| App info and performance → Crash logs, Diagnostics | Yes | Yes | Optional | Analytics, Fraud prevention | Mobile Ads SDK |
+| Photos and videos | **No**: stay on the device | | | | |
+| Purchase history | **No**: handled by Google Play itself | | | | |
+
+Notes:
+- Data processed only on the device (photos, albums, captions, reminders, widgets, backups) is **not**
+  "collected" in Play's definition, because it never leaves the phone through the app.
+- Before submitting, compare the Mobile Ads SDK rows with Google's current page
+  ("Mobile Ads SDK: data disclosure" in the AdMob help). Google updates that list.
+
+## 7. Store listing drafts
+
+**App name** (max 30): `<name> – Photo Stamp Album`
+
+**Short description** (max 80):
+> Turn every day's photo into a postage stamp, postmarked with where and when.
+
+**Full description** (max 4000):
+> Make a stamp of today.
+>
+> Snap a photo and it becomes a real-looking postage stamp, with perforated edges and a postmark
+> printed with your city, country and date. Stick it into albums like a paper stamp collection,
+> watch your calendar fill up and keep your daily streak going.
+>
+> A CAMERA MADE FOR STAMPS
+> • Frame the shot in a stamp-shaped viewfinder: portrait, landscape, square or round
+> • Exposure control, tap to focus, 0.5× / 1× / 2× lenses where your phone has them
+> • Landscape and portrait stamps always come out the right way up
+> • Import from your gallery too, always free
+>
+> A REAL STAMP ALBUM
+> • Kraft paper pages, washi tape and handwritten dates
+> • Albums for trips, pets, everyday life
+> • Write on the back of every stamp
+> • A calendar of stamped days and a streak to keep
+> • A world map of every country you've stamped
+>
+> SHARE IT, PRINT IT
+> • Export stamps at full resolution, transparent or on paper
+> • Send a stamp as an envelope, postcard or card
+> • Share a whole album page
+> • Print your stamps as sticker sheets (A4 or Letter)
+>
+> FAIR, NOT PUSHY
+> • No forced ads. Ever. A short ad plays only if you ask for one (for example to remove the
+>   watermark from one picture).
+> • Your photos stay on your phone. No account, no cloud, no tracking.
+> • Back up everything to a single file you keep.
+>
+> PRO (one-time or yearly)
+> Unlimited albums, no watermark, every filter and edge style, scrapbook pages, postcard looks,
+> sticker sheets and home-screen widgets.
+
+**Release notes v1.0:**
+> First release. Make your first stamp in three taps.
+
+## 8. Graphics
+
+| Asset | Size | Idea |
+|---|---|---|
+| App icon | 512 × 512 PNG | Same as the launcher icon (export the adaptive icon on Paper) |
+| Feature graphic | 1024 × 500 | Airmail stripe border, three tilted stamps with postmarks, name in Fraunces italic |
+| Phone screenshots | 4–8, 1080 × 1920+ | Home · Camera · Stamped! · Album page · Map · Calendar · Share as postcard · Paywall-free Profile |
+
+Screenshots: emulator with sample stamps restored, `adb exec-out screencap -p`. Optional captions on a
+Paper frame ("Postmarked with where and when", "Your albums, like paper", …).
+
+## 9. Testing tracks (new personal accounts)
+
+1. **Internal testing** first: upload the AAB, add your own account, and check billing with license testing
+   plus a real rewarded ad (consent form shows in the EEA via a VPN or the UMP debug geography).
+2. **Closed testing**: **at least 12 testers opted in for 14 continuous days** before you can apply for
+   production. Recruit 15–20 to be safe. Testers join through the opt-in link.
+3. Apply for production access in the Dashboard (questions about the test) → production release.
+
+## 10. Before each upload
+
+- [ ] `versionCode` +1 (and `versionName`)
+- [ ] `admobAppId` / `admobRewardedId` set (not the test IDs)
+- [ ] `./gradlew :app:generateBaselineProfile` if screens changed a lot (emulator with stamps restored)
+- [ ] `./gradlew lint bundleRelease`
+- [ ] Smoke test the release build on a real phone via internal testing
