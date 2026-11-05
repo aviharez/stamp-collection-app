@@ -56,6 +56,7 @@ import com.aviharez.stamp.data.image.NormRect
 import com.aviharez.stamp.domain.model.Place
 import com.aviharez.stamp.domain.model.StampShape
 import com.aviharez.stamp.ui.components.AirmailStripe
+import com.aviharez.stamp.ui.components.StampingOverlay
 import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.GalleryStampButton
 import com.aviharez.stamp.ui.components.HandNote
@@ -132,140 +133,144 @@ fun ImportContent(
     val shown = remember { ShownWindow() }
     val ready = state.photo != null && !state.saving
 
-    Column(modifier.fillMaxSize().background(c.ink)) {
-        AirmailStripe(Modifier.fillMaxWidth().height(s.xs))
+    Box(modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().background(c.ink)) {
+            AirmailStripe(Modifier.fillMaxWidth().height(s.xs))
 
-        // Header: close · "City · date" of the photo · (balance)
-        Row(
-            Modifier
-                .statusBarsPadding()
-                .fillMaxWidth()
-                .padding(horizontal = s.screenFullBleed, vertical = s.s),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            CircleIconButton(R.drawable.ic_close, stringResource(R.string.cd_close), onClose, onDark = true)
-            val date = rememberDateText(R.string.pattern_short_date, state.day)
-            Text(
-                state.place.city?.let { stringResource(R.string.camera_header_place, it, date) } ?: date,
-                style = StampTheme.type.albumName,
-                color = c.textOnDarkHigh,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f).padding(horizontal = s.xs),
-            )
-            Spacer(Modifier.size(s.touchTarget))
-        }
-
-        Box(
-            Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = s.screenFullBleed),
-            contentAlignment = Alignment.Center,
-        ) {
-            BoxWithConstraints(
+            // Header: close · "City · date" of the photo · (balance)
+            Row(
                 Modifier
-                    .aspectRatio(ViewfinderAspect)
-                    .clip(StampTheme.shapes.viewfinder)
-                    .background(c.plateOnDark),
+                    .statusBarsPadding()
+                    .fillMaxWidth()
+                    .padding(horizontal = s.screenFullBleed, vertical = s.s),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                val vfSize = with(density) { Size(maxWidth.toPx(), maxHeight.toPx()) }
-                val geometry = remember(vfSize, state.shape, state.perforation) {
-                    frameGeometry(vfSize, state.shape, state.perforation, density)
-                }
-                val photo = state.photo
-                if (photo != null) {
-                    PhotoUnderFrame(
-                        photo = photo,
-                        quarterTurns = state.quarterTurns,
-                        geometry = geometry,
-                        onShown = { window -> shown.window = window; shown.shortDp = geometry.shortDp },
-                    )
-                }
-                FrameOverlay(geometry, state.shape, state.perforation, Modifier.fillMaxSize())
+                CircleIconButton(R.drawable.ic_close, stringResource(R.string.cd_close), onClose, onDark = true)
+                val date = rememberDateText(R.string.pattern_short_date, state.day)
+                Text(
+                    state.place.city?.let { stringResource(R.string.camera_header_place, it, date) } ?: date,
+                    style = StampTheme.type.albumName,
+                    color = c.textOnDarkHigh,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f).padding(horizontal = s.xs),
+                )
+                Spacer(Modifier.size(s.touchTarget))
+            }
 
-                val postmark = rememberPostmarkLines(state.place, state.day)
-                val postmarkPx = with(density) { PostmarkDiameter.toPx() }
-                Postmark(
-                    city = postmark.top,
-                    date = postmark.bottom,
-                    color = c.postmarkOnLight,
-                    diameter = PostmarkDiameter,
-                    showWaves = false,
-                    dashedOuter = true,
-                    rotation = PostmarkTilt,
-                    modifier = Modifier.offset {
-                        IntOffset(
-                            (geometry.outer.right - postmarkPx * 0.95f).roundToInt(),
-                            (geometry.outer.bottom - postmarkPx * 0.9f).roundToInt(),
+            Box(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = s.screenFullBleed),
+                contentAlignment = Alignment.Center,
+            ) {
+                BoxWithConstraints(
+                    Modifier
+                        .aspectRatio(ViewfinderAspect)
+                        .clip(StampTheme.shapes.viewfinder)
+                        .background(c.plateOnDark),
+                ) {
+                    val vfSize = with(density) { Size(maxWidth.toPx(), maxHeight.toPx()) }
+                    val geometry = remember(vfSize, state.shape, state.perforation) {
+                        frameGeometry(vfSize, state.shape, state.perforation, density)
+                    }
+                    val photo = state.photo
+                    if (photo != null) {
+                        PhotoUnderFrame(
+                            photo = photo,
+                            quarterTurns = state.quarterTurns,
+                            geometry = geometry,
+                            onShown = { window -> shown.window = window; shown.shortDp = geometry.shortDp },
                         )
-                    },
-                )
+                    }
+                    FrameOverlay(geometry, state.shape, state.perforation, Modifier.fillMaxSize())
 
-                val note = when {
-                    state.storageFull -> stringResource(R.string.storage_full)
-                    state.failed -> stringResource(R.string.import_failed)
-                    state.loading -> stringResource(R.string.import_loading)
-                    state.saving -> stringResource(R.string.import_saving)
-                    else -> null
-                }
-                if (note != null) {
-                    HandNote(
-                        note,
-                        color = c.textOnDarkHigh,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .background(c.ink.copy(alpha = NoteScrimAlpha), StampTheme.shapes.tile)
-                            .padding(horizontal = s.m, vertical = s.xs),
+                    val postmark = rememberPostmarkLines(state.place, state.day)
+                    val postmarkPx = with(density) { PostmarkDiameter.toPx() }
+                    Postmark(
+                        city = postmark.top,
+                        date = postmark.bottom,
+                        color = c.postmarkOnLight,
+                        diameter = PostmarkDiameter,
+                        showWaves = false,
+                        dashedOuter = true,
+                        rotation = PostmarkTilt,
+                        modifier = Modifier.offset {
+                            IntOffset(
+                                (geometry.outer.right - postmarkPx * 0.95f).roundToInt(),
+                                (geometry.outer.bottom - postmarkPx * 0.9f).roundToInt(),
+                            )
+                        },
                     )
-                } else {
-                    HandNote(
-                        stringResource(R.string.import_hint),
-                        color = c.textOnDarkMedium,
-                        strength = InkStrength.Soft,
-                        style = StampTheme.type.noteSmall,
-                        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = s.s),
-                    )
+
+                    val note = when {
+                        state.storageFull -> stringResource(R.string.storage_full)
+                        state.failed -> stringResource(R.string.import_failed)
+                        state.loading -> stringResource(R.string.import_loading)
+                        state.saving -> stringResource(R.string.import_saving)
+                        else -> null
+                    }
+                    if (note != null) {
+                        HandNote(
+                            note,
+                            color = c.textOnDarkHigh,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .background(c.ink.copy(alpha = NoteScrimAlpha), StampTheme.shapes.tile)
+                                .padding(horizontal = s.m, vertical = s.xs),
+                        )
+                    } else {
+                        HandNote(
+                            stringResource(R.string.import_hint),
+                            color = c.textOnDarkMedium,
+                            strength = InkStrength.Soft,
+                            style = StampTheme.type.noteSmall,
+                            modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = s.s),
+                        )
+                    }
                 }
             }
-        }
 
-        ShapePicker(
-            selected = state.shape,
-            onSelect = onSelectShape,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = s.screenFullBleed, vertical = s.s),
-        )
-
-        // Bottom: another photo · make the stamp · rotate
-        Row(
-            Modifier
-                .navigationBarsPadding()
-                .fillMaxWidth()
-                .padding(horizontal = s.screen, vertical = s.m),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                if (!state.reframing) GalleryStampButton(
-                    onClick = onPickAnother,
-                    contentDescription = stringResource(R.string.import_pick_another),
-                    enabled = !state.saving,
-                )
-            }
-            ShutterButton(
-                onClick = { shown.window?.let { onMakeStamp(it, shown.shortDp) } },
-                contentDescription = stringResource(R.string.import_make),
-                enabled = ready,
+            ShapePicker(
+                selected = state.shape,
+                onSelect = onSelectShape,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = s.screenFullBleed, vertical = s.s),
             )
-            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
-                CircleIconButton(
-                    R.drawable.ic_rotate,
-                    stringResource(R.string.import_rotate),
-                    onRotate,
-                    onDark = true,
+
+            // Bottom: another photo · make the stamp · rotate
+            Row(
+                Modifier
+                    .navigationBarsPadding()
+                    .fillMaxWidth()
+                    .padding(horizontal = s.screen, vertical = s.m),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                    if (!state.reframing) GalleryStampButton(
+                        onClick = onPickAnother,
+                        contentDescription = stringResource(R.string.import_pick_another),
+                        enabled = !state.saving,
+                    )
+                }
+                ShutterButton(
+                    onClick = { shown.window?.let { onMakeStamp(it, shown.shortDp) } },
+                    contentDescription = stringResource(R.string.import_make),
+                    enabled = ready,
                 )
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                    CircleIconButton(
+                        R.drawable.ic_rotate,
+                        stringResource(R.string.import_rotate),
+                        onRotate,
+                        onDark = true,
+                    )
+                }
             }
         }
+        // While the photo becomes a stamp: the shutter is busy, so say so.
+        StampingOverlay(visible = state.saving)
     }
 }
 

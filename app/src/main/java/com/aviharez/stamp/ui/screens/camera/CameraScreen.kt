@@ -72,6 +72,7 @@ import com.aviharez.stamp.ui.components.AirmailStripe
 import com.aviharez.stamp.ui.components.CircleIconButton
 import com.aviharez.stamp.ui.components.GalleryStampButton
 import com.aviharez.stamp.ui.components.HandNote
+import com.aviharez.stamp.ui.components.StampingOverlay
 import com.aviharez.stamp.ui.components.Postmark
 import com.aviharez.stamp.ui.components.rememberDateText
 import com.aviharez.stamp.ui.components.rememberPostmarkLines
@@ -181,242 +182,246 @@ private fun CameraContent(
     // The exact frame shown on screen; the shutter crops to this.
     var shownFrame by remember { mutableStateOf<ShownFrame?>(null) }
 
-    Column(modifier.fillMaxSize().background(c.ink)) {
-        AirmailStripe(Modifier.fillMaxWidth().height(s.xs))
+    Box(modifier.fillMaxSize()) {
+        Column(Modifier.fillMaxSize().background(c.ink)) {
+            AirmailStripe(Modifier.fillMaxWidth().height(s.xs))
 
-        // Header: close · date (city joins in milestone 2) · flash
-        Row(
-            Modifier
-                .statusBarsPadding()
-                .fillMaxWidth()
-                .padding(horizontal = s.screenFullBleed, vertical = s.s),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            CircleIconButton(
-                R.drawable.ic_close,
-                stringResource(R.string.cd_close),
-                onClose,
-                onDark = true,
-                modifier = Modifier.rotate(iconRotation),
-            )
-            val today = rememberDateText(R.string.pattern_short_date)
-            Text(
-                state.place.city?.let { stringResource(R.string.camera_header_place, it, today) } ?: today,
-                style = StampTheme.type.albumName,
-                color = c.textOnDarkHigh,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f).padding(horizontal = s.xs),
-            )
-            if (state.lens == Lens.Front) {
-                CircleIconButton(
-                    icon = if (state.mirrorSelfie) R.drawable.ic_mirror_on else R.drawable.ic_mirror_off,
-                    contentDescription = stringResource(
-                        if (state.mirrorSelfie) R.string.camera_mirror_on else R.string.camera_mirror_off,
-                    ),
-                    onClick = viewModel::toggleMirrorSelfie,
-                    onDark = true,
-                    modifier = Modifier.rotate(iconRotation),
-                )
-            }
-            if (state.hasFlash) {
-                CircleIconButton(
-                    icon = state.flash.icon,
-                    contentDescription = stringResource(state.flash.label),
-                    onClick = viewModel::cycleFlash,
-                    onDark = true,
-                    modifier = Modifier.rotate(iconRotation),
-                )
-            } else if (state.lens != Lens.Front) {
-                Spacer(Modifier.size(s.touchTarget))
-            }
-        }
-
-        // Viewfinder (3:4, the sensor's native aspect) with the stamp frame.
-        Box(
-            Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = s.screenFullBleed),
-            contentAlignment = Alignment.Center,
-        ) {
-            BoxWithConstraints(
+            // Header: close · date (city joins in milestone 2) · flash
+            Row(
                 Modifier
-                    .aspectRatio(ViewfinderAspect)
-                    .clip(StampTheme.shapes.viewfinder)
-                    .background(c.plateOnDark),
+                    .statusBarsPadding()
+                    .fillMaxWidth()
+                    .padding(horizontal = s.screenFullBleed, vertical = s.s),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                val vfSize = with(density) { Size(maxWidth.toPx(), maxHeight.toPx()) }
-                val geometry = remember(vfSize, state.shape, state.perforation) {
-                    frameGeometry(vfSize, state.shape, state.perforation, density)
-                }
-                SideEffect { shownFrame = ShownFrame(vfSize, geometry) }
-                val coordinateTransformer = remember { MutableCoordinateTransformer() }
-                var focusPoint by remember { mutableStateOf<Offset?>(null) }
-                val zoomNow by rememberUpdatedState(state.zoomRatio)
-                val focusDescription = stringResource(R.string.camera_focus_cd)
-                // CameraX mirrors the front preview; with "mirror selfie" off we flip it back so the
-                // preview matches the saved stamp. The frame is centred, so the crop is unaffected.
-                val unmirror = state.lens == Lens.Front && !state.mirrorSelfie
-                val unmirrorNow by rememberUpdatedState(unmirror)
-
-                surfaceRequest?.let { request ->
-                    CameraXViewfinder(
-                        surfaceRequest = request,
-                        coordinateTransformer = coordinateTransformer,
-                        // A SurfaceView ignores graphicsLayer transforms, so un-mirroring needs the
-                        // embedded (TextureView-style) viewfinder. Preview.setMirrorMode would be
-                        // simpler but is a no-op below API 33.
-                        implementationMode = if (unmirror) ImplementationMode.EMBEDDED else ImplementationMode.EXTERNAL,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer { scaleX = if (unmirror) -1f else 1f },
-                    )
-                }
-                FrameOverlay(
-                    geometry,
-                    state.shape,
-                    state.perforation,
-                    Modifier
-                        .fillMaxSize()
-                        .semantics { contentDescription = focusDescription }
-                        .pointerInput(Unit) {
-                            detectTapGestures { tap ->
-                                focusPoint = tap
-                                // Undo the visual flip before mapping into surface coordinates.
-                                val surfaceTap = if (unmirrorNow) tap.copy(x = size.width - tap.x) else tap
-                                with(coordinateTransformer) { viewModel.focusAt(surfaceTap.transform()) }
-                            }
-                        }
-                        .pointerInput(Unit) {
-                            detectTransformGestures { _, _, zoomChange, _ ->
-                                if (zoomChange != 1f) viewModel.setZoom(zoomNow * zoomChange)
-                            }
-                        },
-                )
-
-                // Live postmark on the frame's lower-right corner: city · date, or date-only.
-                val postmark = rememberPostmarkLines(state.place)
-                // AirmailRed as in design/camera.png: PaperWhite vanishes where it crosses the paper.
-                val postmarkDiameter = PostmarkDiameter
-                val postmarkPx = with(density) { postmarkDiameter.toPx() }
-                Postmark(
-                    city = postmark.top,
-                    date = postmark.bottom,
-                    color = c.postmarkOnLight,
-                    diameter = postmarkDiameter,
-                    showWaves = false,
-                    dashedOuter = true,
-                    rotation = PostmarkTilt + iconRotation,
-                    modifier = Modifier.offset {
-                        IntOffset(
-                            (geometry.outer.right - postmarkPx * 0.95f).roundToInt(),
-                            (geometry.outer.bottom - postmarkPx * 0.9f).roundToInt(),
-                        )
-                    },
-                )
-
-                focusPoint?.let { FocusRing(it, onDone = { focusPoint = null }) }
-
-                state.exposure?.let { exposure ->
-                    ExposureSlider(
-                        exposure = exposure,
-                        onIndexChange = viewModel::setExposureIndex,
-                        iconRotation = iconRotation,
-                        modifier = Modifier.align(Alignment.CenterEnd).padding(end = s.xxs),
-                    )
-                }
-
-                if (state.askLocation) {
-                    LocationAsk(
-                        onAllow = { locationLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION) },
-                        onNotNow = { viewModel.onLocationAnswered(granted = false) },
-                        modifier = Modifier.align(Alignment.BottomCenter).padding(s.s),
-                    )
-                } else ZoomChips(
-                    zoomRatio = state.zoomRatio,
-                    stops = zoomStops(state.minZoom, state.maxZoom),
-                    onZoom = viewModel::setZoom,
-                    highResSupported = state.highResSupported,
-                    highResOn = state.highResOn,
-                    onToggleHighRes = viewModel::toggleHighRes,
-                    iconRotation = iconRotation,
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = s.s),
-                )
-
-                state.problem?.let { problem ->
-                    HandNote(
-                        stringResource(
-                            when (problem) {
-                                CameraProblem.Unavailable -> R.string.camera_unavailable
-                                CameraProblem.CaptureFailed -> R.string.camera_capture_failed
-                                CameraProblem.StorageFull -> R.string.storage_full
-                            },
-                        ),
-                        color = c.textOnDarkHigh,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .background(c.ink.copy(alpha = ProblemScrimAlpha), StampTheme.shapes.tile)
-                            .padding(horizontal = s.m, vertical = s.xs),
-                    )
-                }
-
-                CaptureFlash(capturing = state.capturing)
-            }
-        }
-
-        ShapePicker(
-            selected = state.shape,
-            onSelect = viewModel::selectShape,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = s.screenFullBleed, vertical = s.s),
-        )
-
-        // Bottom: gallery (mini stamp) · shutter · flip
-        Row(
-            Modifier
-                .navigationBarsPadding()
-                .fillMaxWidth()
-                .padding(horizontal = s.screen, vertical = s.m),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
-                GalleryStampButton(
-                    onClick = onPickPhoto,
-                    contentDescription = stringResource(R.string.camera_gallery),
-                    latestPath = state.latest?.imagePath,
-                    latestShape = state.latest?.shape ?: StampShape.Portrait,
-                    enabled = !state.capturing,
+                CircleIconButton(
+                    R.drawable.ic_close,
+                    stringResource(R.string.cd_close),
+                    onClose,
+                    onDark = true,
                     modifier = Modifier.rotate(iconRotation),
                 )
-            }
-            ShutterButton(
-                onClick = {
-                    shownFrame?.let { frame ->
-                        viewModel.capture(
-                            window = frame.normalisedWindow(),
-                            viewfinderAspect = frame.viewfinder.width / frame.viewfinder.height,
-                            frameShortDp = frame.geometry.shortDp,
-                            displayRotation = displayRotation,
-                            deviceRotation = deviceRotation,
-                        )
-                    }
-                },
-                contentDescription = stringResource(R.string.camera_shutter),
-                enabled = !state.capturing && surfaceRequest != null,
-            )
-            Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
-                if (state.canFlip) {
+                val today = rememberDateText(R.string.pattern_short_date)
+                Text(
+                    state.place.city?.let { stringResource(R.string.camera_header_place, it, today) } ?: today,
+                    style = StampTheme.type.albumName,
+                    color = c.textOnDarkHigh,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f).padding(horizontal = s.xs),
+                )
+                if (state.lens == Lens.Front) {
                     CircleIconButton(
-                        R.drawable.ic_flip,
-                        stringResource(R.string.camera_flip),
-                        viewModel::flipLens,
+                        icon = if (state.mirrorSelfie) R.drawable.ic_mirror_on else R.drawable.ic_mirror_off,
+                        contentDescription = stringResource(
+                            if (state.mirrorSelfie) R.string.camera_mirror_on else R.string.camera_mirror_off,
+                        ),
+                        onClick = viewModel::toggleMirrorSelfie,
                         onDark = true,
                         modifier = Modifier.rotate(iconRotation),
                     )
                 }
+                if (state.hasFlash) {
+                    CircleIconButton(
+                        icon = state.flash.icon,
+                        contentDescription = stringResource(state.flash.label),
+                        onClick = viewModel::cycleFlash,
+                        onDark = true,
+                        modifier = Modifier.rotate(iconRotation),
+                    )
+                } else if (state.lens != Lens.Front) {
+                    Spacer(Modifier.size(s.touchTarget))
+                }
+            }
+
+            // Viewfinder (3:4, the sensor's native aspect) with the stamp frame.
+            Box(
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = s.screenFullBleed),
+                contentAlignment = Alignment.Center,
+            ) {
+                BoxWithConstraints(
+                    Modifier
+                        .aspectRatio(ViewfinderAspect)
+                        .clip(StampTheme.shapes.viewfinder)
+                        .background(c.plateOnDark),
+                ) {
+                    val vfSize = with(density) { Size(maxWidth.toPx(), maxHeight.toPx()) }
+                    val geometry = remember(vfSize, state.shape, state.perforation) {
+                        frameGeometry(vfSize, state.shape, state.perforation, density)
+                    }
+                    SideEffect { shownFrame = ShownFrame(vfSize, geometry) }
+                    val coordinateTransformer = remember { MutableCoordinateTransformer() }
+                    var focusPoint by remember { mutableStateOf<Offset?>(null) }
+                    val zoomNow by rememberUpdatedState(state.zoomRatio)
+                    val focusDescription = stringResource(R.string.camera_focus_cd)
+                    // CameraX mirrors the front preview; with "mirror selfie" off we flip it back so the
+                    // preview matches the saved stamp. The frame is centred, so the crop is unaffected.
+                    val unmirror = state.lens == Lens.Front && !state.mirrorSelfie
+                    val unmirrorNow by rememberUpdatedState(unmirror)
+
+                    surfaceRequest?.let { request ->
+                        CameraXViewfinder(
+                            surfaceRequest = request,
+                            coordinateTransformer = coordinateTransformer,
+                            // A SurfaceView ignores graphicsLayer transforms, so un-mirroring needs the
+                            // embedded (TextureView-style) viewfinder. Preview.setMirrorMode would be
+                            // simpler but is a no-op below API 33.
+                            implementationMode = if (unmirror) ImplementationMode.EMBEDDED else ImplementationMode.EXTERNAL,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .graphicsLayer { scaleX = if (unmirror) -1f else 1f },
+                        )
+                    }
+                    FrameOverlay(
+                        geometry,
+                        state.shape,
+                        state.perforation,
+                        Modifier
+                            .fillMaxSize()
+                            .semantics { contentDescription = focusDescription }
+                            .pointerInput(Unit) {
+                                detectTapGestures { tap ->
+                                    focusPoint = tap
+                                    // Undo the visual flip before mapping into surface coordinates.
+                                    val surfaceTap = if (unmirrorNow) tap.copy(x = size.width - tap.x) else tap
+                                    with(coordinateTransformer) { viewModel.focusAt(surfaceTap.transform()) }
+                                }
+                            }
+                            .pointerInput(Unit) {
+                                detectTransformGestures { _, _, zoomChange, _ ->
+                                    if (zoomChange != 1f) viewModel.setZoom(zoomNow * zoomChange)
+                                }
+                            },
+                    )
+
+                    // Live postmark on the frame's lower-right corner: city · date, or date-only.
+                    val postmark = rememberPostmarkLines(state.place)
+                    // AirmailRed as in design/camera.png: PaperWhite vanishes where it crosses the paper.
+                    val postmarkDiameter = PostmarkDiameter
+                    val postmarkPx = with(density) { postmarkDiameter.toPx() }
+                    Postmark(
+                        city = postmark.top,
+                        date = postmark.bottom,
+                        color = c.postmarkOnLight,
+                        diameter = postmarkDiameter,
+                        showWaves = false,
+                        dashedOuter = true,
+                        rotation = PostmarkTilt + iconRotation,
+                        modifier = Modifier.offset {
+                            IntOffset(
+                                (geometry.outer.right - postmarkPx * 0.95f).roundToInt(),
+                                (geometry.outer.bottom - postmarkPx * 0.9f).roundToInt(),
+                            )
+                        },
+                    )
+
+                    focusPoint?.let { FocusRing(it, onDone = { focusPoint = null }) }
+
+                    state.exposure?.let { exposure ->
+                        ExposureSlider(
+                            exposure = exposure,
+                            onIndexChange = viewModel::setExposureIndex,
+                            iconRotation = iconRotation,
+                            modifier = Modifier.align(Alignment.CenterEnd).padding(end = s.xxs),
+                        )
+                    }
+
+                    if (state.askLocation) {
+                        LocationAsk(
+                            onAllow = { locationLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION) },
+                            onNotNow = { viewModel.onLocationAnswered(granted = false) },
+                            modifier = Modifier.align(Alignment.BottomCenter).padding(s.s),
+                        )
+                    } else ZoomChips(
+                        zoomRatio = state.zoomRatio,
+                        stops = zoomStops(state.minZoom, state.maxZoom),
+                        onZoom = viewModel::setZoom,
+                        highResSupported = state.highResSupported,
+                        highResOn = state.highResOn,
+                        onToggleHighRes = viewModel::toggleHighRes,
+                        iconRotation = iconRotation,
+                        modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = s.s),
+                    )
+
+                    state.problem?.let { problem ->
+                        HandNote(
+                            stringResource(
+                                when (problem) {
+                                    CameraProblem.Unavailable -> R.string.camera_unavailable
+                                    CameraProblem.CaptureFailed -> R.string.camera_capture_failed
+                                    CameraProblem.StorageFull -> R.string.storage_full
+                                },
+                            ),
+                            color = c.textOnDarkHigh,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .background(c.ink.copy(alpha = ProblemScrimAlpha), StampTheme.shapes.tile)
+                                .padding(horizontal = s.m, vertical = s.xs),
+                        )
+                    }
+
+                    CaptureFlash(capturing = state.capturing)
+                }
+            }
+
+            ShapePicker(
+                selected = state.shape,
+                onSelect = viewModel::selectShape,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = s.screenFullBleed, vertical = s.s),
+            )
+
+            // Bottom: gallery (mini stamp) · shutter · flip
+            Row(
+                Modifier
+                    .navigationBarsPadding()
+                    .fillMaxWidth()
+                    .padding(horizontal = s.screen, vertical = s.m),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
+                    GalleryStampButton(
+                        onClick = onPickPhoto,
+                        contentDescription = stringResource(R.string.camera_gallery),
+                        latestPath = state.latest?.imagePath,
+                        latestShape = state.latest?.shape ?: StampShape.Portrait,
+                        enabled = !state.capturing,
+                        modifier = Modifier.rotate(iconRotation),
+                    )
+                }
+                ShutterButton(
+                    onClick = {
+                        shownFrame?.let { frame ->
+                            viewModel.capture(
+                                window = frame.normalisedWindow(),
+                                viewfinderAspect = frame.viewfinder.width / frame.viewfinder.height,
+                                frameShortDp = frame.geometry.shortDp,
+                                displayRotation = displayRotation,
+                                deviceRotation = deviceRotation,
+                            )
+                        }
+                    },
+                    contentDescription = stringResource(R.string.camera_shutter),
+                    enabled = !state.capturing && surfaceRequest != null,
+                )
+                Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
+                    if (state.canFlip) {
+                        CircleIconButton(
+                            R.drawable.ic_flip,
+                            stringResource(R.string.camera_flip),
+                            viewModel::flipLens,
+                            onDark = true,
+                            modifier = Modifier.rotate(iconRotation),
+                        )
+                    }
+                }
             }
         }
+        // While the photo becomes a stamp: the shutter is busy, so say so.
+        StampingOverlay(visible = state.capturing)
     }
 }
 

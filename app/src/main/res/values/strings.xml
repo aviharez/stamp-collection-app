@@ -94,6 +94,7 @@
     <string name="camera_high_res_cd">50 megapixel mode</string>
     <string name="camera_focus_cd">Camera preview. Tap to focus, pinch to zoom.</string>
     <string name="camera_unavailable">The camera isn\'t available right now.</string>
+    <string name="camera_stamping">making your stamp…</string>
     <string name="camera_capture_failed">That one didn\'t stick — try again.</string>
     <string name="storage_full">Your phone is full. Free up some space, then try again.</string>
     <string name="shape_portrait">Portrait</string>
