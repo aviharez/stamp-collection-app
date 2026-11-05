@@ -283,6 +283,26 @@
     <string name="paywall_ad_album">+1 album · short ad</string>
     <string name="profile_ad_privacy">Ad privacy choices</string>
 
+    <!-- Streak reminder (Profile + the notification). Off until the user turns it on. -->
+    <string name="reminder_turn_on">Remind me to stamp</string>
+    <string name="reminder_off_note">one note in the evening, only if today isn’t stamped yet</string>
+    <!-- %1$s = time, e.g. 8:00 PM -->
+    <string name="reminder_on_note">reminder at %1$s · stays quiet once today is stamped</string>
+    <string name="reminder_turn_off">Turn off</string>
+    <string name="reminder_not_now">Not now</string>
+    <string name="reminder_time_label">Remind me at %1$s</string>
+    <string name="reminder_blocked_note">notifications are off for this app, so the reminder can’t show</string>
+    <string name="reminder_open_settings">Open settings</string>
+    <string name="reminder_channel_name">Streak reminder</string>
+    <string name="reminder_channel_desc">One note in the evening, only on days you haven’t stamped yet.</string>
+    <plurals name="reminder_title_streak">
+        <item quantity="one">Keep your streak going: day 2 is waiting</item>
+        <item quantity="other">Keep your %1$d-day streak going</item>
+    </plurals>
+    <string name="reminder_body_streak">One photo before midnight keeps it alive.</string>
+    <string name="reminder_title_start">Today’s stamp is waiting</string>
+    <string name="reminder_body_start">One photo turns today into a stamp.</string>
+
     <!-- Backup / restore (Profile). One file the user keeps; restore merges, never deletes. -->
     <string name="backup_create">Back up to a file</string>
     <string name="backup_restore">Restore from a file</string>

@@ -37,4 +37,8 @@
     <string name="debug_section_widgets">Home-screen widgets</string>
     <string name="debug_widget_save">Save widget previews</string>
     <string name="debug_widget_pin">Pin %1$s widget</string>
+    <string name="debug_section_reminder">Streak reminder</string>
+    <string name="debug_reminder_streak">Show note · 12-day streak</string>
+    <string name="debug_reminder_start">Show note · no streak</string>
+    <string name="debug_reminder_ring">Ring now (real checks)</string>
 </resources>

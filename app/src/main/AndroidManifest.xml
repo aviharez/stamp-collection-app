@@ -17,6 +17,11 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
+    <!-- Streak reminder (optional, off until turned on in Profile): the note itself (Android 13+)
+         and re-arming its alarm after a reboot. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".StampApplication"
         android:allowBackup="true"
@@ -112,6 +117,20 @@
         <receiver
             android:name=".widget.MidnightReceiver"
             android:exported="false" />
+        <!-- Streak reminder: our alarm, and the system events that need it re-armed. -->
+        <receiver
+            android:name=".data.reminder.ReminderReceiver"
+            android:exported="false" />
+        <receiver
+            android:name=".data.reminder.ReminderRearmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

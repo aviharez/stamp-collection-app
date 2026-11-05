@@ -4,4 +4,6 @@
 <resources>
     <color name="paper">#FFF6F0E6</color>
     <color name="ink">#FF18223F</color>
+    <!-- Notification accent (the system tints the small icon with it); same as AirmailRed. -->
+    <color name="notification_accent">#FFD7362B</color>
 </resources>
