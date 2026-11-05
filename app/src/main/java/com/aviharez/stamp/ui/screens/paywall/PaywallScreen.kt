@@ -302,7 +302,7 @@ private fun PerkCell(perk: Perk, highlighted: Boolean) {
                         .size(PerkStampSize)
                         .graphicsLayer { val sc = if (highlighted) LiftScale else 1f; scaleX = sc; scaleY = sc },
                     perforation = PerforationStyle.Fine,
-                    tilt = if (highlighted) ActiveTilt else PerkTilts[perk.ordinal],
+                    tilt = if (highlighted) ActiveTilt else PerkTilts[perk.ordinal % PerkTilts.size],
                     elevation = if (highlighted) Elevation.Card else Elevation.Low,
                 ) {
                     Box(
@@ -440,7 +440,8 @@ private const val PerksPerRow = 3
 private val PerkStampSize = 58.dp
 private val PerkCellWidth = 96.dp
 private val PlanStampWidth = 128.dp
-private val PerkTilts = listOf(-3f, 2f, -1.5f, 1f, 2.5f, -2f, 1.5f)
+/** Resting tilt per perk stamp; wraps around, so a new perk can never index past the end. */
+private val PerkTilts = listOf(-3f, 2f, -1.5f, 1f, 2.5f, -2f, 1.5f, -1f)
 private const val SheetTilt = -0.6f
 private const val ActiveTilt = -6f
 private const val RestTilt = 1.5f
