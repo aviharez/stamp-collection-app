@@ -71,7 +71,7 @@ class BackupManager @Inject constructor(
 
     val lastBackupAt = settings.lastBackupAt
 
-    /** Suggested file name, e.g. "Stamp App backup 2026-11-04.zip". */
+    /** Suggested file name, e.g. "Postmory backup 2026-11-04.zip". */
     fun suggestedName(appName: String): String = "$appName backup ${java.time.LocalDate.now(clock)}.zip"
 
     fun backUp(to: Uri) = run(restoring = false) { write(to) }

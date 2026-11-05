@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stamp App</string>
+    <string name="app_name">Postmory</string>
 
     <!-- Nav bar -->
     <string name="nav_album">Album</string>

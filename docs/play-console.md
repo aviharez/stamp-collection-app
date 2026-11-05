@@ -16,7 +16,7 @@ Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 3
       lost, Play can reset it, but that takes a support request and days.
 - [x] Signed release bundle: `./gradlew bundleRelease` → `app/build/outputs/bundle/release/app-release.aab`
 - [x] Privacy policy draft: `docs/privacy.html` (replace `SUPPORT_EMAIL`, final app name)
-- [ ] Final app name → `app_name` in `strings.xml` (and the privacy page title)
+- [x] App name: **Postmory** (`app_name` in `strings.xml`)
 - [ ] Support email (Play requires one, shown publicly) → `supportEmail=` in `gradle.properties`
 - [ ] Publish the privacy page: GitHub repo → Settings → Pages → "Deploy from a branch", `main`, `/docs`.
       URL becomes `https://aviharez.github.io/stamp-collection-app/privacy.html` →
@@ -114,7 +114,7 @@ Notes:
 
 ## 7. Store listing drafts
 
-**App name** (max 30): `<name> – Photo Stamp Album`
+**App name** (max 30): `Postmory: Photo Stamp Album` (27)
 
 **Short description** (max 80):
 > Turn every day's photo into a postage stamp, postmarked with where and when.
