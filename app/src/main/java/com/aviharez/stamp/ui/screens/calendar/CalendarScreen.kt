@@ -168,7 +168,7 @@ private fun MonthHeader(state: CalendarUiState, onPrevious: () -> Unit, onNext: 
                 modifier = Modifier.weight(1f).semantics { heading() },
             )
             CircleIconButton(R.drawable.ic_back, stringResource(R.string.calendar_prev), onPrevious, enabled = state.canGoBack)
-            CircleIconButton(R.drawable.ic_arrow_right, stringResource(R.string.calendar_next), onNext, enabled = state.canGoForward)
+            CircleIconButton(R.drawable.ic_chevron_right, stringResource(R.string.calendar_next), onNext, enabled = state.canGoForward)
         }
     }
 }
