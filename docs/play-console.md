@@ -21,7 +21,7 @@ Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 3
 - [ ] Publish the privacy page: GitHub repo → Settings → Pages → "Deploy from a branch", `main`, `/docs`.
       URL becomes `https://aviharez.github.io/stamp-collection-app/privacy.html` →
       `privacyPolicyUrl=` in `gradle.properties` (shows "Privacy policy" on Profile)
-- [ ] Store graphics (see §8)
+- [x] Store graphics in `store/` (see §8)
 
 ## 1. Create the app
 
@@ -158,16 +158,23 @@ Notes:
 **Release notes v1.0:**
 > First release. Make your first stamp in three taps.
 
-## 8. Graphics
+## 8. Graphics (ready in `store/`)
 
-| Asset | Size | Idea |
+| Asset | File | Size |
 |---|---|---|
-| App icon | 512 × 512 PNG | Same as the launcher icon (export the adaptive icon on Paper) |
-| Feature graphic | 1024 × 500 | Airmail stripe border, three tilted stamps with postmarks, name in Fraunces italic |
-| Phone screenshots | 4–8, 1080 × 1920+ | Home · Camera · Stamped! · Album page · Map · Calendar · Share as postcard · Paywall-free Profile |
+| App icon | `store/icon-512.png` | 512 × 512, no alpha |
+| Feature graphic | `store/feature-graphic.png` | 1024 × 500: cobalt, airmail stripes, "Postmory", three tilted stamps + a Kyoto postmark |
+| Phone screenshots | `store/screenshots/screenshot-1…8-*.png` | 1080 × 1920, captioned, upload in number order |
 
-Screenshots: emulator with sample stamps restored, `adb exec-out screencap -p`. Optional captions on a
-Paper frame ("Postmarked with where and when", "Your albums, like paper", …).
+Screenshots, in order: Home · Frame it (import screen; the emulator camera is fake) · Stamped! · Album page ·
+Calendar · Map · Share as envelope · Collections. Sample photos are from Unsplash (credits in
+`store/PHOTO-CREDITS.md`); no real user data.
+
+To redo them: `python3 -I tools/store/seedgen.py <seeddir> Postmory-sample.zip` builds a sample backup
+(6 albums, 52 stamps, a 12-day streak) from `<seeddir>/full/<picsum id>.jpg`; restore it on the emulator
+(Profile → Restore), set demo mode and a location (Bandung), screencap each screen as `raw-<name>.png`, then
+`python3 -I tools/store/compose.py app/src/main/res/font <rawdir> <seeddir> <outdir>`. Keep place names in the
+pictures to well-known cities (no districts or home towns).
 
 ## 9. Testing tracks (new personal accounts)
 
