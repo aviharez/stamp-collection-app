@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Outline icon, 24dp, 1.8 stroke: a waste-paper bin. Tinted at runtime. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path android:pathData="M4,7h16" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M9,7V5a1,1 0,0 1,1 -1h4a1,1 0,0 1,1 1v2" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M6,7l1,12a2,2 0,0 0,2 2h6a2,2 0,0 0,2 -2l1,-12" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+    <path android:pathData="M10,11v6M14,11v6" android:strokeWidth="1.8" android:strokeColor="#FFFFFFFF" android:strokeLineCap="round" android:strokeLineJoin="round" />
+</vector>

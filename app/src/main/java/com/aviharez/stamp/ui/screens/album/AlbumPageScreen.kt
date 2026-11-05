@@ -1,6 +1,10 @@
 package com.aviharez.stamp.ui.screens.album
 
 import androidx.compose.foundation.clickable
+import com.aviharez.stamp.ui.screens.scrapbook.ScrapSheet
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -81,12 +85,16 @@ fun AlbumPageScreen(
     onNextStamp: () -> Unit,
     onGetPro: () -> Unit,
     onOpenStamp: (stampId: String) -> Unit,
+    onOpenScrapbook: (pageId: String?) -> Unit,
     modifier: Modifier = Modifier,
+    /** A scrapbook page just saved: the pager turns to it once, then [onScrolled]. */
+    scrollToScrap: String? = null,
+    onScrolled: () -> Unit = {},
     viewModel: AlbumPageViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var editing by rememberSaveable { mutableStateOf(false) }
-    /** Index of the page being shared, or -1. */
+    /** Index of the leaf being shared, or -1. */
     var sharingPage by rememberSaveable { mutableIntStateOf(-1) }
 
     AlbumPageContent(
@@ -96,20 +104,25 @@ fun AlbumPageScreen(
         onNextStamp = { viewModel.takeNextStamp(onNextStamp) },
         onSharePage = { sharingPage = it },
         onOpenStamp = onOpenStamp,
+        onOpenScrapbook = onOpenScrapbook,
+        scrollToScrap = scrollToScrap,
+        onScrolled = onScrolled,
         modifier = modifier,
     )
 
     val album = state.album
-    val page = state.pages.getOrNull(sharingPage)
-    if (album != null && page != null && page.isNotEmpty()) {
+    val leaf = state.leaves.getOrNull(sharingPage)
+    if (album != null && leaf != null && leaf.sharable) {
         PageExportSheet(
             content = PageExportContent(
                 albumName = album.name,
                 page = sharingPage + 1,
-                pageCount = state.pages.size,
-                stamps = page,
+                pageCount = state.leaves.size,
+                stamps = (leaf as? AlbumLeaf.Grid)?.stamps.orEmpty(),
                 stampCount = state.stampCount,
                 dayCount = state.dayCount,
+                scrap = (leaf as? AlbumLeaf.Scrap)?.page,
+                scrapStamps = (leaf as? AlbumLeaf.Scrap)?.stamps.orEmpty(),
             ),
             onDismiss = { sharingPage = -1 },
             onGetPro = onGetPro,
@@ -133,7 +146,10 @@ fun AlbumPageContent(
     onNextStamp: () -> Unit,
     onSharePage: (index: Int) -> Unit,
     onOpenStamp: (stampId: String) -> Unit,
+    onOpenScrapbook: (pageId: String?) -> Unit,
     modifier: Modifier = Modifier,
+    scrollToScrap: String? = null,
+    onScrolled: () -> Unit = {},
 ) {
     val s = StampTheme.spacing
     val c = StampTheme.colors
@@ -148,8 +164,15 @@ fun AlbumPageContent(
         // Wait for the data, so the pager can open on the newest page.
         var currentPage by remember { mutableIntStateOf(-1) }
         if (state.loaded) {
-            val pagerState = rememberPagerState(initialPage = state.pages.lastIndex) { state.pages.size }
+            val pagerState = rememberPagerState(initialPage = state.openIndex) { state.leaves.size }
             currentPage = pagerState.currentPage
+            LaunchedEffect(scrollToScrap, state.leaves) {
+                if (scrollToScrap == null) return@LaunchedEffect
+                val i = state.leaves.indexOfFirst { it is AlbumLeaf.Scrap && it.page.id == scrollToScrap }
+                if (i < 0) return@LaunchedEffect // not loaded yet
+                pagerState.scrollToPage(i)
+                onScrolled()
+            }
 
             Box(Modifier.fillMaxWidth().padding(horizontal = s.screenFullBleed)) {
                 CircleIconButton(
@@ -159,7 +182,7 @@ fun AlbumPageContent(
                     modifier = Modifier.align(Alignment.CenterStart),
                 )
                 Text(
-                    stringResource(R.string.album_page_of, pagerState.currentPage + 1, state.pages.size).uppercase(locale),
+                    stringResource(R.string.album_page_of, pagerState.currentPage + 1, state.leaves.size).uppercase(locale),
                     style = StampTheme.type.overline,
                     color = c.textMedium,
                     modifier = Modifier.align(Alignment.Center),
@@ -203,39 +226,82 @@ fun AlbumPageContent(
                 pageSpacing = s.s,
                 beyondViewportPageCount = 1,
                 modifier = Modifier.weight(1f),
+                key = { i -> state.leaves[i].let { if (it is AlbumLeaf.Scrap) it.page.id else "grid-$i" } },
             ) { index ->
-                AlbumSheet(
-                    stamps = state.pages[index],
-                    hasNextSlot = index == state.pages.lastIndex,
-                    onNextStamp = onNextStamp,
-                    onOpenStamp = onOpenStamp,
-                    modifier = Modifier.fillMaxSize(),
-                )
+                when (val leaf = state.leaves[index]) {
+                    is AlbumLeaf.Grid -> AlbumSheet(
+                        stamps = leaf.stamps,
+                        hasNextSlot = leaf.isLast,
+                        onNextStamp = onNextStamp,
+                        onOpenStamp = onOpenStamp,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                    is AlbumLeaf.Scrap -> {
+                        val open = stringResource(R.string.album_open_scrapbook)
+                        ScrapSheet(
+                            leaf.page.items,
+                            leaf.stamps,
+                            Modifier
+                                .fillMaxSize()
+                                .clickable(role = Role.Button, onClickLabel = open) { onOpenScrapbook(leaf.page.id) },
+                        )
+                    }
+                }
             }
         } else {
             Spacer(Modifier.weight(1f))
         }
 
-        // Map arrives with milestone 5 (shown, not live yet). An empty page has nothing to share.
-        val sharable = state.pages.getOrNull(currentPage)?.isNotEmpty() == true
+        // An empty page has nothing to share.
+        val sharable = state.leaves.getOrNull(currentPage)?.sharable == true
         Row(
             Modifier.padding(horizontal = s.screenFullBleed),
             horizontalArrangement = Arrangement.spacedBy(s.s),
         ) {
-            PillButton(
-                stringResource(R.string.album_map),
-                onClick = {},
-                enabled = false,
-                style = PillStyle.Outline,
-                modifier = Modifier.weight(1f).alpha(DisabledAlpha),
-            )
+            ScrapbookPill(locked = state.loaded && !state.isPro, onClick = { onOpenScrapbook(null) }, modifier = Modifier.weight(1f))
             PillButton(
                 stringResource(R.string.album_share_page),
                 onClick = { onSharePage(currentPage) },
                 enabled = sharable,
                 style = PillStyle.Ink,
                 leadingIcon = R.drawable.ic_share,
-                modifier = Modifier.weight(2f).alpha(if (sharable) 1f else DisabledAlpha),
+                modifier = Modifier.weight(1.4f).alpha(if (sharable) 1f else DisabledAlpha),
+            )
+        }
+    }
+}
+
+/** A grid page with stamps or any scrapbook page can be shared. */
+private val AlbumLeaf.sharable: Boolean
+    get() = when (this) {
+        is AlbumLeaf.Grid -> stamps.isNotEmpty()
+        is AlbumLeaf.Scrap -> true
+    }
+
+/** "Scrapbook page": makes a new page; free users see the red "PRO" tag (they can still try it). */
+@Composable
+private fun ScrapbookPill(locked: Boolean, onClick: () -> Unit, modifier: Modifier) {
+    val c = StampTheme.colors
+    val label = stringResource(R.string.album_scrapbook)
+    val description = if (locked) stringResource(R.string.postcard_pro_cd, label) else label
+    Box(modifier) {
+        PillButton(
+            label,
+            onClick = onClick,
+            style = PillStyle.Outline,
+            modifier = Modifier.fillMaxWidth().semantics { contentDescription = description },
+        )
+        if (locked) {
+            Text(
+                stringResource(R.string.postcard_pro_tag),
+                style = StampTheme.type.overline,
+                color = c.textOnDarkHigh,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .offset(x = -StampTheme.spacing.s, y = -StampTheme.spacing.xxs)
+                    .background(c.airmailRed, StampTheme.shapes.plate)
+                    .padding(horizontal = StampTheme.spacing.xxs)
+                    .clearAndSetSemantics { },
             )
         }
     }
@@ -402,7 +468,7 @@ private fun AlbumPageScreenPreview() {
             state = AlbumPageUiState(
                 loaded = true,
                 album = Album(1, "Japan trip", AlbumCategory.Trips, AlbumCoverColor.Ink, Instant.EPOCH),
-                pages = listOf(stamps),
+                leaves = listOf(AlbumLeaf.Grid(stamps, isLast = true)),
                 stampCount = stamps.size,
                 dayCount = 8,
             ),
@@ -411,6 +477,7 @@ private fun AlbumPageScreenPreview() {
             onNextStamp = {},
             onSharePage = {},
             onOpenStamp = {},
+            onOpenScrapbook = {},
         )
     }
 }

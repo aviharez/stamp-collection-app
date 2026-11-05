@@ -61,7 +61,6 @@
 
     <!-- Album page -->
     <string name="album_next_stamp">next stamp…</string>
-    <string name="album_map">Map</string>
     <string name="album_share_page">Share this page</string>
     <!-- %1$d = current page, %2$d = number of pages. Shown uppercase. -->
     <string name="album_page_of">Page %1$d of %2$d</string>
@@ -259,6 +258,7 @@
     <string name="paywall_overline_widget">Pro · home-screen widgets</string>
     <string name="paywall_overline_filters">Pro · every filter</string>
     <string name="paywall_overline_postcards">Pro · postcard &amp; card looks</string>
+    <string name="paywall_overline_scrapbook">Pro · keep this scrapbook page</string>
     <string name="paywall_title">Complete your collection</string>
     <string name="paywall_perk_albums">Unlimited albums</string>
     <string name="paywall_perk_no_mark">No watermark on exports</string>
@@ -436,4 +436,62 @@
     <string name="filter_tray_title">Pick a filter</string>
     <string name="filter_done">Done</string>
     <string name="filter_try_note">Just trying it on: your stamp keeps its saved look</string>
+
+    <!-- Scrapbook pages -->
+    <string name="album_scrapbook">Scrapbook page</string>
+    <string name="album_open_scrapbook">edit this page</string>
+    <string name="scrap_title_new">New scrapbook page</string>
+    <string name="scrap_title_edit">Scrapbook page</string>
+    <string name="scrap_close_cd">Close</string>
+    <string name="scrap_delete_cd">Delete this page</string>
+    <string name="scrap_save_cd">Save page</string>
+    <string name="scrap_tab_layouts">Layouts</string>
+    <string name="scrap_tab_stamps">Stamps</string>
+    <string name="scrap_tab_stickers">Stickers</string>
+    <string name="scrap_tab_write">Write</string>
+    <string name="scrap_layout_diary">diary</string>
+    <string name="scrap_layout_collage">collage</string>
+    <string name="scrap_layout_postcard">postcard</string>
+    <string name="scrap_layout_big">big one</string>
+    <string name="scrap_write_note">Add a note</string>
+    <string name="scrap_write_title">Add a title</string>
+    <string name="scrap_write_done_cd">Done writing</string>
+    <string name="scrap_note_placeholder">write something…</string>
+    <string name="scrap_title_placeholder">A title</string>
+    <string name="scrap_no_stamps">no stamps in this album yet…</string>
+    <string name="scrap_add_cd">add to the page</string>
+    <string name="scrap_hint">drag, pinch and twist anything on the page</string>
+    <string name="scrap_hint_pro">try it all · keeping the page comes with Pro</string>
+    <string name="scrap_hint_full">the page is full · remove something to add more</string>
+    <string name="scrap_tool_write">Change the words</string>
+    <string name="scrap_tool_smaller">Smaller</string>
+    <string name="scrap_tool_bigger">Bigger</string>
+    <string name="scrap_tool_turn">Turn</string>
+    <string name="scrap_tool_front">Bring to front</string>
+    <string name="scrap_tool_remove">Remove from the page</string>
+    <string name="scrap_leave_question">Leave without keeping your changes?</string>
+    <string name="scrap_leave">Leave</string>
+    <string name="scrap_keep_editing">Keep editing</string>
+    <string name="scrap_delete_question">Delete this scrapbook page? Your stamps stay in the album.</string>
+    <string name="scrap_delete">Delete</string>
+    <string name="scrap_keep_page">Keep it</string>
+    <string name="scrap_sticker_par_avion">Par avion label</string>
+    <string name="scrap_sticker_received">Received rubber stamp</string>
+    <string name="scrap_sticker_fragile">Fragile rubber stamp</string>
+    <string name="scrap_sticker_wax_seal">Wax seal</string>
+    <string name="scrap_sticker_ticket">Ticket</string>
+    <string name="scrap_sticker_heart">Heart</string>
+    <string name="scrap_sticker_star">Star</string>
+    <string name="scrap_sticker_postmark">Postmark</string>
+    <string name="scrap_sticker_tape_red">Red tape</string>
+    <string name="scrap_sticker_tape_cobalt">Blue tape</string>
+    <string name="scrap_sticker_tape_sage">Green tape</string>
+    <string name="scrap_par_avion">PAR AVION</string>
+    <string name="scrap_by_air_mail">by air mail</string>
+    <string name="scrap_rubber_received">RECEIVED</string>
+    <string name="scrap_rubber_fragile">FRAGILE</string>
+    <string name="scrap_admit_one">ADMIT ONE</string>
+    <string name="scrap_sample_seal" translatable="false">A</string>
+    <string name="scrap_sample_ticket">TODAY</string>
+    <string name="scrap_sample_postmark">TODAY\nPOSTED</string>
 </resources>

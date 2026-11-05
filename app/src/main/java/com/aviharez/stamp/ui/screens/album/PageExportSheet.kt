@@ -44,7 +44,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.aviharez.stamp.R
 import com.aviharez.stamp.domain.model.Stamp
 import com.aviharez.stamp.ui.components.HandNote
+import com.aviharez.stamp.domain.model.ScrapPage
 import com.aviharez.stamp.ui.components.ImageLoads
+import com.aviharez.stamp.ui.screens.scrapbook.ScrapSheet
 import com.aviharez.stamp.ui.components.InkStrength
 import com.aviharez.stamp.ui.components.LocalImageLoads
 import com.aviharez.stamp.ui.components.Tilt
@@ -72,7 +74,18 @@ data class PageExportContent(
     val stamps: List<Stamp>,
     val stampCount: Int,
     val dayCount: Int,
-)
+    /** Set = a scrapbook page: drawn instead of the stamp grid. */
+    val scrap: ScrapPage? = null,
+    val scrapStamps: Map<String, Stamp> = emptyMap(),
+) {
+    /** Every picture the export must wait for. */
+    val imagePaths: Set<String>
+        get() = if (scrap != null) {
+            scrap.stampIds.mapNotNullTo(HashSet()) { scrapStamps[it]?.imagePath }
+        } else {
+            stamps.mapTo(HashSet()) { it.imagePath }
+        }
+}
 
 /**
  * "Share this page": the kraft page as a PNG (1440 × 1920), the same layout as on screen without
@@ -92,7 +105,7 @@ fun PageExportSheet(
     val activity = LocalActivity.current
     val scope = rememberCoroutineScope()
     val layer = rememberGraphicsLayer()
-    val loads = remember(content.stamps) { ImageLoads() }
+    val loads = remember(content) { ImageLoads() }
     val fileName = remember(content) { pageFileName(content) }
 
     LaunchedEffect(Unit) { viewModel.reset() }
@@ -103,7 +116,7 @@ fun PageExportSheet(
     fun capture(then: (Bitmap) -> Unit) {
         scope.launch {
             viewModel.setBusy(true)
-            val paths = content.stamps.mapTo(HashSet()) { it.imagePath }
+            val paths = content.imagePaths
             withTimeoutOrNull(ImageWaitMs) { loads.done.first { it.containsAll(paths) } }
             repeat(2) { withFrameNanos { } }
             val bitmap = runCatching { layer.toImageBitmap().asAndroidBitmap().copy(Bitmap.Config.ARGB_8888, false) }.getOrNull()
@@ -225,12 +238,12 @@ fun PageExportCard(content: PageExportContent, watermark: Boolean, modifier: Mod
                 modifier = Modifier.padding(bottom = s.xxs),
             )
         }
-        AlbumSheet(
-            stamps = content.stamps,
-            hasNextSlot = false,
-            onNextStamp = {},
-            modifier = Modifier.weight(1f).fillMaxWidth().padding(top = s.s),
-        )
+        val sheet = Modifier.weight(1f).fillMaxWidth().padding(top = s.s)
+        if (content.scrap != null) {
+            ScrapSheet(content.scrap.items, content.scrapStamps, sheet)
+        } else {
+            AlbumSheet(stamps = content.stamps, hasNextSlot = false, onNextStamp = {}, modifier = sheet)
+        }
         Box(Modifier.fillMaxWidth().height(s.l), contentAlignment = Alignment.BottomEnd) {
             if (watermark) {
                 Text(stringResource(R.string.app_name).uppercase(locale), style = StampTheme.type.overline, color = c.textMedium)

@@ -40,6 +40,7 @@ import com.aviharez.stamp.ui.debug.DebugGallery
 import com.aviharez.stamp.ui.debug.DebugGalleryEntry
 import com.aviharez.stamp.ui.debug.DebugProSwitch
 import com.aviharez.stamp.ui.screens.paywall.PaywallReason
+import com.aviharez.stamp.ui.screens.scrapbook.ScrapbookScreen
 import com.aviharez.stamp.widget.WidgetLink
 import com.aviharez.stamp.ui.screens.paywall.PaywallScreen
 import com.aviharez.stamp.ui.screens.settings.AdPrivacyEntry
@@ -164,12 +165,28 @@ private fun StampNavigation(
                     onNewAlbumOpened = { entry.savedStateHandle[AlbumEarnedKey] = false },
                 )
             }
-            composable<AlbumPageRoute> {
+            composable<AlbumPageRoute> { entry ->
+                val albumId = entry.toRoute<AlbumPageRoute>().albumId
+                val savedScrap by entry.savedStateHandle.getStateFlow<String?>(ScrapSavedKey, null).collectAsStateWithLifecycle()
                 AlbumPageScreen(
                     onBack = { nav.popBackStack() },
                     onNextStamp = { nav.navigate(CameraRoute()) },
                     onGetPro = { nav.navigate(PaywallRoute(PaywallReason.Watermark.name)) },
                     onOpenStamp = { nav.navigate(StampDetailRoute(it)) },
+                    onOpenScrapbook = { nav.navigate(ScrapbookRoute(albumId, it)) },
+                    scrollToScrap = savedScrap,
+                    onScrolled = { entry.savedStateHandle[ScrapSavedKey] = null },
+                )
+            }
+            composable<ScrapbookRoute> {
+                ScrapbookScreen(
+                    onClose = { nav.popBackStack() },
+                    onSaved = { pageId ->
+                        nav.previousBackStackEntry?.savedStateHandle?.set(ScrapSavedKey, pageId)
+                        nav.popBackStack()
+                    },
+                    onDeleted = { nav.popBackStack() },
+                    onNeedPro = { nav.navigate(PaywallRoute(PaywallReason.Scrapbook.name)) },
                 )
             }
             composable<StampDetailRoute> { entry ->
@@ -331,3 +348,6 @@ private fun NavHostController.navigateToTab(tab: NavTab) {
 
 /** Paywall → caller: an album slot was earned with a rewarded ad; open the new-album form. */
 private const val AlbumEarnedKey = "album_earned"
+
+/** Result from the scrapbook editor to its album: the id of the page just saved. */
+private const val ScrapSavedKey = "scrap_saved"

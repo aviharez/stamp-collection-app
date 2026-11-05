@@ -24,7 +24,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.core.os.ConfigurationCompat
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -177,7 +176,7 @@ fun ReminderContent(
 @Composable
 private fun rememberTimeFormat(): DateTimeFormatter {
     val context = LocalContext.current
-    val locale = ConfigurationCompat.getLocales(LocalConfiguration.current)[0] ?: java.util.Locale.getDefault()
+    val locale = LocalConfiguration.current.locales[0]
     val is24 = DateFormat.is24HourFormat(context)
     return remember(locale, is24) {
         DateTimeFormatter.ofPattern(DateFormat.getBestDateTimePattern(locale, if (is24) "Hm" else "hm"), locale)

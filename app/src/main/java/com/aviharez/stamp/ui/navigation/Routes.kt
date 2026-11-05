@@ -16,6 +16,9 @@ import kotlinx.serialization.Serializable
 /** One album's page (collection detail). Full screen, no nav bar. */
 @Serializable data class AlbumPageRoute(val albumId: Long)
 
+/** Scrapbook page editor for an album: a new page, or the page [pageId]. Full screen, no nav bar. */
+@Serializable data class ScrapbookRoute(val albumId: Long, val pageId: String? = null)
+
 /**
  * Camera. Full screen, dark. [fromWelcome]: the welcome already explained it, so ask for the camera
  * permission straight away instead of showing the in-app pre-prompt first.
