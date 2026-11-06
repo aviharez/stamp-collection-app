@@ -305,6 +305,10 @@
     <string name="profile_place_blocked_note">der Standort ist für diese App aus, daher zeigen Stempel nur das Datum</string>
     <string name="profile_open_settings">Einstellungen öffnen</string>
     <string name="profile_section_privacy">Datenschutz</string>
+    <string name="profile_section_language">Sprache</string>
+    <string name="language_phone">Sprache des Handys</string>
+    <string name="language_phone_note">Folgt der Sprache deines Handys.</string>
+    <string name="language_picked_note">Postmory bleibt in dieser Sprache, egal was dein Handy nutzt.</string>
     <string name="profile_usage_stats">Anonyme Nutzungsdaten teilen</string>
     <string name="profile_usage_on_note">Absturzberichte und Zahlen wie „eine Marke wurde gemacht“, nie deine Fotos, Texte oder Orte</string>
     <string name="profile_usage_off_note">von diesem Handy wird nichts gesendet</string>

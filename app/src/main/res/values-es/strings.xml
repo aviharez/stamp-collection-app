@@ -313,6 +313,10 @@
     <string name="profile_place_blocked_note">la ubicación está desactivada para esta app, así que los matasellos solo muestran la fecha</string>
     <string name="profile_open_settings">Abrir ajustes</string>
     <string name="profile_section_privacy">Privacidad</string>
+    <string name="profile_section_language">Idioma</string>
+    <string name="language_phone">Idioma del teléfono</string>
+    <string name="language_phone_note">Sigue el idioma de tu teléfono.</string>
+    <string name="language_picked_note">Postmory se queda en este idioma, use el que use tu teléfono.</string>
     <string name="profile_usage_stats">Compartir estadísticas anónimas</string>
     <string name="profile_usage_on_note">informes de fallos y recuentos como “se hizo un sello”, nunca tus fotos, textos ni lugares</string>
     <string name="profile_usage_off_note">no se envía nada desde este teléfono</string>

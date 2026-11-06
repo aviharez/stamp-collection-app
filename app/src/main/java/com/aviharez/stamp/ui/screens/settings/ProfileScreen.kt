@@ -145,6 +145,7 @@ fun ProfileScreen(
         versionName = remember(context) { versionName(context) },
         reminder = { ReminderEntry() },
         backup = { BackupEntry() },
+        language = { LanguageEntry() },
         footerExtras = {
             AdPrivacyEntry()
             footerExtras()
@@ -172,6 +173,7 @@ fun ProfileContent(
     backup: @Composable () -> Unit,
     footerExtras: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+    language: @Composable () -> Unit = {},
     /** Null until a support email / privacy-policy URL is set (gradle properties). */
     onFeedback: (() -> Unit)? = null,
     onPrivacy: (() -> Unit)? = null,
@@ -229,6 +231,8 @@ fun ProfileContent(
                 )
             }
         }
+
+        SettingsStamp(R.string.profile_section_language, R.drawable.ic_language, tilt = LanguageTilt) { language() }
 
         SettingsStamp(R.string.profile_section_privacy, R.drawable.ic_privacy, tilt = PrivacyTilt) {
             SwitchRow(stringResource(R.string.profile_usage_stats), state.usageStats, onUsageStats)
@@ -494,7 +498,8 @@ private const val PlayStorePackage = "com.android.vending"
 private const val ReminderTilt = -0.6f
 private const val BackupTilt = 0.5f
 private const val CameraTilt = -0.4f
-private const val PrivacyTilt = 0.4f
+private const val LanguageTilt = 0.3f
+private const val PrivacyTilt = -0.5f
 private const val PassportStampTilt = -3f
 private val PassportStampWidth = 92.dp
 private val ProPostmarkDiameter = 64.dp
