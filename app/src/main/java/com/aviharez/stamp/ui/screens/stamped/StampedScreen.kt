@@ -23,7 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imeAnimationTarget
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
@@ -209,6 +210,7 @@ fun StampedScreen(
  * slams (1.4 → 1, shake, haptic) and tiny stamps fly out. Plays once per stamp; snaps to the
  * end state when reduce motion is on.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun StampedContent(
     stampPath: String?,
@@ -236,8 +238,10 @@ fun StampedContent(
     val s = StampTheme.spacing
     val c = StampTheme.colors
     // While the keyboard is up (writing on the back), the look picker and its Pro pill step aside
-    // so the stamp keeps a readable size instead of being squeezed to a sliver.
-    val typing = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+    // so the stamp keeps a readable size instead of being squeezed to a sliver. Reads where the
+    // keyboard is heading, not where it is: they come back the moment it starts to slide away
+    // instead of after its whole hide animation.
+    val typing = WindowInsets.imeAnimationTarget.getBottom(LocalDensity.current) > 0
     GrainedSurface(c.cobalt, modifier.fillMaxSize()) {
         Column(Modifier.fillMaxSize()) {
             AirmailStripe(Modifier.fillMaxWidth().height(s.xs), accent = c.ink)
