@@ -1,4 +1,4 @@
-# Signed release bundle (.aab for Play) + APK, built on a version tag (v1.0.0) or by hand.
+# Signed release bundle (.aab for Play) + APK, built on a version tag (v0.0.1, must match AppVersion in app/build.gradle.kts) or by hand.
 # The repo is public: the builds are kept as workflow artifacts only (never a public GitHub Release).
 # Secrets (Settings → Secrets and variables → Actions), see docs/play-console.md §11:
 #   KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD   upload key
@@ -22,6 +22,15 @@ jobs:
     environment: release
     steps:
       - uses: actions/checkout@v7
+
+      - name: Tag matches the app version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version=$(sed -n 's/^val AppVersion = "\(.*\)"$/\1/p' app/build.gradle.kts)
+          if [ "${GITHUB_REF_NAME}" != "v${version}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} doesn't match AppVersion ${version} in app/build.gradle.kts (expected v${version})."
+            exit 1
+          fi
 
       - uses: actions/setup-java@v6
         with:

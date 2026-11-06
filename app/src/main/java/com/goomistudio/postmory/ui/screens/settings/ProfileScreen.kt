@@ -524,7 +524,7 @@ private fun ProfileContentPreview() {
             onUsageStats = {},
             onOpenAppSettings = {},
             onRate = {},
-            versionName = "1.0",
+            versionName = "0.0.1",
             reminder = {
                 ReminderContent(ReminderSetting(on = true, minuteOfDay = ReminderSetting.DefaultMinute), blocked = false, {}, {}, {}, {})
             },
@@ -554,7 +554,7 @@ private fun ProfileProPreview() {
             onUsageStats = {},
             onOpenAppSettings = {},
             onRate = {},
-            versionName = "1.0",
+            versionName = "0.0.1",
             reminder = {
                 ReminderContent(ReminderSetting(on = false, minuteOfDay = ReminderSetting.DefaultMinute), blocked = false, {}, {}, {}, {})
             },
