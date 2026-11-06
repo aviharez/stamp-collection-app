@@ -157,7 +157,8 @@ Notes:
 > FAIR, NOT PUSHY
 > • No forced ads. Ever. A short ad plays only if you ask for one (for example to remove the
 >   watermark from one picture).
-> • Your photos stay on your phone. No account, no cloud, no tracking.
+> • Your photos stay on your phone. No account, no cloud. Only anonymous usage stats, and you
+>   can turn them off.
 > • Back up everything to a single file you keep.
 >
 > PRO (one-time or yearly)
