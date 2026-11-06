@@ -330,9 +330,11 @@
     <string name="profile_open_settings">Open settings</string>
     <string name="profile_section_privacy">Privacy</string>
     <string name="profile_section_language">Language</string>
+    <string name="language_app">App language</string>
+    <string name="language_change">Change the app language</string>
     <string name="language_phone">Phone\'s language</string>
-    <string name="language_phone_note">Follows your phone\'s language.</string>
-    <string name="language_picked_note">Postmory stays in this language, whatever your phone uses.</string>
+    <string name="language_phone_note">Follows your phone (%1$s).</string>
+    <string name="language_picked_note">Only Postmory changes. Your phone stays in %1$s.</string>
     <!-- Each language in its own name, so people can find theirs whatever the app is showing. -->
     <string name="language_en" translatable="false">English</string>
     <string name="language_id" translatable="false">Bahasa Indonesia</string>

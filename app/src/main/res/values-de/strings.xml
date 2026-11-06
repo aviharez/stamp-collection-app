@@ -306,9 +306,11 @@
     <string name="profile_open_settings">Einstellungen öffnen</string>
     <string name="profile_section_privacy">Datenschutz</string>
     <string name="profile_section_language">Sprache</string>
+    <string name="language_app">App-Sprache</string>
+    <string name="language_change">App-Sprache ändern</string>
     <string name="language_phone">Sprache des Handys</string>
-    <string name="language_phone_note">Folgt der Sprache deines Handys.</string>
-    <string name="language_picked_note">Postmory bleibt in dieser Sprache, egal was dein Handy nutzt.</string>
+    <string name="language_phone_note">Folgt deinem Handy (%1$s).</string>
+    <string name="language_picked_note">Nur Postmory ändert sich. Dein Handy bleibt auf %1$s.</string>
     <string name="profile_usage_stats">Anonyme Nutzungsdaten teilen</string>
     <string name="profile_usage_on_note">Absturzberichte und Zahlen wie „eine Marke wurde gemacht“, nie deine Fotos, Texte oder Orte</string>
     <string name="profile_usage_off_note">von diesem Handy wird nichts gesendet</string>

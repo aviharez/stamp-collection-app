@@ -299,9 +299,11 @@
     <string name="profile_open_settings">設定を開く</string>
     <string name="profile_section_privacy">プライバシー</string>
     <string name="profile_section_language">言語</string>
+    <string name="language_app">アプリの言語</string>
+    <string name="language_change">アプリの言語を変更</string>
     <string name="language_phone">スマホの言語</string>
-    <string name="language_phone_note">スマホの言語に合わせます。</string>
-    <string name="language_picked_note">スマホの言語に関係なく、Postmoryはこの言語で表示されます。</string>
+    <string name="language_phone_note">スマホの設定に合わせます（%1$s）。</string>
+    <string name="language_picked_note">変わるのはPostmoryだけです。スマホは%1$sのままです。</string>
     <string name="profile_usage_stats">匿名の利用データを送信</string>
     <string name="profile_usage_on_note">クラッシュレポートと「切手を1枚作成」のような回数だけ。写真・文章・場所は送りません</string>
     <string name="profile_usage_off_note">この端末からは何も送信しません</string>

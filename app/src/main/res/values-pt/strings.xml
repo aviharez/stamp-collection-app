@@ -315,9 +315,11 @@
     <string name="profile_open_settings">Abrir configurações</string>
     <string name="profile_section_privacy">Privacidade</string>
     <string name="profile_section_language">Idioma</string>
+    <string name="language_app">Idioma do app</string>
+    <string name="language_change">Mudar o idioma do app</string>
     <string name="language_phone">Idioma do celular</string>
-    <string name="language_phone_note">Segue o idioma do seu celular.</string>
-    <string name="language_picked_note">O Postmory fica neste idioma, seja qual for o do seu celular.</string>
+    <string name="language_phone_note">Segue o seu celular (%1$s).</string>
+    <string name="language_picked_note">Só o Postmory muda. Seu celular continua em %1$s.</string>
     <string name="profile_usage_stats">Enviar estatísticas anônimas</string>
     <string name="profile_usage_on_note">relatórios de falhas e contagens como “um selo foi feito”, nunca suas fotos, textos ou lugares</string>
     <string name="profile_usage_off_note">nada é enviado deste celular</string>

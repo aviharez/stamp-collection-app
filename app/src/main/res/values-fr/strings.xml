@@ -315,9 +315,11 @@
     <string name="profile_open_settings">Ouvrir les paramètres</string>
     <string name="profile_section_privacy">Confidentialité</string>
     <string name="profile_section_language">Langue</string>
+    <string name="language_app">Langue de l\'appli</string>
+    <string name="language_change">Changer la langue de l\'appli</string>
     <string name="language_phone">Langue du téléphone</string>
-    <string name="language_phone_note">Suit la langue de ton téléphone.</string>
-    <string name="language_picked_note">Postmory reste dans cette langue, quelle que soit celle de ton téléphone.</string>
+    <string name="language_phone_note">Suit ton téléphone (%1$s).</string>
+    <string name="language_picked_note">Seul Postmory change. Ton téléphone reste en %1$s.</string>
     <string name="profile_usage_stats">Partager des statistiques anonymes</string>
     <string name="profile_usage_on_note">rapports de plantage et comptages comme « un timbre a été créé », jamais tes photos, textes ou lieux</string>
     <string name="profile_usage_off_note">rien n’est envoyé depuis ce téléphone</string>

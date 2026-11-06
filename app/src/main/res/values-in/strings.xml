@@ -299,9 +299,11 @@
     <string name="profile_open_settings">Buka setelan</string>
     <string name="profile_section_privacy">Privasi</string>
     <string name="profile_section_language">Bahasa</string>
+    <string name="language_app">Bahasa aplikasi</string>
+    <string name="language_change">Ganti bahasa aplikasi</string>
     <string name="language_phone">Bahasa ponsel</string>
-    <string name="language_phone_note">Mengikuti bahasa ponselmu.</string>
-    <string name="language_picked_note">Postmory tetap pakai bahasa ini, apa pun bahasa ponselmu.</string>
+    <string name="language_phone_note">Mengikuti ponselmu (%1$s).</string>
+    <string name="language_picked_note">Hanya Postmory yang berubah. Ponselmu tetap pakai %1$s.</string>
     <string name="profile_usage_stats">Kirim statistik anonim</string>
     <string name="profile_usage_on_note">laporan error dan hitungan seperti “satu prangko dibuat”, tidak pernah foto, tulisan, atau tempatmu</string>
     <string name="profile_usage_off_note">tidak ada yang dikirim dari HP ini</string>
