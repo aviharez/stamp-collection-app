@@ -3,7 +3,7 @@
 Everything to fill in once the Google Play developer account exists. Answers below match what the app
 does as of 2026-11-05 (see the Decisions log in CLAUDE.md). Re-check them if a feature changes.
 
-Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 37
+Package: `com.goomistudio.postmory` · versionCode 1 · versionName 1.0 · targetSdk 37
 
 ---
 
@@ -19,7 +19,7 @@ Package: `com.aviharez.stamp` · versionCode 1 · versionName 1.0 · targetSdk 3
 - [x] App name: **Postmory** (`app_name` in `strings.xml`)
 - [x] Support email: **hello.goomistudio@gmail.com** (default in `app/build.gradle.kts`; a `supportEmail=` gradle property overrides it). Developer name on Play: **Goomi Studio**
 - [x] Firebase: console.firebase.google.com → Add project "Postmory" (Google Analytics on) → Add Android app
-  `com.aviharez.stamp` → download `google-services.json` into `app/` (git-ignored) and paste it into the
+  `com.goomistudio.postmory` → download `google-services.json` into `app/` (git-ignored) and paste it into the
   `GOOGLE_SERVICES_JSON` secret (§11). In Analytics settings, leave Google signals and ads personalisation off.
 - [ ] Publish the privacy page: GitHub repo → Settings → Pages → "Deploy from a branch", `main`, `/docs`.
       URL becomes `https://aviharez.github.io/stamp-collection-app/privacy.html` →

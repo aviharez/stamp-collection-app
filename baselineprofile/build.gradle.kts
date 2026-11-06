@@ -6,7 +6,7 @@ plugins {
 // Generates app/src/release/generated/baselineProfiles (./gradlew :app:generateBaselineProfile)
 // and measures startup / scrolling on a release-like build (connectedBenchmarkReleaseAndroidTest).
 android {
-    namespace = "com.aviharez.stamp.baselineprofile"
+    namespace = "com.goomistudio.postmory.baselineprofile"
     compileSdk {
         version = release(37)
     }

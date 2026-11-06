@@ -34,13 +34,13 @@ val AdMobTestAppId = "ca-app-pub-3940256099942544~3347511713"
 val AdMobTestRewardedId = "ca-app-pub-3940256099942544/5224354917"
 
 android {
-    namespace = "com.aviharez.stamp"
+    namespace = "com.goomistudio.postmory"
     compileSdk {
         version = release(37)
     }
 
     defaultConfig {
-        applicationId = "com.aviharez.stamp"
+        applicationId = "com.goomistudio.postmory"
         minSdk = 26
         targetSdk = 37
         versionCode = 1
