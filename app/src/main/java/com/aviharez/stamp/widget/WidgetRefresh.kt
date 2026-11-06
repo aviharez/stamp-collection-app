@@ -3,8 +3,10 @@ package com.aviharez.stamp.widget
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
 import androidx.glance.appwidget.updateAll
 import com.aviharez.stamp.data.billing.ProStatus
@@ -48,6 +50,7 @@ class WidgetUpdater @Inject constructor(
     @OptIn(FlowPreview::class)
     fun start() {
         MidnightRefresh.schedule(context)
+        scope.launch(Dispatchers.Default) { pro.isPro.collect { WidgetAvailability.sync(context, it) } }
         scope.launch {
             combine(
                 stamps.observeRecent(RecentKeyLimit).map { list -> list.map { listOf(it.id, it.albumId, it.day, it.imagePath, it.place) } },
@@ -63,6 +66,34 @@ class WidgetUpdater @Inject constructor(
     private companion object {
         const val RecentKeyLimit = 40
         const val DebounceMillis = 400L
+    }
+}
+
+/**
+ * Widgets are Pro only, and free users can't add them: the widget receivers are off in the
+ * manifest (so the launcher's picker doesn't list them) and switched on while the user has Pro.
+ * Losing Pro (refund, expired year) switches them off again, which removes placed widgets; until
+ * the app next runs, a placed widget draws its faded "PRO" look (WidgetArt) as a safety net.
+ * Billing only clears Pro on a successful answer from Play, so being offline never does this.
+ */
+object WidgetAvailability {
+    private val receivers = listOf(
+        StampOfDayWidgetReceiver::class.java,
+        EnvelopeWidgetReceiver::class.java,
+        AlbumStripWidgetReceiver::class.java,
+    )
+
+    fun sync(context: Context, isPro: Boolean) {
+        val pm = context.packageManager
+        val wanted = if (isPro) PackageManager.COMPONENT_ENABLED_STATE_ENABLED else PackageManager.COMPONENT_ENABLED_STATE_DISABLED
+        for (receiver in receivers) {
+            val component = ComponentName(context, receiver)
+            runCatching {
+                if (pm.getComponentEnabledSetting(component) != wanted) {
+                    pm.setComponentEnabledSetting(component, wanted, PackageManager.DONT_KILL_APP)
+                }
+            }.onFailure { Log.w("Widgets", "Couldn't switch $receiver", it) }
+        }
     }
 }
 

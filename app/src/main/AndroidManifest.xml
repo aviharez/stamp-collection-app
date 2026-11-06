@@ -103,9 +103,12 @@
                 android:name="photopicker_activity:0:required"
                 android:value="" />
         </service>
-        <!-- Home-screen widgets (Glance). Each draws one picture; see widget/WidgetArt.kt. -->
+        <!-- Home-screen widgets (Glance). Each draws one picture; see widget/WidgetArt.kt.
+             Pro only: off here so free users never see them in the launcher's picker;
+             WidgetAvailability switches them on while the user has Pro. -->
         <receiver
             android:name=".widget.StampOfDayWidgetReceiver"
+            android:enabled="false"
             android:exported="true"
             android:label="@string/widget_name_stamp">
             <intent-filter>
@@ -117,6 +120,7 @@
         </receiver>
         <receiver
             android:name=".widget.EnvelopeWidgetReceiver"
+            android:enabled="false"
             android:exported="true"
             android:label="@string/widget_name_envelope">
             <intent-filter>
@@ -128,6 +132,7 @@
         </receiver>
         <receiver
             android:name=".widget.AlbumStripWidgetReceiver"
+            android:enabled="false"
             android:exported="true"
             android:label="@string/widget_name_strip">
             <intent-filter>
