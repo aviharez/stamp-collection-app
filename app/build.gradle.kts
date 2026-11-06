@@ -32,7 +32,7 @@ val uploadKey = rootProject.file("keystore.properties").takeIf { it.exists() }?.
  * versionCode is worked out from it (MAJOR × 1 000 000 + MINOR × 1 000 + PATCH, so 0.0.1 = 1 and 1.2.3 =
  * 1 002 003), and a release tag must be "v" + this (.github/workflows/release.yml checks it).
  */
-val AppVersion = "0.0.1"
+val AppVersion = "0.0.2"
 val AppVersionCode = AppVersion.split(".").let { parts ->
     require(parts.size == 3) { "AppVersion must be MAJOR.MINOR.PATCH, got $AppVersion" }
     val (major, minor, patch) = parts.map { it.toIntOrNull() ?: error("AppVersion must be numbers only, got $AppVersion") }

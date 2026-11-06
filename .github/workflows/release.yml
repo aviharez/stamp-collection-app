@@ -1,4 +1,4 @@
-# Signed release bundle (.aab for Play) + APK, built on a version tag (v0.0.1, must match AppVersion in app/build.gradle.kts) or by hand.
+# Signed release bundle (.aab for Play) + APK, built on a version tag (v0.0.2, must match AppVersion in app/build.gradle.kts) or by hand.
 # The repo is public: the builds are kept as workflow artifacts only (never a public GitHub Release).
 # Secrets (Settings → Secrets and variables → Actions), see docs/play-console.md §11:
 #   KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD   upload key

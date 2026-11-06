@@ -3,7 +3,7 @@
 Everything to fill in once the Google Play developer account exists. Answers below match what the app
 does as of 2026-11-05 (see the Decisions log in CLAUDE.md). Re-check them if a feature changes.
 
-Package: `com.goomistudio.postmory` · version 0.0.1 (versionCode 1; semantic versioning, `AppVersion` in `app/build.gradle.kts`) · targetSdk 37
+Package: `com.goomistudio.postmory` · version 0.0.2 (versionCode 2; semantic versioning, `AppVersion` in `app/build.gradle.kts`) · targetSdk 37
 
 ---
 
@@ -208,7 +208,7 @@ pictures to well-known cities (no districts or home towns).
 
 - **CI** (`.github/workflows/ci.yml`): every push to `main` and every pull request runs unit tests, lint and
   the debug build. The debug APK and the lint/test reports are kept as workflow artifacts for 14 days.
-- **Release** (`.github/workflows/release.yml`): runs on a `v*` tag (`git tag v0.0.1 && git push origin v0.0.1`, matching `AppVersion`; a mismatched tag fails the run)
+- **Release** (`.github/workflows/release.yml`): runs on a `v*` tag (`git tag v0.0.2 && git push origin v0.0.2`, matching `AppVersion`; a mismatched tag fails the run)
   or by hand (Actions → Release → Run workflow). Builds the signed `.aab` (for Play) + APK + R8 mapping, kept as
   workflow artifacts for 30 days. The repo is public, so nothing is published as a GitHub Release.
 - Secrets (repo → Settings → Secrets and variables → Actions → New repository secret):
