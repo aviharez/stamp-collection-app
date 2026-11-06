@@ -79,6 +79,7 @@
     <string name="camera_focus_cd">Pratinjau kamera. Ketuk untuk fokus, cubit untuk zoom.</string>
     <string name="camera_unavailable">Kamera sedang tidak tersedia.</string>
     <string name="camera_stamping">membuat prangkomu…</string>
+    <string name="look_working">Menerapkan…</string>
     <string name="camera_capture_failed">Yang itu tidak menempel. Coba lagi.</string>
     <string name="storage_full">Memori ponselmu penuh. Kosongkan sedikit ruang, lalu coba lagi.</string>
     <string name="shape_portrait">Potret</string>

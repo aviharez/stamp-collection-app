@@ -79,6 +79,7 @@
     <string name="camera_focus_cd">カメラのプレビュー。タップでピント合わせ、ピンチでズーム。</string>
     <string name="camera_unavailable">今はカメラを使えません。</string>
     <string name="camera_stamping">切手をつくっています…</string>
+    <string name="look_working">適用中…</string>
     <string name="camera_capture_failed">うまく貼れませんでした。もう一度どうぞ。</string>
     <string name="storage_full">スマホの容量がいっぱいです。空きを作ってからもう一度どうぞ。</string>
     <string name="shape_portrait">縦長</string>

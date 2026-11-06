@@ -296,6 +296,7 @@ fun StampedContent(
                         photo = filter.thumbnail,
                         selected = filter.selected,
                         access = filter.access,
+                        working = filter.working,
                         onPickFilter = onPickFilter,
                         onPickEdge = onPickEdge,
                         onDark = true,

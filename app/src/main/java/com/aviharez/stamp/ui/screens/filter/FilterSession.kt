@@ -41,10 +41,15 @@ data class FilterUi(
     val preview: File? = null,
     /** A new version is being drawn. */
     val busy: Boolean = false,
+    /** A Pro look's try-on picture is being drawn. */
+    val previewing: Boolean = false,
     val access: LookAccess = LookAccess(),
     /** "24h · short ad" for the Pro edge being tried on. */
     val ad: AdOffer = AdOffer.Idle,
 ) {
+    /** The picked look is still being drawn (saved or tried on): the picker shows it working. */
+    val working: Boolean get() = busy || previewing
+
     /** A Pro look is on show but not kept: the screen says so and offers Pro. */
     val tryingPro: Boolean get() = selected != saved && !access.canUse(selected) && !busy
 
@@ -126,7 +131,7 @@ class FilterSession(
         val ui = _state.value
         if (ui.busy || ui.selected == ui.saved) return
         job?.cancel()
-        _state.update { it.copy(selected = it.saved, preview = null) }
+        _state.update { it.copy(selected = it.saved, preview = null, previewing = false) }
     }
 
     fun pickFilter(filter: StampFilter) = pick(_state.value.selected.copy(filter = filter))
@@ -154,18 +159,20 @@ class FilterSession(
         job?.cancel()
         val ui = _state.value
         if (!ui.access.canUse(look)) {
-            _state.update { it.copy(selected = look, busy = false, ad = if (it.ad == AdOffer.Loading) it.ad else AdOffer.Idle) }
+            _state.update { it.copy(selected = look, busy = false, previewing = true, ad = if (it.ad == AdOffer.Loading) it.ad else AdOffer.Idle) }
             job = scope.launch {
                 val file = filterer.preview(stamp, look)
-                _state.update { if (file == null) it.copy(selected = it.saved, preview = null) else it.copy(preview = file) }
+                _state.update {
+                    if (file == null) it.copy(selected = it.saved, preview = null, previewing = false) else it.copy(preview = file, previewing = false)
+                }
             }
             return
         }
         if (look == ui.saved) {
-            _state.update { it.copy(selected = look, preview = null, busy = false) }
+            _state.update { it.copy(selected = look, preview = null, busy = false, previewing = false) }
             return
         }
-        _state.update { it.copy(selected = look, busy = true) }
+        _state.update { it.copy(selected = look, busy = true, previewing = false) }
         job = appScope.launch {
             val ok = filterer.apply(current ?: stamp, look)
             if (ok && look.edge != ui.saved.edge) edges.setLastEdge(look.edge)

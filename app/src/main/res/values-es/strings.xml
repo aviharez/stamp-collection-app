@@ -82,6 +82,7 @@
     <string name="camera_focus_cd">Vista previa de la cámara. Toca para enfocar, pellizca para hacer zoom.</string>
     <string name="camera_unavailable">La cámara no está disponible ahora mismo.</string>
     <string name="camera_stamping">haciendo tu sello…</string>
+    <string name="look_working">Aplicando…</string>
     <string name="camera_capture_failed">Ese no se pegó. Inténtalo de nuevo.</string>
     <string name="storage_full">Tu teléfono está lleno. Libera algo de espacio e inténtalo de nuevo.</string>
     <string name="shape_portrait">Vertical</string>

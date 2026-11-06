@@ -24,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -33,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.liveRegion
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.aviharez.stamp.R
 import com.aviharez.stamp.ui.theme.PaperPreview
@@ -71,17 +73,6 @@ fun StampingOverlay(visible: Boolean, modifier: Modifier = Modifier) {
 private fun StampingOverlayContent() {
     val c = StampTheme.colors
     val s = StampTheme.spacing
-    val reduceMotion = rememberReduceMotion()
-    val turn = if (reduceMotion) {
-        null
-    } else {
-        rememberInfiniteTransition(label = "stamping").animateFloat(
-            initialValue = 0f,
-            targetValue = FullTurn,
-            animationSpec = infiniteRepeatable(tween(TurnMillis, easing = LinearEasing), RepeatMode.Restart),
-            label = "turn",
-        )
-    }
     val note = stringResource(R.string.camera_stamping)
     Box(
         Modifier
@@ -96,22 +87,40 @@ private fun StampingOverlayContent() {
             verticalArrangement = Arrangement.spacedBy(s.m),
             modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite },
         ) {
-            val ring = c.postmarkOnLight
-            val inner = c.textOnDarkMedium
-            Canvas(Modifier.size(RingSize)) {
-                    val outerWidth = OuterStroke.toPx()
-                    val dash = Dash.toPx()
-                    rotate(turn?.value ?: TiltAtRest) {
-                        drawCircle(
-                            ring,
-                            radius = size.minDimension / 2 - outerWidth,
-                            style = Stroke(outerWidth, cap = StrokeCap.Round, pathEffect = PathEffect.dashPathEffect(floatArrayOf(dash, dash * DashGapShare))),
-                        )
-                    }
-                    drawCircle(inner, radius = size.minDimension / 2 * InnerShare, style = Stroke(InnerStroke.toPx()))
-            }
+            PostmarkSpinner(ring = c.postmarkOnLight, inner = c.textOnDarkMedium, modifier = Modifier.size(RingSize))
             HandNote(note, color = c.textOnDarkHigh, rotation = NoteTilt)
         }
+    }
+}
+
+/**
+ * A dashed postmark ring that turns while something is being made (still and tilted with reduce
+ * motion), around a thin inner ring. Sized by [modifier]; strokes are fixed.
+ */
+@Composable
+fun PostmarkSpinner(ring: Color, inner: Color, modifier: Modifier = Modifier, outerStroke: Dp = OuterStroke, dash: Dp = Dash) {
+    val reduceMotion = rememberReduceMotion()
+    val turn = if (reduceMotion) {
+        null
+    } else {
+        rememberInfiniteTransition(label = "postmarkSpinner").animateFloat(
+            initialValue = 0f,
+            targetValue = FullTurn,
+            animationSpec = infiniteRepeatable(tween(TurnMillis, easing = LinearEasing), RepeatMode.Restart),
+            label = "turn",
+        )
+    }
+    Canvas(modifier) {
+        val outerWidth = outerStroke.toPx()
+        val dashPx = dash.toPx()
+        rotate(turn?.value ?: TiltAtRest) {
+            drawCircle(
+                ring,
+                radius = size.minDimension / 2 - outerWidth,
+                style = Stroke(outerWidth, cap = StrokeCap.Round, pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashPx, dashPx * DashGapShare))),
+            )
+        }
+        drawCircle(inner, radius = size.minDimension / 2 * InnerShare, style = Stroke(InnerStroke.toPx()))
     }
 }
 
@@ -133,4 +142,10 @@ private val Dash = 7.dp
 @Composable
 private fun StampingOverlayPreview() {
     StampAppTheme { StampingOverlayContent() }
+}
+
+@PaperPreview
+@Composable
+private fun PostmarkSpinnerPreview() {
+    StampAppTheme { PostmarkSpinner(ring = StampTheme.colors.airmailRed, inner = StampTheme.colors.handInkSoft, modifier = Modifier.size(RingSize)) }
 }

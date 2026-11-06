@@ -1,6 +1,10 @@
 package com.aviharez.stamp.ui.components
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.semantics.stateDescription
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -106,6 +110,7 @@ enum class LookTab { Filters, Edges }
  * Locked choices carry a "PRO" tag (an edge unlocked for a day by an ad says "24H"); tapping one
  * still calls back (the caller tries it on).
  *
+ * @param working the picked look is still being drawn: its mini stamp shows a turning postmark.
  * @param onDark labels in PaperWhite (Stamped!'s cobalt).
  */
 @Composable
@@ -116,6 +121,7 @@ fun LookPicker(
     onPickFilter: (StampFilter) -> Unit,
     onPickEdge: (PerforationStyle) -> Unit,
     modifier: Modifier = Modifier,
+    working: Boolean = false,
     onDark: Boolean = false,
     contentPadding: PaddingValues = PaddingValues(horizontal = StampTheme.spacing.screen),
 ) {
@@ -123,8 +129,8 @@ fun LookPicker(
     Column(modifier) {
         LookTabs(tab, onPick = { tab = it }, onDark = onDark, modifier = Modifier.padding(contentPadding))
         when (tab) {
-            LookTab.Filters -> FilterPicker(photo, selected.filter, access.isPro, onPickFilter, onDark = onDark, contentPadding = contentPadding)
-            LookTab.Edges -> EdgePicker(photo, selected, access, onPickEdge, onDark = onDark, contentPadding = contentPadding)
+            LookTab.Filters -> FilterPicker(photo, selected.filter, access.isPro, onPickFilter, working = working, onDark = onDark, contentPadding = contentPadding)
+            LookTab.Edges -> EdgePicker(photo, selected, access, onPickEdge, working = working, onDark = onDark, contentPadding = contentPadding)
         }
     }
 }
@@ -190,6 +196,7 @@ fun FilterPicker(
     isPro: Boolean,
     onPick: (StampFilter) -> Unit,
     modifier: Modifier = Modifier,
+    working: Boolean = false,
     onDark: Boolean = false,
     contentPadding: PaddingValues = PaddingValues(horizontal = StampTheme.spacing.screen),
 ) {
@@ -205,6 +212,7 @@ fun FilterPicker(
                 description = if (locked) stringResource(R.string.filter_pro_cd, name) else name,
                 tag = if (locked) stringResource(R.string.filter_pro_tag) else null,
                 selected = filter == selected,
+                working = working && filter == selected,
                 restTilt = if (index % 2 == 0) RestTilt else -RestTilt,
                 onDark = onDark,
                 onClick = { onPick(filter) },
@@ -221,6 +229,7 @@ fun EdgePicker(
     access: LookAccess,
     onPick: (PerforationStyle) -> Unit,
     modifier: Modifier = Modifier,
+    working: Boolean = false,
     onDark: Boolean = false,
     contentPadding: PaddingValues = PaddingValues(horizontal = StampTheme.spacing.screen),
 ) {
@@ -242,6 +251,7 @@ fun EdgePicker(
                 tag = tag,
                 trialTag = edge in access.trialEdges && !access.isPro,
                 selected = edge == selected.edge,
+                working = working && edge == selected.edge,
                 restTilt = if (index % 2 == 0) RestTilt else -RestTilt,
                 onDark = onDark,
                 onClick = { onPick(edge) },
@@ -274,6 +284,7 @@ private fun LookStamp(
     onDark: Boolean,
     onClick: () -> Unit,
     trialTag: Boolean = false,
+    working: Boolean = false,
 ) {
     val c = StampTheme.colors
     val reduceMotion = rememberReduceMotion()
@@ -291,6 +302,13 @@ private fun LookStamp(
         label = "lift",
     )
     val locale = LocalConfiguration.current.locales[0]
+    val workingNote = stringResource(R.string.look_working)
+    // Quick looks finish before the ring would show, so it never just flickers.
+    var showWorking by remember { mutableStateOf(false) }
+    LaunchedEffect(working) {
+        if (working) delay(WorkingShowAfterMillis)
+        showWorking = working
+    }
 
     Column(
         Modifier
@@ -305,7 +323,10 @@ private fun LookStamp(
                     onClick()
                 },
             )
-            .semantics { contentDescription = description },
+            .semantics {
+                contentDescription = description
+                if (working) stateDescription = workingNote
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -332,6 +353,24 @@ private fun LookStamp(
                     )
                 } else {
                     Box(Modifier.matchParentSize().background(c.surface2))
+                }
+                val workingAlpha by animateFloatAsState(if (showWorking) 1f else 0f, tween(WorkingFadeMillis), label = "working")
+                if (workingAlpha > 0f) {
+                    Box(
+                        Modifier
+                            .matchParentSize()
+                            .graphicsLayer { alpha = workingAlpha }
+                            .background(c.ink.copy(alpha = WorkingScrimAlpha)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        PostmarkSpinner(
+                            ring = c.textOnDarkHigh,
+                            inner = c.textOnDarkMedium,
+                            modifier = Modifier.size(WorkingRingSize),
+                            outerStroke = WorkingStroke,
+                            dash = WorkingDash,
+                        )
+                    }
                 }
             }
             if (tag != null) {
@@ -369,6 +408,12 @@ private const val PickedTilt = -7f
 private const val PickedScale = 1.12f
 private const val PressedScale = 0.9f
 private val TabUnderline = 2.dp
+private const val WorkingShowAfterMillis = 120L
+private const val WorkingFadeMillis = 150
+private const val WorkingScrimAlpha = 0.45f
+private val WorkingRingSize = 30.dp
+private val WorkingStroke = 2.dp
+private val WorkingDash = 4.dp
 
 @PaperPreview
 @Composable
@@ -377,6 +422,7 @@ private fun FilterPickerPreview() {
         Column {
             FilterPicker(photo = null, selected = StampFilter.Postcard, isPro = false, onPick = {})
             FilterPicker(photo = null, selected = StampFilter.Original, isPro = true, onPick = {})
+            FilterPicker(photo = null, selected = StampFilter.Sepia, isPro = true, onPick = {}, working = true)
         }
     }
 }

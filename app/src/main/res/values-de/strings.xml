@@ -80,6 +80,7 @@
     <string name="camera_focus_cd">Kameravorschau. Tippen zum Fokussieren, mit zwei Fingern zoomen.</string>
     <string name="camera_unavailable">Die Kamera ist gerade nicht verfügbar.</string>
     <string name="camera_stamping">deine Marke entsteht…</string>
+    <string name="look_working">Wird angewendet…</string>
     <string name="camera_capture_failed">Die hat nicht geklebt. Versuch es noch mal.</string>
     <string name="storage_full">Dein Handy ist voll. Mach etwas Platz frei und versuch es noch mal.</string>
     <string name="shape_portrait">Hochformat</string>

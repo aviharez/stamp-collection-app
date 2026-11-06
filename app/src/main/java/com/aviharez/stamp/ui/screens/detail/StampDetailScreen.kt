@@ -386,6 +386,7 @@ private fun LookTray(
                 photo = filter.thumbnail,
                 selected = filter.selected,
                 access = filter.access,
+                working = filter.working,
                 onPickFilter = onPickFilter,
                 onPickEdge = onPickEdge,
                 contentPadding = PaddingValues(horizontal = s.m),
