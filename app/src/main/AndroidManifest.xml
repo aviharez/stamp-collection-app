@@ -7,6 +7,13 @@
         android:name="android.hardware.camera.any"
         android:required="false" />
 
+    <!-- MainActivity is locked to portrait, which makes Play treat a portrait screen as required and
+         hide the app from devices without one (Play Console warning). Not required: those devices
+         get the portrait app letterboxed. -->
+    <uses-feature
+        android:name="android.hardware.screen.portrait"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- Postmark only needs city + country, so coarse location is enough (optional, asked once). -->
